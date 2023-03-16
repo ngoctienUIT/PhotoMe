@@ -2,5 +2,17 @@
   "home": "Home",
   "search": "Search",
   "notification": "Notification",
-  "profile": "Profile"
+  "profile": "Profile",
+  "male": "Male",
+  "female": "Female",
+  "choose_gender": "Choose gender",
+  "please_enter": "Please enter",
+  "please_enter_email": "Please enter email",
+  "please_enter_phone_number": "Please enter phone number",
+  "current_selection": "Current selection",
+  "take_photo": "Take photo",
+  "select_image_gallery": "Select image gallery",
+  "view_profile_picture": "View profile picture",
+  "delete_profile_picture": "Delete profile picture",
+  "cancel": "Cancel"
 }

@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   Navigator.of(context).pushReplacement(createRoute(
                     screen: const MainPage(),
-                    begin: const Offset(1, 0),
+                    begin: const Offset(0, 1),
                   ));
                 },
                 child: const Text("Go to Home"),

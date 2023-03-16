@@ -41,7 +41,11 @@ dependencies:
   fluttertoast: ^8.2.1
   font_awesome_flutter: ^10.4.0
   flutter_bloc: ^8.1.2
+  intl: ^0.17.0
   shared_preferences: ^2.0.18
+  image_picker: ^0.8.7
+  image_cropper: ^3.0.1
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +73,8 @@ flutter:
   assets:
      - assets/images/
      - assets/lang/
+     - assets/images/icon/
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
