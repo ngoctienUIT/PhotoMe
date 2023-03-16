@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_me/src/presentation/message/screen/message_page.dart';
+import 'package:photo_me/src/presentation/setting/screen/setting_page.dart';
 
 import '../../../controls/function/route_function.dart';
 import '../../edit_profile/screen/edit_profile.dart';
@@ -16,8 +18,27 @@ class ProfilePage extends StatelessWidget {
         elevation: 0,
         leading: InkWell(
           child: const Icon(FontAwesomeIcons.bars, color: Colors.black),
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).push(createRoute(
+              screen: const SettingPage(),
+              begin: const Offset(1, 0),
+            ));
+          },
         ),
+        actions: [
+          InkWell(
+            onTap: () {
+              Navigator.of(context).push(createRoute(
+                screen: const MessagePage(),
+                begin: const Offset(1, 0),
+              ));
+            },
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Icon(FontAwesomeIcons.paperPlane, color: Colors.black),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(
@@ -37,8 +58,9 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(height: 20),
             const Text(
               "Trần Ngọc Tiến",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
+            const SizedBox(height: 5),
             const Text("@ngoctienTNT"),
             const SizedBox(height: 40),
             Row(

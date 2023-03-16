@@ -47,6 +47,7 @@ class _EditProfileState extends State<EditProfile> {
         },
       ),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Form(
