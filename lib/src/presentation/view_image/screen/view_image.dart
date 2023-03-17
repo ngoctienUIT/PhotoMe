@@ -29,7 +29,12 @@ class _ViewImageImageState extends State<ViewImage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: check ? AppBar(backgroundColor: Colors.transparent,elevation: 0,) : null,
+      appBar: check
+          ? AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            )
+          : null,
       body: SafeArea(
         child: GestureDetector(
           onTap: () => setState(() => check = !check),
@@ -56,7 +61,7 @@ class _ViewImageImageState extends State<ViewImage> {
               clipBehavior: Clip.none,
               minScale: 1,
               maxScale: 4,
-              child: Image.asset("assets/images/post.png"),
+              child: Image.asset(widget.url),
             ),
           ),
         ),

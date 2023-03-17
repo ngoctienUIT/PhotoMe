@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_me/src/presentation/home/widgets/image_widget.dart';
 import 'package:photo_me/src/presentation/other_profile/screen/other_profile_page.dart';
-import 'package:photo_me/src/presentation/view_image/screen/view_image.dart';
 import 'package:photo_me/src/presentation/view_post/screen/view_post_page.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../controls/function/route_function.dart';
 
-class PostItem extends StatefulWidget {
+class PostItem extends StatelessWidget {
   const PostItem({Key? key}) : super(key: key);
-
-  @override
-  State<PostItem> createState() => _PostItemState();
-}
-
-class _PostItemState extends State<PostItem> {
-  final controller = PageController(keepPage: true);
 
   @override
   Widget build(BuildContext context) {
@@ -44,55 +36,8 @@ class _PostItemState extends State<PostItem> {
                 child: Text("Content"),
               ),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.width,
-              width: MediaQuery.of(context).size.width,
-              child: Stack(
-                children: [
-                  PageView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    controller: controller,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                const ViewImage(url: "assets/images/post.png"),
-                          ));
-                        },
-                        child: Image.asset(
-                          "assets/images/post.png",
-                          fit: BoxFit.cover,
-                        ),
-                      );
-                    },
-                  ),
-                  Positioned(
-                    bottom: 10,
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Center(
-                        child: SmoothPageIndicator(
-                          controller: controller,
-                          count: 10,
-                          effect: const ScrollingDotsEffect(
-                            // activeDotColor: Colors.red,
-                            activeStrokeWidth: 2.6,
-                            activeDotScale: 1.3,
-                            maxVisibleDots: 5,
-                            radius: 8,
-                            spacing: 10,
-                            dotHeight: 8,
-                            dotWidth: 8,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            ImageWidget(
+              images: List.generate(10, (index) => "assets/images/post.png"),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
