@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_me/src/presentation/home/widgets/post_item.dart';
 import 'package:photo_me/src/presentation/message/screen/message_page.dart';
 import 'package:photo_me/src/presentation/setting/screen/setting_page.dart';
 
@@ -21,7 +22,7 @@ class ProfilePage extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(createRoute(
               screen: const SettingPage(),
-              begin: const Offset(1, 0),
+              begin: const Offset(-1, 0),
             ));
           },
         ),
@@ -40,7 +41,8 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      body: SafeArea(
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             Material(
@@ -84,6 +86,20 @@ class ProfilePage extends StatelessWidget {
                 ));
               },
               child: const Text("Edit profile"),
+            ),
+            // const PostItem(),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: const [
+                    SizedBox(height: 20),
+                    PostItem(),
+                  ],
+                );
+              },
             )
           ],
         ),
