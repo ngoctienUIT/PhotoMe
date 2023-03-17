@@ -48,20 +48,20 @@ class _NewPostPageState extends State<NewPostPage> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            TextFormField(
-              controller: contentController,
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              decoration: const InputDecoration(border: InputBorder.none),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: TextFormField(
+                controller: contentController,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "Bạn đang nghĩ gì?",
+                ),
+              ),
             ),
             if (images.isNotEmpty)
-              Column(
-                children: [
-                  const SizedBox(height: 10),
-                  ImageWidget(images: images.map((e) => e.path).toList()),
-                ],
-              ),
-            // Image.asset("assets/images/post.png"),
+              ImageWidget(images: images.map((e) => e.path).toList()),
           ],
         ),
       ),
