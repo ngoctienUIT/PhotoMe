@@ -41,67 +41,70 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            Material(
-              elevation: 10,
-              borderRadius: BorderRadius.circular(90),
-              child: ClipOval(
-                child: Image.asset(
-                  "assets/images/avatar.jpg",
-                  height: 150,
-                  width: 150,
-                  fit: BoxFit.cover,
+      body: RefreshIndicator(
+        onRefresh: () async {},
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              Material(
+                elevation: 10,
+                borderRadius: BorderRadius.circular(90),
+                child: ClipOval(
+                  child: Image.asset(
+                    "assets/images/avatar.jpg",
+                    height: 150,
+                    width: 150,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              "Trần Ngọc Tiến",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            const SizedBox(height: 5),
-            const Text("@ngoctienTNT"),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                infoItem("Post", 0),
-                infoItem("Followers", 0),
-                infoItem("Following", 0),
-              ],
-            ),
-            const SizedBox(height: 20),
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.black,
-                side: const BorderSide(color: Colors.black54),
+              const SizedBox(height: 20),
+              const Text(
+                "Trần Ngọc Tiến",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
-              onPressed: () {
-                Navigator.of(context).push(createRoute(
-                  screen: const EditProfile(),
-                  begin: const Offset(0, 1),
-                ));
-              },
-              child: const Text("Edit profile"),
-            ),
-            // const PostItem(),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: const [
-                    SizedBox(height: 20),
-                    PostItem(),
-                  ],
-                );
-              },
-            )
-          ],
+              const SizedBox(height: 5),
+              const Text("@ngoctienTNT"),
+              const SizedBox(height: 10),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.black,
+                  side: const BorderSide(color: Colors.black54),
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(createRoute(
+                    screen: const EditProfile(),
+                    begin: const Offset(0, 1),
+                  ));
+                },
+                child: const Text("Edit profile"),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  infoItem("Post", 0),
+                  infoItem("Followers", 0),
+                  infoItem("Following", 0),
+                ],
+              ),
+              const SizedBox(height: 20),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: const [
+                      SizedBox(height: 20),
+                      PostItem(),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
