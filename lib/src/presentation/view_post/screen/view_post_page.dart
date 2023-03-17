@@ -37,7 +37,8 @@ class ViewPostPage extends StatelessWidget {
                   ],
                 );
               },
-            )
+            ),
+            const SizedBox(height: 70),
           ],
         ),
       ),
