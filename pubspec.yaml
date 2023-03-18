@@ -47,6 +47,10 @@ dependencies:
   image_cropper: ^3.0.1
   permission_handler: ^10.2.0
   smooth_page_indicator: ^1.0.1
+  audioplayers: ^3.0.1
+  flutter_sound: ^9.2.13
+  file_picker: ^5.2.6
+  emoji_picker_flutter: ^1.5.2
 
 dev_dependencies:
   flutter_test:

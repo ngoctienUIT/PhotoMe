@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
+import '../../../controls/function/route_function.dart';
+import '../../chat_room/screen/chat_room_page.dart';
+
 class MessagePage extends StatelessWidget {
   const MessagePage({Key? key}) : super(key: key);
 
@@ -22,7 +25,16 @@ class MessagePage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 10),
           itemCount: 10,
           itemBuilder: (context, index) {
-            return itemChat(context);
+            return InkWell(
+              onTap: () {
+                Navigator.of(context).push(createRoute(
+                  screen: const ChatRoomPage(),
+                  begin: const Offset(0, 1),
+                ));
+              },
+              onLongPress: () => showOptionChat(context),
+              child: itemChat(context),
+            );
           },
         ),
       ),
@@ -30,63 +42,59 @@ class MessagePage extends StatelessWidget {
   }
 
   Widget itemChat(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      onLongPress: () => showOptionChat(context),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        child: Row(
-          children: [
-            Stack(
-              children: [
-                ClipOval(
-                  child: Image.asset("assets/images/avatar.jpg", height: 50),
-                ),
-                Positioned(
-                  right: 0,
-                  child: Container(
-                    width: 14,
-                    height: 14,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(90),
-                      border: Border.all(color: Colors.white, width: 2),
-                    ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      child: Row(
+        children: [
+          Stack(
+            children: [
+              ClipOval(
+                child: Image.asset("assets/images/avatar.jpg", height: 50),
+              ),
+              Positioned(
+                right: 0,
+                child: Container(
+                  width: 14,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(90),
+                    border: Border.all(color: Colors.white, width: 2),
                   ),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Text(
+                      "Trần Ngọc Tiến",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      DateFormat.jm().format(DateTime.now()),
+                      style: const TextStyle(color: Colors.black38),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  "Alo",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 )
               ],
             ),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        "Trần Ngọc Tiến",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        DateFormat.jm().format(DateTime.now()),
-                        style: const TextStyle(color: Colors.black38),
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Alo",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
