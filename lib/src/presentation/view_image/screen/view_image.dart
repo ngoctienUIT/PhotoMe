@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../controls/function/save_image.dart';
+
 class ViewImage extends StatefulWidget {
   const ViewImage({Key? key, required this.url}) : super(key: key);
   final String url;
@@ -33,6 +35,15 @@ class _ViewImageImageState extends State<ViewImage> {
           ? AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
+              actions: [
+                InkWell(
+                  onTap: () => saveImage(""),
+                  child: const Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Icon(Icons.download),
+                  ),
+                )
+              ],
             )
           : null,
       body: SafeArea(

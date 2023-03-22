@@ -13,6 +13,7 @@ class ImageWidget extends StatefulWidget {
 
 class _ImageWidgetState extends State<ImageWidget> {
   final controller = PageController(keepPage: true);
+  int currentIndex = 0;
 
   @override
   void dispose() {
@@ -32,6 +33,7 @@ class _ImageWidgetState extends State<ImageWidget> {
             controller: controller,
             scrollDirection: Axis.horizontal,
             itemCount: widget.images.length,
+            onPageChanged: (value) => setState(() => currentIndex = value),
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
@@ -63,6 +65,22 @@ class _ImageWidgetState extends State<ImageWidget> {
                       dotWidth: 8,
                     ),
                   ),
+                ),
+              ),
+            ),
+          if (widget.images.length > 1)
+            Positioned(
+              top: 10,
+              right: 20,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.75),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  "${currentIndex + 1}/${widget.images.length}",
+                  style: const TextStyle(color: Colors.white),
                 ),
               ),
             ),
