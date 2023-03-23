@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:photo_me/src/presentation/home/widgets/post_item.dart';
 import 'package:photo_me/src/presentation/message/screen/message_page.dart';
 import 'package:photo_me/src/presentation/setting/screen/setting_page.dart';
+import 'package:photo_me/src/presentation/view_follow/screen/view_follow_page.dart';
+import 'package:photo_me/src/presentation/view_post/screen/view_post_page.dart';
 
 import '../../../controls/function/route_function.dart';
 import '../../edit_profile/screen/edit_profile.dart';
@@ -15,10 +16,9 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         leading: InkWell(
-          child: const Icon(FontAwesomeIcons.bars, color: Colors.black),
+          child: const Icon(FontAwesomeIcons.bars),
           onTap: () {
             Navigator.of(context).push(createRoute(
               screen: const SettingPage(),
@@ -36,7 +36,7 @@ class ProfilePage extends StatelessWidget {
             },
             child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Icon(FontAwesomeIcons.paperPlane, color: Colors.black),
+              child: Icon(FontAwesomeIcons.paperPlane),
             ),
           ),
         ],
@@ -84,22 +84,45 @@ class ProfilePage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  infoItem("Post", 0),
-                  infoItem("Followers", 0),
-                  infoItem("Following", 0),
+                  infoItem("Post", 0, () {}),
+                  infoItem("Followers", 0, () {
+                    Navigator.of(context).push(createRoute(
+                      screen: const ViewFollowPage(index: 0),
+                      begin: const Offset(1, 0),
+                    ));
+                  }),
+                  infoItem("Following", 0, () {
+                    Navigator.of(context).push(createRoute(
+                      screen: const ViewFollowPage(index: 1),
+                      begin: const Offset(1, 0),
+                    ));
+                  }),
                 ],
               ),
               const SizedBox(height: 20),
-              ListView.builder(
+              GridView.builder(
                 shrinkWrap: true,
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: 5,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  childAspectRatio: 1,
+                  crossAxisSpacing: 3,
+                  mainAxisSpacing: 3,
+                ),
+                itemCount: 10,
                 itemBuilder: (context, index) {
-                  return Column(
-                    children: const [
-                      SizedBox(height: 20),
-                      PostItem(),
-                    ],
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(createRoute(
+                        screen: const ViewPostPage(),
+                        begin: const Offset(1, 0),
+                      ));
+                    },
+                    child: Image.asset(
+                      "assets/images/avatar.jpg",
+                      fit: BoxFit.cover,
+                    ),
                   );
                 },
               ),

@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        centerTitle: false,
         title: const Text(
           "PhotoMe",
           style: TextStyle(
@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
             },
             child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Icon(FontAwesomeIcons.paperPlane, color: Colors.black),
+              child: Icon(FontAwesomeIcons.paperPlane),
             ),
           ),
         ],

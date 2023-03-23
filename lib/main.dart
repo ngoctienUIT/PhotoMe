@@ -44,7 +44,15 @@ class MyApp extends StatelessWidget {
             locale: settingState.locale,
             debugShowCheckedModeBanner: false,
             title: 'PhotoMe',
-            theme: ThemeData(primarySwatch: Colors.blue),
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              appBarTheme: const AppBarTheme(
+                backgroundColor: Colors.white,
+                iconTheme: IconThemeData(color: Colors.black),
+                foregroundColor: Colors.black,
+                centerTitle: true,
+              ),
+            ),
             home: const LoginPage(),
           );
         },

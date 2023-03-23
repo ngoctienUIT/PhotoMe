@@ -9,37 +9,32 @@ class ViewPostPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black),
-        centerTitle: true,
-        title: const Text(
-          "Trần Ngọc Tiến",
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            const PostItem(),
-            const Divider(),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 5,
-              padding: const EdgeInsets.all(10),
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    commentItem(context),
-                    const SizedBox(height: 15),
-                  ],
-                );
-              },
-            ),
-            const SizedBox(height: 70),
-          ],
+      appBar: AppBar(title: const Text("Trần Ngọc Tiến")),
+      body: RefreshIndicator(
+        onRefresh: () async {},
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              const PostItem(),
+              const Divider(),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 5,
+                padding: const EdgeInsets.all(10),
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      commentItem(context),
+                      const SizedBox(height: 15),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 70),
+            ],
+          ),
         ),
       ),
       bottomSheet: Container(
