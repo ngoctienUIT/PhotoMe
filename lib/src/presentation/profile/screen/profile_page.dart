@@ -44,7 +44,9 @@ class ProfilePage extends StatelessWidget {
       body: RefreshIndicator(
         onRefresh: () async {},
         child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
           child: Column(
             children: [
               Material(

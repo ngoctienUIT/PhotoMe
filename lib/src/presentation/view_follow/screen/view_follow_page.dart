@@ -49,7 +49,9 @@ class _ViewFollowPageState extends State<ViewFollowPage>
               onRefresh: () async {},
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                physics: const BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
                 itemCount: 15,
                 itemBuilder: (context, index) {
                   return InkWell(
