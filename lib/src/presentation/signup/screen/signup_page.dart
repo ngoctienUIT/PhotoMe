@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:photo_me/src/presentation/login/screen/login_page.dart';
 
 // enum SingingCharacter { Ma }
 
@@ -14,6 +15,8 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   int group = 1;
 
   @override
@@ -53,7 +56,7 @@ class _SignupPageState extends State<SignupPage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: TextField(
-                controller: passwordTextController,
+                controller: confirmPasswordController,
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: "Re-password",
@@ -118,15 +121,13 @@ class _SignupPageState extends State<SignupPage> {
             ),
             GestureDetector(
               onTap: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SignupPage()),
-                ),
+                print('asasdasd'),
+                Navigator.pop(context),
               },
               child: const Padding(
                 padding: EdgeInsets.symmetric(vertical: 32),
                 child: Text(
-                  "Don't have an account? Create here ",
+                  "Have an account? Sign in",
                   style: TextStyle(color: Colors.blue, fontSize: 16),
                 ),
               ),

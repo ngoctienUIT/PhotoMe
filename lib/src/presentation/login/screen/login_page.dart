@@ -1,9 +1,7 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_me/src/presentation/signup/screen/signup_page.dart';
 
 import '../../../controls/function/on_will_pop.dart';
-// import 'package:flutter/gestures.dart';
 import '../../../controls/function/route_function.dart';
 import '../../main/screen/main_page.dart';
 
@@ -22,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: WillPopScope(
         onWillPop: () => onWillPop(
           action: (now) => currentBackPressTime = now,
@@ -76,7 +75,12 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: ElevatedButton(
-                    onPressed: () => {print("asd")},
+                    onPressed: () => {
+                      Navigator.of(context).pushReplacement(createRoute(
+                        screen: const MainPage(),
+                        begin: const Offset(0, 1),
+                      ))
+                    },
                     child: Container(
                       width: double.infinity,
                       alignment: Alignment.center,
