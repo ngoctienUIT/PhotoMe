@@ -24,20 +24,20 @@ class HomePage extends StatelessWidget {
             fontStyle: FontStyle.italic,
           ),
         ),
-        actions: [
-          InkWell(
-            onTap: () {
-              Navigator.of(context).push(createRoute(
-                screen: const MessagePage(),
-                begin: const Offset(1, 0),
-              ));
-            },
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Icon(FontAwesomeIcons.paperPlane),
-            ),
-          ),
-        ],
+        // actions: [
+        //   InkWell(
+        //     onTap: () {
+        //       Navigator.of(context).push(createRoute(
+        //         screen: const MessagePage(),
+        //         begin: const Offset(1, 0),
+        //       ));
+        //     },
+        //     child: const Padding(
+        //       padding: EdgeInsets.symmetric(horizontal: 15),
+        //       child: Icon(FontAwesomeIcons.paperPlane),
+        //     ),
+        //   ),
+        // ],
       ),
       body: SafeArea(
         child: RefreshIndicator(
