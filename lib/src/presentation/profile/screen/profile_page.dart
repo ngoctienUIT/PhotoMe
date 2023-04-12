@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_me/src/presentation/login/screen/login_page.dart';
 import 'package:photo_me/src/presentation/message/screen/message_page.dart';
 import 'package:photo_me/src/presentation/setting/screen/setting_page.dart';
 import 'package:photo_me/src/presentation/view_follow/screen/view_follow_page.dart';
@@ -15,31 +16,49 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: Column(
+          children: [
+            Spacer(),
+            Divider(),
+            ListTile(
+                leading: Icon(Icons.logout),
+                title: const Text('Sign Out'),
+                onTap: () {
+                  Navigator.of(context).pushReplacement(createRoute(
+                    screen: const LoginPage(),
+                    begin: const Offset(0, 1),
+                  ));
+                }),
+            Divider(),
+          ],
+        ),
+      ),
       appBar: AppBar(
         elevation: 0,
-        leading: InkWell(
-          child: const Icon(FontAwesomeIcons.bars),
-          onTap: () {
-            Navigator.of(context).push(createRoute(
-              screen: const SettingPage(),
-              begin: const Offset(-1, 0),
-            ));
-          },
-        ),
-        actions: [
-          InkWell(
-            onTap: () {
-              Navigator.of(context).push(createRoute(
-                screen: const MessagePage(),
-                begin: const Offset(1, 0),
-              ));
-            },
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Icon(FontAwesomeIcons.paperPlane),
-            ),
-          ),
-        ],
+        // leading: InkWell(
+        //   child: const Icon(FontAwesomeIcons.bars),
+        //   onTap: () {
+        //     Navigator.of(context).push(createRoute(
+        //       screen: const SettingPage(),
+        //       begin: const Offset(-1, 0),
+        //     ));
+        //   },
+        // ),
+        // actions: [
+        //   InkWell(
+        //     onTap: () {
+        //       Navigator.of(context).push(createRoute(
+        //         screen: const MessagePage(),
+        //         begin: const Offset(1, 0),
+        //       ));
+        //     },
+        //     child: const Padding(
+        //       padding: EdgeInsets.symmetric(horizontal: 15),
+        //       child: Icon(FontAwesomeIcons.paperPlane),
+        //     ),
+        //   ),
+        // ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {},
