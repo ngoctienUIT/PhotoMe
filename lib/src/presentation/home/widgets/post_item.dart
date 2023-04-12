@@ -191,12 +191,11 @@ class PostItem extends StatelessWidget {
     String text,
     VoidCallback onPress,
   ) {
-    return Row(
-      children: [
-        InkWell(onTap: onPress, child: Icon(icon)),
-        const SizedBox(width: 5),
-        Text("$number $text")
-      ],
+    return InkWell(
+      onTap: onPress,
+      child: Row(
+        children: [Icon(icon), const SizedBox(width: 5), Text("$number $text")],
+      ),
     );
   }
 }

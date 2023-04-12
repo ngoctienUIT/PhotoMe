@@ -1,9 +1,9 @@
 class User {
-  String name;
-  String description;
-  bool gender;
+  final String name;
+  final String description;
+  final bool gender;
   DateTime birthday;
-  String avatar;
+  final String avatar;
 
   User({
     required this.name,
@@ -13,3 +13,48 @@ class User {
     required this.birthday,
   });
 }
+
+final users = [
+  User(
+      name: 'name 1',
+      gender: true,
+      description: 'he the man',
+      avatar: "assets/images/avatar.jpg",
+      birthday: DateTime(1)),
+  User(
+      name: 'name 2',
+      gender: true,
+      description: 'he the man',
+      avatar: "assets/images/avatar.jpg",
+      birthday: DateTime(1)),
+  User(
+      name: 'name 3',
+      gender: true,
+      description: 'he the man',
+      avatar: "assets/images/avatar.jpg",
+      birthday: DateTime(1)),
+  User(
+      name: 'name 4',
+      gender: true,
+      description: 'he the man',
+      avatar: "assets/images/avatar.jpg",
+      birthday: DateTime(1)),
+  User(
+      name: 'name 5',
+      gender: true,
+      description: 'he the man',
+      avatar: "assets/images/avatar.jpg",
+      birthday: DateTime(1)),
+  User(
+      name: 'name 6',
+      gender: true,
+      description: 'he the man',
+      avatar: "assets/images/avatar.jpg",
+      birthday: DateTime(1)),
+  User(
+      name: 'name 7',
+      gender: true,
+      description: 'he the man',
+      avatar: "assets/images/avatar.jpg",
+      birthday: DateTime(1)),
+];
