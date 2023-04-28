@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:photo_me/src/presentation/login/screen/login_page.dart';
-import 'package:photo_me/src/presentation/message/screen/message_page.dart';
-import 'package:photo_me/src/presentation/setting/screen/setting_page.dart';
 import 'package:photo_me/src/presentation/view_follow/screen/view_follow_page.dart';
 import 'package:photo_me/src/presentation/view_post/screen/view_post_page.dart';
 
-import '../../../controls/function/route_function.dart';
+import '../../../core/function/route_function.dart';
 import '../../edit_profile/screen/edit_profile.dart';
+import '../../login/screen/login_page.dart';
 import '../widgets/info_item.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -19,10 +16,10 @@ class ProfilePage extends StatelessWidget {
       drawer: Drawer(
         child: Column(
           children: [
-            Spacer(),
-            Divider(),
+            const Spacer(),
+            const Divider(),
             ListTile(
-                leading: Icon(Icons.logout),
+                leading: const Icon(Icons.logout),
                 title: const Text('Sign Out'),
                 onTap: () {
                   Navigator.of(context).pushReplacement(createRoute(
@@ -30,7 +27,7 @@ class ProfilePage extends StatelessWidget {
                     begin: const Offset(0, 1),
                   ));
                 }),
-            Divider(),
+            const Divider(),
           ],
         ),
       ),

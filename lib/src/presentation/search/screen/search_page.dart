@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photo_me/src/data/model/user.dart';
 
-import '../widgets/SearchItem.dart';
-
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
 
@@ -27,7 +25,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: Text('Tìm kiếm'),
+        title: const Text('Tìm kiếm'),
         actions: [
           IconButton(
               onPressed: () {
@@ -36,7 +34,7 @@ class _SearchPageState extends State<SearchPage> {
                   delegate: CustomDelegate(),
                 );
               },
-              icon: Icon(Icons.search))
+              icon: const Icon(Icons.search))
         ],
       ),
       body: SafeArea(

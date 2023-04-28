@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:photo_me/src/controls/extension/string_extension.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 
 class BottomBar extends StatelessWidget {
   const BottomBar({Key? key, required this.currentTab, required this.onTab})

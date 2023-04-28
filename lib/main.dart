@@ -1,12 +1,14 @@
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:photo_me/src/core/utils/constants/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'firebase_options.dart';
-import 'src/language/bloc/language_cubit.dart';
-import 'src/language/bloc/language_state.dart';
-import 'src/language/localization/app_localizations_setup.dart';
+import 'src/core/language/bloc/language_cubit.dart';
+import 'src/core/language/bloc/language_state.dart';
+import 'src/core/language/localization/app_localizations_setup.dart';
 import 'src/presentation/login/screen/login_page.dart';
 
 int? language;
@@ -53,7 +55,11 @@ class MyApp extends StatelessWidget {
                 centerTitle: true,
               ),
             ),
-            home: const LoginPage(),
+            home: AnimatedSplashScreen(
+              nextScreen: const LoginPage(),
+              splash: AppImages.imgLogoB,
+              splashIconSize: 250,
+            ),
           );
         },
       ),

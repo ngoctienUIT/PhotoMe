@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:photo_me/src/controls/extension/string_extension.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 
 class AvatarWidget extends StatelessWidget {
   const AvatarWidget({Key? key, this.image, required this.onChange})

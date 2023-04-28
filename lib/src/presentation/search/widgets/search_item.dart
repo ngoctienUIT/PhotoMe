@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:photo_me/src/data/model/user.dart';
 
 class SearchItem extends StatelessWidget {
   final String imgUrl;
   final String name;
 
-  const SearchItem({required this.imgUrl, required this.name});
+  const SearchItem({Key? key, required this.imgUrl, required this.name})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +34,7 @@ class SearchItem extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               name,
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
             )
           ],
         ),

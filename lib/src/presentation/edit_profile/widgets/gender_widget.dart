@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:photo_me/src/controls/extension/string_extension.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/presentation/edit_profile/widgets/profile_item.dart';
 import 'package:photo_me/src/presentation/edit_profile/widgets/title_bottom_sheet.dart';
 

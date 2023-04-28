@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_me/src/presentation/new_post/screen/new_post_page.dart';
 
-import '../../../controls/function/route_function.dart';
-import '../../message/screen/message_page.dart';
+import '../../../core/function/route_function.dart';
 import '../widgets/post_item.dart';
 
 class HomePage extends StatelessWidget {

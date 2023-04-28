@@ -32,7 +32,7 @@ class NotificationItem extends StatelessWidget {
             Flexible(
               child: RichText(
                 text: TextSpan(
-                  style: TextStyle(color: Colors.black, fontSize: 20),
+                  style: const TextStyle(color: Colors.black, fontSize: 20),
                   children: <TextSpan>[
                     TextSpan(
                         text: name,

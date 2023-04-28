@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_me/src/presentation/chat_room/screen/chat_room_page.dart';
 
-import '../../../controls/function/route_function.dart';
+import '../../../core/function/route_function.dart';
 import '../../profile/widgets/info_item.dart';
 import '../../view_follow/screen/view_follow_page.dart';
 import '../../view_post/screen/view_post_page.dart';

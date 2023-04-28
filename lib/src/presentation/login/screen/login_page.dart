@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:photo_me/src/core/utils/constants/constants.dart';
 import 'package:photo_me/src/presentation/signup/screen/signup_page.dart';
 
-import '../../../controls/function/on_will_pop.dart';
-import '../../../controls/function/route_function.dart';
+import '../../../core/function/on_will_pop.dart';
+import '../../../core/function/route_function.dart';
 import '../../main/screen/main_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding:
                       const EdgeInsets.only(top: 80, right: 100, left: 100),
-                  child: Image.asset("assets/images/Logoden.png"),
+                  child: Image.asset(AppImages.imgLogoB),
                 ),
                 const Text(
                   "PhotoMe App",

@@ -4,7 +4,7 @@ import 'package:photo_me/src/presentation/home/widgets/image_widget.dart';
 import 'package:photo_me/src/presentation/other_profile/screen/other_profile_page.dart';
 import 'package:photo_me/src/presentation/view_post/screen/view_post_page.dart';
 
-import '../../../controls/function/route_function.dart';
+import '../../../core/function/route_function.dart';
 
 class PostItem extends StatelessWidget {
   const PostItem({Key? key}) : super(key: key);

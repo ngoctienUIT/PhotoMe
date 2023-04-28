@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:photo_me/src/presentation/login/screen/login_page.dart';
 
 // enum SingingCharacter { Ma }
 
@@ -28,9 +25,7 @@ class _SignupPageState extends State<SignupPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-            SizedBox(
-              height: 30,
-            ),
+            const SizedBox(height: 30),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: TextField(
@@ -71,7 +66,7 @@ class _SignupPageState extends State<SignupPage> {
                     value: 0,
                     groupValue: group,
                     onChanged: (value) => {},
-                    title: Text("Male"),
+                    title: const Text("Male"),
                   ),
                 ),
                 Expanded(
@@ -79,7 +74,7 @@ class _SignupPageState extends State<SignupPage> {
                     value: 0,
                     groupValue: group,
                     onChanged: (value) => {},
-                    title: Text("Female"),
+                    title: const Text("Female"),
                   ),
                 )
               ],

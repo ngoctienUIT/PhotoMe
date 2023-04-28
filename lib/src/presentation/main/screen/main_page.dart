@@ -3,7 +3,7 @@ import 'package:photo_me/src/presentation/notification/screen/notification_page.
 import 'package:photo_me/src/presentation/profile/screen/profile_page.dart';
 import 'package:photo_me/src/presentation/search/screen/search_page.dart';
 
-import '../../../controls/function/on_will_pop.dart';
+import '../../../core/function/on_will_pop.dart';
 import '../../home/screen/home_page.dart';
 import '../widgets/bottom_bar.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:photo_me/src/controls/extension/string_extension.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 
 enum TypeInput { text, email, phone }
 

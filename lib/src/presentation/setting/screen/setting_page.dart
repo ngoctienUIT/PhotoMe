@@ -11,7 +11,7 @@ class SettingPage extends StatelessWidget {
         title: const Text("Cài đặt"),
       ),
       body: Column(
-        children: [],
+        children: const [],
       ),
     );
   }
