@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_me/src/domain/response/post/post_response.dart';
 import 'package:photo_me/src/presentation/home/widgets/image_widget.dart';
 import 'package:photo_me/src/presentation/other_profile/screen/other_profile_page.dart';
 import 'package:photo_me/src/presentation/view_post/screen/view_post_page.dart';
@@ -7,7 +8,9 @@ import 'package:photo_me/src/presentation/view_post/screen/view_post_page.dart';
 import '../../../core/function/route_function.dart';
 
 class PostItem extends StatelessWidget {
-  const PostItem({Key? key}) : super(key: key);
+  const PostItem({Key? key, this.post}) : super(key: key);
+
+  final PostResponse? post;
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +32,18 @@ class PostItem extends StatelessWidget {
                 child: infoPost(context),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text("Content"),
+                child: Text(post != null ? post!.description : ""),
               ),
             ),
-            ImageWidget(
-              images: List.generate(10, (index) => "assets/images/post.png"),
-            ),
+            if (post != null && post!.photo.isNotEmpty)
+              ImageWidget(
+                images: List.generate(
+                    post!.photo.length, (index) => post!.photo[index]),
+              ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(

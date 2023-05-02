@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:photo_me/src/domain/response/post/post_response.dart';
+import 'package:photo_me/src/domain/response/user/user_response.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'api_service.g.dart';
@@ -9,89 +11,66 @@ abstract class ApiService {
   factory ApiService(Dio dio) = _ApiService;
 
   //sign up
-  @POST("/api/user")
+  @POST("/api/user/signup")
   Future<HttpResponse> signup(@Body() Map<String, dynamic> user);
 
   //login
-  @POST("/api/login")
+  @POST("/api/user/login")
   Future<HttpResponse> login(@Body() Map<String, dynamic> user);
 
-  //fetchDataProfile
-  @GET("/api/profile?id_User={id}")
-  Future<HttpResponse> fetchDataProfile(@Path("id") String id);
+  //getUserByID
+  @GET("/api/user/{id}")
+  Future<HttpResponse<UserResponse>> getUserByID(@Path("id") String id);
 
-  //fetchAllDataProfile
-  @GET("/api/profile")
-  Future<HttpResponse> fetchAllDataProfile();
+  //searchUserByName
+  @GET("/api/user/search?name={query}")
+  Future<HttpResponse<List<UserResponse>>> searchUserByName(
+      @Path("query") String query);
 
-  //fetchMyAvatar
-  @GET("/api/profile?id_User={id}")
-  Future<HttpResponse> fetchMyAvatar(@Path("id") String id);
-
-  //getAllPosts
-  @GET("/api/newfeed/home")
-  Future<HttpResponse> getAllPosts();
-
-  //checkUserReactPost
-  @GET("/api/profile?id_User={id}")
-  Future<HttpResponse> checkUserReactPost(@Path("id") String id);
-
-  //getAllMindPost
-  @GET("/api/newfeed?id_User={id}")
-  Future<HttpResponse> getAllMindPost(@Path("id") String id);
-
-  //getThisPost
-  @GET("/api/newfeed/thispost?id_Newfeed={id}")
-  Future<HttpResponse> getThisPost(@Path("id") String id);
-
-  //UpdateLikePost
-  @POST("/api/liked/updateliked")
-  Future<HttpResponse> updateLikePost(@Body() body);
-
-  //createNewPost
-  @POST("/api/newfeed")
-  Future<HttpResponse> createNewPost(@Body() body);
-
-  //deletePost
-  @POST("/api/newfeed/deletenewfeed")
-  Future<HttpResponse> deletePost(@Body() body);
-
-  //fetchComment
-  @GET("/api/comment?id_Newfeed={id}")
-  Future<HttpResponse> fetchComment(@Path("id") String id);
-
-  //fetchLiked
-  @GET("/api/comment?id_User={id_User}&id_Newfeed={id_Newfeed}")
-  Future<HttpResponse> fetchLiked(
-    @Path("id_User") String idUser,
-    @Path("id_Newfeed") String idNewFeed,
+  //updateUserByID
+  @PUT("/api/user/{id}")
+  Future<HttpResponse> updateUserByID(
+    @Path("id") String id,
+    @Header('Authorization') String token,
+    @Body() body,
   );
 
-  //uploadComment
-  @POST("/api/comment")
-  Future<HttpResponse> uploadComment(@Body() body);
+  //getPostUser
+  @GET("/api/user/{id}/post")
+  Future<HttpResponse<List<PostResponse>>> getPostUser(@Path("id") String id);
 
-  //deleteComment
-  @POST("/api/comment/deletecomment")
-  Future<HttpResponse> deleteComment(@Body() body);
+  //getFollowingUser
+  @GET("/api/user/{id}/following")
+  Future<HttpResponse<List<UserResponse>>> getFollowingUser(
+      @Path("id") String id);
 
-  //fetchFollow
-  @GET("/api/follow?id_User={id}")
-  Future<HttpResponse> fetchFollow(@Path("id") String id);
+  //getFollowerUser
+  @GET("/api/user/{id}/follower")
+  Future<HttpResponse<List<UserResponse>>> getFollowerUser(
+      @Path("id") String id);
 
-  //activeFollow
-  @POST("/api/profile/updatefollow/follow")
-  Future<HttpResponse> activeFollow(@Body() body);
+  //followUser
+  @POST("/api/user/follow")
+  Future<HttpResponse<List<UserResponse>>> followUser(
+    @Header('Authorization') String token,
+    @Body() body,
+  );
 
-  //activeUnfollow
-  @POST("/api/profile/updatefollow/unfollow")
-  Future<HttpResponse> activeUnfollow(@Body() body);
+  //createPost
+  @POST("/api/post")
+  Future<HttpResponse> createPost(
+    @Header('Authorization') String token,
+    @Body() body,
+  );
 
-  //getFollowingById
-  @GET("/api/follow?id_User={id}")
-  Future<HttpResponse> getFollowingById(@Path("id") String id);
+  //deletePostByID
+  @POST("/api/post/{id}")
+  Future<HttpResponse> deletePostByID(
+    @Header('Authorization') String token,
+    @Path("id") String id,
+  );
 
-  //getFollowerById
-  @GET("/api/follow?id_User={id}")
-  Future<HttpResponse> getFollowerById(@Path("id") String id);
+  //getAllPost
+  @GET("/api/post")
+  Future<HttpResponse<List<PostResponse>>> getAllPost();
 }

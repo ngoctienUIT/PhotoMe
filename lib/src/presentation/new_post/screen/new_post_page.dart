@@ -1,17 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_me/src/core/function/loading_animation.dart';
 import 'package:photo_me/src/presentation/home/widgets/image_widget.dart';
+import 'package:photo_me/src/presentation/new_post/bloc/new_post_bloc.dart';
+import 'package:photo_me/src/presentation/new_post/bloc/new_post_event.dart';
+import 'package:photo_me/src/presentation/new_post/bloc/new_post_state.dart';
 
-class NewPostPage extends StatefulWidget {
+class NewPostPage extends StatelessWidget {
   const NewPostPage({Key? key}) : super(key: key);
 
   @override
-  State<NewPostPage> createState() => _NewPostPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => NewPostBloc(),
+      child: BlocListener<NewPostBloc, NewPostState>(
+        listener: (context, state) {
+          if (state is NewPostLoading) {
+            loadingAnimation(context);
+          }
+          if (state is NewPostSuccess) {
+            Navigator.pop(context);
+            Navigator.pop(context);
+          }
+        },
+        child: const NewPostView(),
+      ),
+    );
+  }
 }
 
-class _NewPostPageState extends State<NewPostPage> {
+class NewPostView extends StatefulWidget {
+  const NewPostView({Key? key}) : super(key: key);
+
+  @override
+  State<NewPostView> createState() => _NewPostViewState();
+}
+
+class _NewPostViewState extends State<NewPostView> {
   List<XFile> images = [];
   TextEditingController contentController = TextEditingController();
 
@@ -38,7 +66,12 @@ class _NewPostPageState extends State<NewPostPage> {
             padding: const EdgeInsets.all(10),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(elevation: 0),
-              onPressed: () {},
+              onPressed: () {
+                context.read<NewPostBloc>().add(CreatePostEvent(
+                      contentController.text,
+                      images.map((e) => e.path).toList(),
+                    ));
+              },
               child: const Text("Upload"),
             ),
           ),
