@@ -11,15 +11,15 @@ UserResponse _$UserResponseFromJson(Map<String, dynamic> json) => UserResponse(
       json['name'] as String,
       json['email'] as String,
       json['phoneNumber'] as String,
-      json['password'] as String,
-      json['gender'] as String,
-      json['birthday'] as String,
+      json['password'] as String?,
+      json['gender'] as String?,
+      json['birthday'] as String?,
       json['avatar'] as String,
       json['description'] as String?,
-      json['job'] as String,
-      (json['post'] as List<dynamic>).map((e) => e as String).toList(),
-      (json['follower'] as List<dynamic>).map((e) => e as String).toList(),
-      (json['following'] as List<dynamic>).map((e) => e as String).toList(),
+      json['job'] as String?,
+      (json['post'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      (json['follower'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      (json['following'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$UserResponseToJson(UserResponse instance) =>

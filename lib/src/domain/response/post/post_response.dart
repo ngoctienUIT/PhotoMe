@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../user/user_response.dart';
+
 part 'post_response.g.dart';
 
 @JsonSerializable()
@@ -9,6 +11,9 @@ class PostResponse {
 
   @JsonKey(name: "id_User")
   final String idUser;
+
+  @JsonKey(name: "user")
+  final UserResponse user;
 
   @JsonKey(name: "description")
   final String description;
@@ -22,6 +27,9 @@ class PostResponse {
   @JsonKey(name: "comment")
   final List<String> comment;
 
+  @JsonKey(name: "registration_data")
+  final String registration;
+
   PostResponse(
     this.id,
     this.idUser,
@@ -29,6 +37,8 @@ class PostResponse {
     this.photo,
     this.liked,
     this.comment,
+    this.user,
+    this.registration,
   );
 
   factory PostResponse.fromJson(Map<String, dynamic> json) =>

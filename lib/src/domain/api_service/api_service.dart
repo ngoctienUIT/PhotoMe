@@ -51,7 +51,7 @@ abstract class ApiService {
 
   //followUser
   @POST("/api/user/follow")
-  Future<HttpResponse<List<UserResponse>>> followUser(
+  Future<HttpResponse> followUser(
     @Header('Authorization') String token,
     @Body() body,
   );

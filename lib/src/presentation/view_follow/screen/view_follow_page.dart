@@ -130,20 +130,7 @@ class _ViewFollowViewState extends State<ViewFollowView>
                       ),
                       const Spacer(),
                       _followController.index == 0
-                          ? OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.black,
-                                side: const BorderSide(color: Colors.black12),
-                              ),
-                              onPressed: () {
-                                print(list[index].id);
-                                context
-                                    .read<ViewFollowBloc>()
-                                    .add(FollowEvent(list[index].id));
-                              },
-                              child: const Text("Đang Follow"),
-                            )
-                          : ElevatedButton(
+                          ? ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 backgroundColor: Colors.red,
@@ -155,6 +142,19 @@ class _ViewFollowViewState extends State<ViewFollowView>
                                     .add(FollowEvent(list[index].id));
                               },
                               child: const Text("Follow lại"),
+                            )
+                          : OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.black,
+                                side: const BorderSide(color: Colors.black12),
+                              ),
+                              onPressed: () {
+                                print(list[index].id);
+                                context
+                                    .read<ViewFollowBloc>()
+                                    .add(FollowEvent(list[index].id));
+                              },
+                              child: const Text("Đang Follow"),
                             ),
                       const SizedBox(width: 5),
                       InkWell(

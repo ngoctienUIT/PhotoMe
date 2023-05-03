@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_me/src/domain/response/post/post_response.dart';
@@ -49,8 +50,10 @@ class PostItem extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  actionItem(FontAwesomeIcons.heart, 1, "Like", () {}),
-                  actionItem(FontAwesomeIcons.comment, 1, "Comment", () {
+                  actionItem(FontAwesomeIcons.heart,
+                      post != null ? post!.liked.length : 0, "Like", () {}),
+                  actionItem(FontAwesomeIcons.comment,
+                      post != null ? post!.comment.length : 0, "Comment", () {
                     Navigator.of(context).push(createRoute(
                       screen: const ViewPostPage(),
                       begin: const Offset(0, 1),
@@ -81,7 +84,18 @@ class PostItem extends StatelessWidget {
                   ));
                 },
                 child: ClipOval(
-                  child: Image.asset("assets/images/avatar.jpg", height: 50),
+                  child: CachedNetworkImage(
+                    imageUrl: post!.user.avatar,
+                    height: 50,
+                    width: 50,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    errorWidget: (context, url, error) => Image.asset(
+                      "assets/images/avatar.jpg",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
               Positioned(
@@ -119,13 +133,14 @@ class PostItem extends StatelessWidget {
                   begin: const Offset(0, 1),
                 ));
               },
-              child: const Text(
-                "Trần Ngọc Tiến",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              child: Text(
+                post != null ? post!.user.name : "",
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(height: 5),
-            const Text("3 giờ trước"),
+            Text(post != null ? post!.registration : ""),
           ],
         ),
         const Spacer(),

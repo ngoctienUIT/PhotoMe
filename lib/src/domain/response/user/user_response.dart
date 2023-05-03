@@ -17,13 +17,13 @@ class UserResponse {
   final String phoneNumber;
 
   @JsonKey(name: "password")
-  final String password;
+  final String? password;
 
   @JsonKey(name: "gender")
-  final String gender;
+  final String? gender;
 
   @JsonKey(name: "birthday")
-  final String birthday;
+  final String? birthday;
 
   @JsonKey(name: "avatar")
   final String avatar;
@@ -32,16 +32,16 @@ class UserResponse {
   String? description;
 
   @JsonKey(name: "job")
-  final String job;
+  final String? job;
 
   @JsonKey(name: "post")
-  final List<String> post;
+  final List<String>? post;
 
   @JsonKey(name: "follower")
-  final List<String> follower;
+  final List<String>? follower;
 
   @JsonKey(name: "following")
-  final List<String> following;
+  final List<String>? following;
 
   UserResponse(
       this.id,

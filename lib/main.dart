@@ -13,7 +13,7 @@ import 'src/presentation/login/screen/login_page.dart';
 
 int? language;
 String token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NGU2YTg2YTgwYTg1MjgzNTk4N2JkNyIsImlhdCI6MTY4MzAxNDg4NywiZXhwIjoxNzE0NTUwODg3fQ.oOffyYlUdVEeUCXcg61O6HtQIHdUHE5WccZlcW4_IDM";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NGU2YTg2YTgwYTg1MjgzNTk4N2JkNyIsImlhdCI6MTY4MzAzNDU3NSwiZXhwIjoxNzE0NTcwNTc1fQ.aHC6R6r_w6bdJFQlztPnmIJsQu6wBmRE4ez1y9L_hTQ";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

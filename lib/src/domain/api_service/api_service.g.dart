@@ -229,7 +229,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<HttpResponse<List<UserResponse>>> followUser(
+  Future<HttpResponse<dynamic>> followUser(
     String token,
     dynamic body,
   ) async {
@@ -238,8 +238,8 @@ class _ApiService implements ApiService {
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
     final _data = body;
-    final _result = await _dio.fetch<List<dynamic>>(
-        _setStreamType<HttpResponse<List<UserResponse>>>(Options(
+    final _result =
+        await _dio.fetch(_setStreamType<HttpResponse<dynamic>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -251,9 +251,7 @@ class _ApiService implements ApiService {
               data: _data,
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    var value = _result.data!
-        .map((dynamic i) => UserResponse.fromJson(i as Map<String, dynamic>))
-        .toList();
+    final value = _result.data;
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }

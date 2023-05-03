@@ -137,14 +137,14 @@ class ProfileView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    infoItem("Post", state.user.post.length, () {}),
-                    infoItem("Followers", state.user.follower.length, () {
+                    infoItem("Post", state.user.post!.length, () {}),
+                    infoItem("Followers", state.user.follower!.length, () {
                       Navigator.of(context).push(createRoute(
                         screen: const ViewFollowPage(index: 0),
                         begin: const Offset(1, 0),
                       ));
                     }),
-                    infoItem("Following", state.user.following.length, () {
+                    infoItem("Following", state.user.following!.length, () {
                       Navigator.of(context).push(createRoute(
                         screen: const ViewFollowPage(index: 1),
                         begin: const Offset(1, 0),

@@ -12,25 +12,25 @@ class NewPostBloc extends Bloc<NewPostEvent, NewPostState> {
   }
 
   Future createPost(CreatePostEvent event, Emitter emit) async {
-    try {
-      emit(NewPostLoading());
-      ApiService apiService =
-          ApiService(Dio(BaseOptions(contentType: "application/json")));
-      // final prefs = await SharedPreferences.getInstance();
-      // String token = prefs.getString("token") ?? "";
-      final response = await apiService.createPost(
-        "Bearer $token",
-        {"description": event.description, "photo": []},
-      );
-      emit(NewPostSuccess());
-    } on DioError catch (e) {
-      String error =
-          e.response != null ? e.response!.data.toString() : e.toString();
-      emit(NewPostError(error));
-      print(error);
-    } catch (e) {
-      emit(NewPostError(e.toString()));
-      print(e);
-    }
+    // try {
+    emit(NewPostLoading());
+    ApiService apiService =
+        ApiService(Dio(BaseOptions(contentType: "application/json")));
+    // final prefs = await SharedPreferences.getInstance();
+    // String token = prefs.getString("token") ?? "";
+    final response = await apiService.createPost(
+      "Bearer $token",
+      {"description": event.description, "photo": []},
+    );
+    emit(NewPostSuccess());
+    // } on DioError catch (e) {
+    //   String error =
+    //       e.response != null ? e.response!.data.toString() : e.toString();
+    //   emit(NewPostError(error));
+    //   print(error);
+    // } catch (e) {
+    //   emit(NewPostError(e.toString()));
+    //   print(e);
+    // }
   }
 }

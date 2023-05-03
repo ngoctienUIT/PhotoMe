@@ -45,8 +45,7 @@ class ViewFollowBloc extends Bloc<ViewFollowEvent, ViewFollowState> {
           ApiService(Dio(BaseOptions(contentType: "application/json")));
       // final prefs = await SharedPreferences.getInstance();
       // String token = prefs.getString("token") ?? "";
-      final response =
-          await apiService.followUser("Bearer $token", {"id_User": id});
+      await apiService.followUser("Bearer $token", {"id_User": id});
 
       String userID = "644e6a86a80a852835987bd7";
       final followerResponse = apiService.getFollowerUser(userID);
