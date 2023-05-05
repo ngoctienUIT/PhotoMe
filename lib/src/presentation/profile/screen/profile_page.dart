@@ -181,7 +181,7 @@ class ProfileView extends StatelessWidget {
             return InkWell(
               onTap: () {
                 Navigator.of(context).push(createRoute(
-                  screen: const ViewPostPage(),
+                  screen: ViewPostPage(post: state.post[index]),
                   begin: const Offset(1, 0),
                 ));
               },

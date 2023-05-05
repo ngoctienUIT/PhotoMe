@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:photo_me/src/domain/response/comment/comment_response.dart';
 import 'package:photo_me/src/domain/response/post/post_response.dart';
 import 'package:photo_me/src/domain/response/user/user_response.dart';
 import 'package:retrofit/retrofit.dart';
@@ -64,13 +65,37 @@ abstract class ApiService {
   );
 
   //deletePostByID
-  @POST("/api/post/{id}")
+  @DELETE("/api/post/{id}")
   Future<HttpResponse> deletePostByID(
     @Header('Authorization') String token,
     @Path("id") String id,
   );
 
+  //likePost
+  @POST("/api/post/like")
+  Future<HttpResponse> likePost(
+    @Header('Authorization') String token,
+    @Body() body,
+  );
+
+  //commentPost
+  @POST("/api/comment/{id}")
+  Future<HttpResponse> commentPost(
+    @Path("id") String id,
+    @Header('Authorization') String token,
+    @Body() body,
+  );
+
   //getAllPost
   @GET("/api/post")
   Future<HttpResponse<List<PostResponse>>> getAllPost();
+
+  //getAllPost
+  @GET("/api/post/{id}")
+  Future<HttpResponse<PostResponse>> getPostByID(@Path("id") String id);
+
+  //getAllCommentPost
+  @GET("/api/comment/{id}")
+  Future<HttpResponse<List<CommentResponse>>> getAllCommentPost(
+      @Path("id") String id);
 }

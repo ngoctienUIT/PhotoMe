@@ -5,8 +5,8 @@ import 'package:photo_me/src/presentation/home/bloc/home_state.dart';
 import 'package:photo_me/src/presentation/new_post/screen/new_post_page.dart';
 
 import '../../../core/function/route_function.dart';
+import '../../post_item/post_item.dart';
 import '../bloc/home_event.dart';
-import '../widgets/post_item.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -120,7 +120,7 @@ class HomeView extends StatelessWidget {
             return Column(
               children: [
                 const SizedBox(height: 20),
-                PostItem(post: state.post[index]),
+                PostItem(post: state.post[index], checkViewPost: false),
               ],
             );
           },

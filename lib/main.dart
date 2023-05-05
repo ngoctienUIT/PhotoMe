@@ -12,6 +12,7 @@ import 'src/core/language/localization/app_localizations_setup.dart';
 import 'src/presentation/login/screen/login_page.dart';
 
 int? language;
+String userID = "644e6a86a80a852835987bd7";
 String token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NGU2YTg2YTgwYTg1MjgzNTk4N2JkNyIsImlhdCI6MTY4MzAzNDU3NSwiZXhwIjoxNzE0NTcwNTc1fQ.aHC6R6r_w6bdJFQlztPnmIJsQu6wBmRE4ez1y9L_hTQ";
 
@@ -49,6 +50,11 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'PhotoMe',
             theme: ThemeData(
+              dialogTheme: DialogTheme(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
               primarySwatch: Colors.blue,
               appBarTheme: const AppBarTheme(
                 backgroundColor: Colors.white,

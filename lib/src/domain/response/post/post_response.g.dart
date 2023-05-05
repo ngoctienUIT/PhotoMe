@@ -8,7 +8,7 @@ part of 'post_response.dart';
 
 PostResponse _$PostResponseFromJson(Map<String, dynamic> json) => PostResponse(
       json['_id'] as String,
-      json['id_User'] as String,
+      json['id_User'] as String?,
       json['description'] as String,
       (json['photo'] as List<dynamic>).map((e) => e as String).toList(),
       (json['liked'] as List<dynamic>).map((e) => e as String).toList(),

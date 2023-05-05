@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../user/user_response.dart';
@@ -5,12 +6,12 @@ import '../user/user_response.dart';
 part 'post_response.g.dart';
 
 @JsonSerializable()
-class PostResponse {
+class PostResponse extends Equatable {
   @JsonKey(name: "_id")
   final String id;
 
   @JsonKey(name: "id_User")
-  final String idUser;
+  final String? idUser;
 
   @JsonKey(name: "user")
   final UserResponse user;
@@ -30,7 +31,7 @@ class PostResponse {
   @JsonKey(name: "registration_data")
   final String registration;
 
-  PostResponse(
+  const PostResponse(
     this.id,
     this.idUser,
     this.description,
@@ -45,4 +46,7 @@ class PostResponse {
       _$PostResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$PostResponseToJson(this);
+
+  @override
+  List<Object?> get props => [description, photo, liked, comment];
 }

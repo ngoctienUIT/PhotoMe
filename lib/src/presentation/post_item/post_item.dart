@@ -1,17 +1,42 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_me/src/domain/response/post/post_response.dart';
 import 'package:photo_me/src/presentation/home/widgets/image_widget.dart';
 import 'package:photo_me/src/presentation/other_profile/screen/other_profile_page.dart';
+import 'package:photo_me/src/presentation/post_item/bloc/post_item_event.dart';
+import 'package:photo_me/src/presentation/post_item/bloc/post_item_state.dart';
 import 'package:photo_me/src/presentation/view_post/screen/view_post_page.dart';
 
-import '../../../core/function/route_function.dart';
+import '../../../main.dart';
+import '../../core/function/route_function.dart';
+import '../../core/widgets/custom_alert_dialog.dart';
+import 'bloc/post_item_bloc.dart';
 
 class PostItem extends StatelessWidget {
-  const PostItem({Key? key, this.post}) : super(key: key);
+  const PostItem({Key? key, required this.post, required this.checkViewPost})
+      : super(key: key);
 
-  final PostResponse? post;
+  final PostResponse post;
+  final bool checkViewPost;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => PostItemBloc(),
+      child: PostItemView(post: post, checkViewPost: checkViewPost),
+    );
+  }
+}
+
+class PostItemView extends StatelessWidget {
+  const PostItemView(
+      {Key? key, required this.post, required this.checkViewPost})
+      : super(key: key);
+
+  final PostResponse post;
+  final bool checkViewPost;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +51,7 @@ class PostItem extends StatelessWidget {
               child: InkWell(
                 onTap: () {
                   Navigator.of(context).push(createRoute(
-                    screen: const ViewPostPage(),
+                    screen: ViewPostPage(post: post),
                     begin: const Offset(0, 1),
                   ));
                 },
@@ -37,34 +62,85 @@ class PostItem extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text(post != null ? post!.description : ""),
+                child: Text(post.description),
               ),
             ),
-            if (post != null && post!.photo.isNotEmpty)
+            if (post.photo.isNotEmpty)
               ImageWidget(
                 images: List.generate(
-                    post!.photo.length, (index) => post!.photo[index]),
+                    post.photo.length, (index) => post.photo[index]),
               ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  actionItem(FontAwesomeIcons.heart,
-                      post != null ? post!.liked.length : 0, "Like", () {}),
-                  actionItem(FontAwesomeIcons.comment,
-                      post != null ? post!.comment.length : 0, "Comment", () {
-                    Navigator.of(context).push(createRoute(
-                      screen: const ViewPostPage(),
-                      begin: const Offset(0, 1),
-                    ));
-                  }),
+                  buildFavoriteWidget(),
+                  actionItem(
+                    icon: FontAwesomeIcons.comment,
+                    number: post.comment.length,
+                    text: "Comment",
+                    color: Colors.black,
+                    onPress: checkViewPost
+                        ? null
+                        : () {
+                            Navigator.of(context).push(createRoute(
+                              screen: ViewPostPage(post: post),
+                              begin: const Offset(0, 1),
+                            ));
+                          },
+                  ),
                 ],
               ),
             )
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildFavoriteWidget() {
+    bool checkLike = true;
+    return BlocBuilder<PostItemBloc, PostItemState>(
+      buildWhen: (previous, current) =>
+          current is LikeLoading ||
+          current is LikeSuccess ||
+          current is ErrorState ||
+          current is InitState,
+      builder: (context, state) {
+        List<String> listLike = [];
+        if (state is InitState || state is ErrorState) {
+          listLike.addAll(post.liked);
+          checkLike = listLike.contains(userID);
+        }
+        if (state is LikeLoading || state is LikeSuccess) {
+          if (post.liked.contains(userID)) {
+            listLike.addAll(post.liked);
+            listLike.remove(userID);
+            checkLike = false;
+          } else {
+            listLike.addAll(post.liked);
+            listLike.add(userID);
+            checkLike = true;
+          }
+          if (state is LikeSuccess && checkLike) {
+            post.liked.add(userID);
+          } else if (state is LikeSuccess && !checkLike) {
+            post.liked.remove(userID);
+          }
+        }
+        return actionItem(
+          icon: checkLike
+              ? Icons.favorite_rounded
+              : Icons.favorite_border_rounded,
+          color: checkLike ? Colors.red : Colors.black,
+          number: listLike.length,
+          text: "Like",
+          onPress: () {
+            context.read<PostItemBloc>().add(LikePostEvent(post.id));
+          },
+        );
+      },
     );
   }
 
@@ -85,7 +161,7 @@ class PostItem extends StatelessWidget {
                 },
                 child: ClipOval(
                   child: CachedNetworkImage(
-                    imageUrl: post!.user.avatar,
+                    imageUrl: post.user.avatar,
                     height: 50,
                     width: 50,
                     placeholder: (context, url) => const Center(
@@ -102,7 +178,11 @@ class PostItem extends StatelessWidget {
                 right: 0,
                 top: 0,
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    context
+                        .read<PostItemBloc>()
+                        .add(FollowUserEvent(post.user.id));
+                  },
                   child: Container(
                     height: 20,
                     width: 20,
@@ -134,13 +214,13 @@ class PostItem extends StatelessWidget {
                 ));
               },
               child: Text(
-                post != null ? post!.user.name : "",
+                post.user.name,
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(height: 5),
-            Text(post != null ? post!.registration : ""),
+            Text(post.registration),
           ],
         ),
         const Spacer(),
@@ -156,6 +236,9 @@ class PostItem extends StatelessWidget {
               case 1:
                 break;
               case 2:
+                _showAlertDialog(context, () {
+                  context.read<PostItemBloc>().add(DeletePostEvent(post.id));
+                });
                 break;
             }
           },
@@ -205,17 +288,37 @@ class PostItem extends StatelessWidget {
     );
   }
 
-  Widget actionItem(
-    IconData icon,
-    int number,
-    String text,
-    VoidCallback onPress,
-  ) {
+  Widget actionItem({
+    required IconData icon,
+    required int number,
+    required String text,
+    required Color color,
+    VoidCallback? onPress,
+  }) {
     return InkWell(
       onTap: onPress,
       child: Row(
-        children: [Icon(icon), const SizedBox(width: 5), Text("$number $text")],
+        children: [
+          Icon(icon, color: color),
+          const SizedBox(width: 5),
+          Text("$number $text")
+        ],
       ),
+    );
+  }
+
+  Future _showAlertDialog(BuildContext context, VoidCallback onOK) async {
+    return showDialog(
+      context: context,
+      // barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return customAlertDialog(
+          context: context,
+          title: "Xóa bài viết",
+          content: "Bạn muốn xóa bài viết này",
+          onOK: onOK,
+        );
+      },
     );
   }
 }

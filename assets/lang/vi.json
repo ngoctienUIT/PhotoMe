@@ -14,5 +14,6 @@
   "select_image_gallery": "Chọn ảnh từ thư viện",
   "view_profile_picture": "Xem hình trang cá nhân",
   "delete_profile_picture": "Xóa hình trang cá nhân",
-  "cancel": "Hủy"
+  "cancel": "Hủy",
+  "ok": "Ok"
 }

@@ -4,7 +4,6 @@ import 'package:photo_me/src/presentation/chat_room/screen/chat_room_page.dart';
 import '../../../core/function/route_function.dart';
 import '../../profile/widgets/info_item.dart';
 import '../../view_follow/screen/view_follow_page.dart';
-import '../../view_post/screen/view_post_page.dart';
 
 class OtherProfilePage extends StatelessWidget {
   const OtherProfilePage({Key? key}) : super(key: key);
@@ -109,10 +108,10 @@ class OtherProfilePage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () {
-                      Navigator.of(context).push(createRoute(
-                        screen: const ViewPostPage(),
-                        begin: const Offset(1, 0),
-                      ));
+                      // Navigator.of(context).push(createRoute(
+                      //   screen: const ViewPostPage(),
+                      //   begin: const Offset(1, 0),
+                      // ));
                     },
                     child: Image.asset(
                       "assets/images/avatar.jpg",

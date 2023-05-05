@@ -14,5 +14,6 @@
   "select_image_gallery": "Select image gallery",
   "view_profile_picture": "View profile picture",
   "delete_profile_picture": "Delete profile picture",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "ok": "Ok"
 }
