@@ -86,6 +86,13 @@ abstract class ApiService {
     @Body() body,
   );
 
+  //likeComment
+  @POST("/api/comment/like")
+  Future<HttpResponse> likeComment(
+    @Header('Authorization') String token,
+    @Body() body,
+  );
+
   //getAllPost
   @GET("/api/post")
   Future<HttpResponse<List<PostResponse>>> getAllPost();

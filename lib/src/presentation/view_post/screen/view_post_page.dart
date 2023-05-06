@@ -2,14 +2,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/domain/response/comment/comment_response.dart';
 import 'package:photo_me/src/presentation/edit_profile/widgets/custom_text_input.dart';
 import 'package:photo_me/src/presentation/post_item/post_item.dart';
 import 'package:photo_me/src/presentation/view_post/bloc/view_post_bloc.dart';
 import 'package:photo_me/src/presentation/view_post/bloc/view_post_event.dart';
 import 'package:photo_me/src/presentation/view_post/bloc/view_post_state.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
+import '../../../../main.dart';
+import '../../../core/function/route_function.dart';
 import '../../../domain/response/post/post_response.dart';
+import '../../other_profile/screen/other_profile_page.dart';
 
 class ViewPostPage extends StatelessWidget {
   const ViewPostPage({Key? key, required this.post}) : super(key: key);
@@ -90,9 +95,9 @@ class _ViewPostViewState extends State<ViewPostView> {
   Widget postItem() {
     return BlocBuilder<ViewPostBloc, ViewPostState>(
       buildWhen: (previous, current) =>
-          current is InitState || current is PostSuccess,
+          current is InitState ||
+          (current is PostSuccess && current.post != widget.post),
       builder: (context, state) {
-        print(state);
         PostResponse post = widget.post;
         if (state is PostSuccess && state.post != widget.post) {
           post = state.post;
@@ -141,7 +146,6 @@ class _ViewPostViewState extends State<ViewPostView> {
       buildWhen: (previous, current) =>
           current is InitState || current is CommentSuccess,
       builder: (context, state) {
-        print(state);
         if (state is CommentSuccess) {
           return ListView.builder(
             shrinkWrap: true,
@@ -209,18 +213,27 @@ class _ViewPostViewState extends State<ViewPostView> {
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
         children: [
-          ClipOval(
-            child: CachedNetworkImage(
-              imageUrl: comment.user.avatar,
-              height: 50,
-              width: 50,
-              placeholder: (context, url) => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              errorWidget: (context, url, error) => Image.asset(
-                "assets/images/avatar.jpg",
-                fit: BoxFit.cover,
+          InkWell(
+            onTap: () {
+              Navigator.of(context).push(createRoute(
+                screen: OtherProfilePage(id: comment.user.id),
+                begin: const Offset(0, 1),
+              ));
+            },
+            child: ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: comment.user.avatar,
+                height: 50,
+                width: 50,
+                placeholder: (context, url) => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                errorWidget: (context, url, error) => Image.asset(
+                  "assets/images/avatar.jpg",
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
@@ -229,29 +242,32 @@ class _ViewPostViewState extends State<ViewPostView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  comment.user.name,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(createRoute(
+                      screen: OtherProfilePage(id: comment.user.id),
+                      begin: const Offset(0, 1),
+                    ));
+                  },
+                  child: Text(
+                    comment.user.name,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
                 const SizedBox(height: 5),
                 Text(comment.comment),
                 const SizedBox(height: 5),
                 Row(
                   children: [
-                    Flexible(
-                        child: Text(
-                      comment.registration,
+                    Text(
+                      timeago.format(comment.registration.toDateTime(),
+                          locale: "vi"),
                       overflow: TextOverflow.ellipsis,
-                    )),
+                    ),
                     const SizedBox(width: 10),
                     InkWell(onTap: () {}, child: const Text("Trả lời")),
                     const Spacer(),
-                    InkWell(
-                      onTap: () {},
-                      child: const Icon(FontAwesomeIcons.heart),
-                    ),
-                    const SizedBox(width: 3),
-                    Text(comment.liked.length.toString()),
+                    buildFavoriteWidget(comment),
                     const SizedBox(width: 25),
                     // InkWell(
                     //   onTap: () {},
@@ -266,6 +282,60 @@ class _ViewPostViewState extends State<ViewPostView> {
           )
         ],
       ),
+    );
+  }
+
+  Widget buildFavoriteWidget(CommentResponse comment) {
+    return BlocBuilder<ViewPostBloc, ViewPostState>(
+      buildWhen: (previous, current) =>
+          (current is LikeCommentLoading && current.id == comment.id) ||
+          (current is LikeCommentSuccess && current.id == comment.id) ||
+          current is ErrorState ||
+          current is InitState ||
+          current is CommentSuccess,
+      builder: (context, state) {
+        bool checkLike = false;
+        List<String> listLike = [];
+        if (state is InitState ||
+            state is ErrorState ||
+            state is CommentSuccess) {
+          listLike.addAll(comment.liked);
+          checkLike = comment.liked.contains(userID);
+        }
+        if (state is LikeCommentLoading || state is LikeCommentSuccess) {
+          if (comment.liked.contains(userID)) {
+            listLike.addAll(comment.liked);
+            listLike.remove(userID);
+            checkLike = false;
+          } else {
+            listLike.addAll(comment.liked);
+            listLike.add(userID);
+            checkLike = true;
+          }
+          if (state is LikeCommentSuccess && checkLike) {
+            comment.liked.add(userID);
+          } else if (state is LikeCommentSuccess && !checkLike) {
+            comment.liked.remove(userID);
+          }
+        }
+        return Row(
+          children: [
+            InkWell(
+              onTap: () {
+                context.read<ViewPostBloc>().add(LikeComment(comment.id));
+              },
+              child: Icon(
+                checkLike
+                    ? Icons.favorite_rounded
+                    : Icons.favorite_border_rounded,
+                color: checkLike ? Colors.red : Colors.black,
+              ),
+            ),
+            const SizedBox(width: 3),
+            Text(listLike.length.toString()),
+          ],
+        );
+      },
     );
   }
 }

@@ -18,8 +18,8 @@ UserResponse _$UserResponseFromJson(Map<String, dynamic> json) => UserResponse(
       json['description'] as String?,
       json['job'] as String?,
       (json['post'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      (json['follower'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      (json['following'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      (json['follower'] as List<dynamic>).map((e) => e as String).toList(),
+      (json['following'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$UserResponseToJson(UserResponse instance) =>

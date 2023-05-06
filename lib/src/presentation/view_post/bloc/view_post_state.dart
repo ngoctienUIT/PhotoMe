@@ -31,3 +31,15 @@ class WriteCommentState extends ViewPostState {
 
   WriteCommentState(this.check);
 }
+
+class LikeCommentLoading extends ViewPostState {
+  String id;
+
+  LikeCommentLoading(this.id);
+}
+
+class LikeCommentSuccess extends ViewPostState {
+  String id;
+
+  LikeCommentSuccess(this.id);
+}

@@ -7,7 +7,9 @@ import '../../../domain/api_service/api_service.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc() : super(InitState()) {
-    on<FetchData>((event, emit) => getDataUser(emit));
+    on<GetProfileData>((event, emit) => getDataUser(emit));
+
+    on<GetPostData>((event, emit) => getPostDataUser(emit));
   }
 
   Future getDataUser(Emitter emit) async {
@@ -18,10 +20,31 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       // final prefs = await SharedPreferences.getInstance();
       // String userID = prefs.getString("userID") ?? "";
       String userID = "644e6a86a80a852835987bd7";
-      final userResponse = apiService.getUserByID(userID);
-      final postResponse = apiService.getPostUser(userID);
+      final userResponse = await apiService.getUserByID(userID);
 
-      emit(ProfileLoaded((await userResponse).data, (await postResponse).data));
+      emit(ProfileLoaded(userResponse.data));
+    } on DioError catch (e) {
+      String error =
+          e.response != null ? e.response!.data.toString() : e.toString();
+      emit(ProfileError(error));
+      print(error);
+    } catch (e) {
+      emit(ProfileError(e.toString()));
+      print(e);
+    }
+  }
+
+  Future getPostDataUser(Emitter emit) async {
+    try {
+      emit(PostLoading());
+      ApiService apiService =
+          ApiService(Dio(BaseOptions(contentType: "application/json")));
+      // final prefs = await SharedPreferences.getInstance();
+      // String userID = prefs.getString("userID") ?? "";
+      String userID = "644e6a86a80a852835987bd7";
+      final postResponse = await apiService.getPostUser(userID);
+
+      emit(PostLoaded(postResponse.data));
     } on DioError catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();

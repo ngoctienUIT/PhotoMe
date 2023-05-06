@@ -20,11 +20,18 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
 
   @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView>
+    with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -129,4 +136,7 @@ class HomeView extends StatelessWidget {
       return const Center(child: CircularProgressIndicator());
     });
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

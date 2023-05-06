@@ -24,3 +24,9 @@ class WriteComment extends ViewPostEvent {
 
   WriteComment(this.check);
 }
+
+class LikeComment extends ViewPostEvent {
+  String id;
+
+  LikeComment(this.id);
+}

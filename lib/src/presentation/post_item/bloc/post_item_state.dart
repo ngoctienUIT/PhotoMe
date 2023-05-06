@@ -12,6 +12,8 @@ class ErrorState extends PostItemState {
   ErrorState(this.error);
 }
 
+class FollowLoading extends PostItemState {}
+
 class FollowSuccess extends PostItemState {}
 
 class DeleteSuccess extends PostItemState {}

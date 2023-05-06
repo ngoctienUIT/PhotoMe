@@ -1,9 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_response.g.dart';
 
 @JsonSerializable()
-class UserResponse {
+class UserResponse extends Equatable {
   @JsonKey(name: "_id")
   final String id;
 
@@ -29,7 +30,7 @@ class UserResponse {
   final String avatar;
 
   @JsonKey(name: "description")
-  String? description;
+  final String? description;
 
   @JsonKey(name: "job")
   final String? job;
@@ -38,28 +39,32 @@ class UserResponse {
   final List<String>? post;
 
   @JsonKey(name: "follower")
-  final List<String>? follower;
+  final List<String> follower;
 
   @JsonKey(name: "following")
-  final List<String>? following;
+  final List<String> following;
 
-  UserResponse(
-      this.id,
-      this.name,
-      this.email,
-      this.phoneNumber,
-      this.password,
-      this.gender,
-      this.birthday,
-      this.avatar,
-      this.description,
-      this.job,
-      this.post,
-      this.follower,
-      this.following);
+  const UserResponse(
+    this.id,
+    this.name,
+    this.email,
+    this.phoneNumber,
+    this.password,
+    this.gender,
+    this.birthday,
+    this.avatar,
+    this.description,
+    this.job,
+    this.post,
+    this.follower,
+    this.following,
+  );
 
   factory UserResponse.fromJson(Map<String, dynamic> json) =>
       _$UserResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserResponseToJson(this);
+
+  @override
+  List<Object?> get props => [id, name, avatar, following, follower];
 }

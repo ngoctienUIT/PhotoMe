@@ -10,21 +10,25 @@ import '../../../core/function/route_function.dart';
 import '../../other_profile/screen/other_profile_page.dart';
 
 class ViewFollowPage extends StatelessWidget {
-  const ViewFollowPage({Key? key, required this.index}) : super(key: key);
+  const ViewFollowPage({Key? key, required this.index, required this.id})
+      : super(key: key);
   final int index;
+  final String id;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ViewFollowBloc()..add(FetchData()),
-      child: ViewFollowView(index: index),
+      create: (context) => ViewFollowBloc()..add(FetchData(id)),
+      child: ViewFollowView(index: index, id: id),
     );
   }
 }
 
 class ViewFollowView extends StatefulWidget {
-  const ViewFollowView({Key? key, required this.index}) : super(key: key);
+  const ViewFollowView({Key? key, required this.index, required this.id})
+      : super(key: key);
   final int index;
+  final String id;
 
   @override
   State<ViewFollowView> createState() => _ViewFollowViewState();
@@ -77,7 +81,7 @@ class _ViewFollowViewState extends State<ViewFollowView>
             _followController.index == 0 ? state.follower : state.following;
         return RefreshIndicator(
           onRefresh: () async {
-            context.read<ViewFollowBloc>().add(FetchData());
+            context.read<ViewFollowBloc>().add(FetchData(widget.id));
           },
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -89,7 +93,7 @@ class _ViewFollowViewState extends State<ViewFollowView>
               return InkWell(
                 onTap: () {
                   Navigator.of(context).push(createRoute(
-                    screen: const OtherProfilePage(),
+                    screen: OtherProfilePage(id: list[index].id),
                     begin: const Offset(1, 0),
                   ));
                 },

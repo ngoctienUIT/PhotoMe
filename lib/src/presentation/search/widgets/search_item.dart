@@ -12,10 +12,11 @@ class SearchItem extends StatelessWidget {
   Widget build(BuildContext context) {
     users.add(User(
         name: 'name',
-        gender: true,
+        gender: "male",
         description: 'description',
         avatar: 'avatar',
-        birthday: DateTime(2002)));
+        birthday: DateTime(2002),
+        job: "IT"));
     return Container(
       decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.grey.shade400))),

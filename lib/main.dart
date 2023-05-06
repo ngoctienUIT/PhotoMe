@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/core/utils/constants/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 import 'firebase_options.dart';
 import 'src/core/language/bloc/language_cubit.dart';
@@ -31,6 +32,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    timeago.setLocaleMessages('vi', timeago.ViMessages());
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<LanguageCubit>(

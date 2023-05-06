@@ -15,6 +15,8 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
     on<CommentPost>((event, emit) => commentPost(event, emit));
 
     on<WriteComment>((event, emit) => emit(WriteCommentState(event.check)));
+
+    on<LikeComment>((event, emit) => likeComment(event.id, emit));
   }
 
   Future getAllCommentPost(String id, Emitter emit) async {
@@ -63,6 +65,24 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
       final response = await apiService.getAllCommentPost(event.id);
       add(GetPost(event.id));
       emit(CommentSuccess(response.data));
+    } on DioError catch (e) {
+      String error =
+          e.response != null ? e.response!.data.toString() : e.toString();
+      emit(ErrorState(error));
+      print(error);
+    } catch (e) {
+      emit(ErrorState(e.toString()));
+      print(e);
+    }
+  }
+
+  Future likeComment(String id, Emitter emit) async {
+    try {
+      emit(LikeCommentLoading(id));
+      ApiService apiService =
+          ApiService(Dio(BaseOptions(contentType: "application/json")));
+      await apiService.likeComment("Bearer $token", {"id_comment": id});
+      emit(LikeCommentSuccess(id));
     } on DioError catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();

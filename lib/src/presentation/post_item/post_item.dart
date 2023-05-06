@@ -2,12 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/domain/response/post/post_response.dart';
 import 'package:photo_me/src/presentation/home/widgets/image_widget.dart';
 import 'package:photo_me/src/presentation/other_profile/screen/other_profile_page.dart';
 import 'package:photo_me/src/presentation/post_item/bloc/post_item_event.dart';
 import 'package:photo_me/src/presentation/post_item/bloc/post_item_state.dart';
 import 'package:photo_me/src/presentation/view_post/screen/view_post_page.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 import '../../../main.dart';
 import '../../core/function/route_function.dart';
@@ -76,12 +78,8 @@ class PostItemView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   buildFavoriteWidget(),
-                  actionItem(
-                    icon: FontAwesomeIcons.comment,
-                    number: post.comment.length,
-                    text: "Comment",
-                    color: Colors.black,
-                    onPress: checkViewPost
+                  InkWell(
+                    onTap: checkViewPost
                         ? null
                         : () {
                             Navigator.of(context).push(createRoute(
@@ -89,6 +87,14 @@ class PostItemView extends StatelessWidget {
                               begin: const Offset(0, 1),
                             ));
                           },
+                    child: Row(
+                      children: [
+                        const Icon(FontAwesomeIcons.comment,
+                            color: Colors.black),
+                        const SizedBox(width: 5),
+                        Text("${post.comment.length} Comment")
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -100,7 +106,6 @@ class PostItemView extends StatelessWidget {
   }
 
   Widget buildFavoriteWidget() {
-    bool checkLike = true;
     return BlocBuilder<PostItemBloc, PostItemState>(
       buildWhen: (previous, current) =>
           current is LikeLoading ||
@@ -108,10 +113,11 @@ class PostItemView extends StatelessWidget {
           current is ErrorState ||
           current is InitState,
       builder: (context, state) {
+        bool checkLike = true;
         List<String> listLike = [];
         if (state is InitState || state is ErrorState) {
           listLike.addAll(post.liked);
-          checkLike = listLike.contains(userID);
+          checkLike = post.liked.contains(userID);
         }
         if (state is LikeLoading || state is LikeSuccess) {
           if (post.liked.contains(userID)) {
@@ -129,16 +135,22 @@ class PostItemView extends StatelessWidget {
             post.liked.remove(userID);
           }
         }
-        return actionItem(
-          icon: checkLike
-              ? Icons.favorite_rounded
-              : Icons.favorite_border_rounded,
-          color: checkLike ? Colors.red : Colors.black,
-          number: listLike.length,
-          text: "Like",
-          onPress: () {
-            context.read<PostItemBloc>().add(LikePostEvent(post.id));
-          },
+        return Row(
+          children: [
+            InkWell(
+              onTap: () {
+                context.read<PostItemBloc>().add(LikePostEvent(post.id));
+              },
+              child: Icon(
+                checkLike
+                    ? Icons.favorite_rounded
+                    : Icons.favorite_border_rounded,
+                color: checkLike ? Colors.red : Colors.black,
+              ),
+            ),
+            const SizedBox(width: 5),
+            Text("${listLike.length} Like")
+          ],
         );
       },
     );
@@ -155,7 +167,7 @@ class PostItemView extends StatelessWidget {
               InkWell(
                 onTap: () {
                   Navigator.of(context).push(createRoute(
-                    screen: const OtherProfilePage(),
+                    screen: OtherProfilePage(id: post.user.id),
                     begin: const Offset(0, 1),
                   ));
                 },
@@ -174,31 +186,7 @@ class PostItemView extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
-                right: 0,
-                top: 0,
-                child: InkWell(
-                  onTap: () {
-                    context
-                        .read<PostItemBloc>()
-                        .add(FollowUserEvent(post.user.id));
-                  },
-                  child: Container(
-                    height: 20,
-                    width: 20,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(90),
-                      border: Border.all(color: Colors.white, width: 1),
-                    ),
-                    child: const Icon(
-                      Icons.add,
-                      size: 18,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
+              buildFollowButton(context),
             ],
           ),
         ),
@@ -209,7 +197,7 @@ class PostItemView extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.of(context).push(createRoute(
-                  screen: const OtherProfilePage(),
+                  screen: OtherProfilePage(id: post.user.id),
                   begin: const Offset(0, 1),
                 ));
               },
@@ -220,54 +208,110 @@ class PostItemView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 5),
-            Text(post.registration),
+            Text(timeago.format(post.registration.toDateTime(), locale: "vi")),
           ],
         ),
         const Spacer(),
-        PopupMenuButton<int>(
-          padding: const EdgeInsets.all(0),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+        if (post.user.id == userID)
+          PopupMenuButton<int>(
+            padding: const EdgeInsets.all(0),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            onSelected: (value) {
+              switch (value) {
+                case 0:
+                  break;
+                case 1:
+                  break;
+                case 2:
+                  _showAlertDialog(context, () {
+                    context.read<PostItemBloc>().add(DeletePostEvent(post.id));
+                  });
+                  break;
+              }
+            },
+            icon: const Icon(FontAwesomeIcons.ellipsisVertical, size: 20),
+            itemBuilder: (context) {
+              return [
+                itemPopup(
+                  text: 'Chỉnh sửa',
+                  icon: FontAwesomeIcons.penToSquare,
+                  color: const Color.fromRGBO(59, 190, 253, 1),
+                  index: 0,
+                ),
+                itemPopup(
+                  text: 'Ai có thể xem',
+                  icon: FontAwesomeIcons.globe,
+                  color: const Color.fromRGBO(26, 191, 185, 1),
+                  index: 1,
+                ),
+                itemPopup(
+                  text: 'Xóa',
+                  icon: FontAwesomeIcons.trash,
+                  color: const Color.fromRGBO(26, 191, 185, 1),
+                  index: 2,
+                ),
+              ];
+            },
           ),
-          onSelected: (value) {
-            switch (value) {
-              case 0:
-                break;
-              case 1:
-                break;
-              case 2:
-                _showAlertDialog(context, () {
-                  context.read<PostItemBloc>().add(DeletePostEvent(post.id));
-                });
-                break;
-            }
-          },
-          icon: const Icon(FontAwesomeIcons.ellipsisVertical, size: 20),
-          itemBuilder: (context) {
-            return [
-              itemPopup(
-                text: 'Chỉnh sửa',
-                icon: FontAwesomeIcons.penToSquare,
-                color: const Color.fromRGBO(59, 190, 253, 1),
-                index: 0,
-              ),
-              itemPopup(
-                text: 'Ai có thể xem',
-                icon: FontAwesomeIcons.globe,
-                color: const Color.fromRGBO(26, 191, 185, 1),
-                index: 1,
-              ),
-              itemPopup(
-                text: 'Xóa',
-                icon: FontAwesomeIcons.trash,
-                color: const Color.fromRGBO(26, 191, 185, 1),
-                index: 2,
-              ),
-            ];
-          },
-        ),
       ],
     );
+  }
+
+  Widget buildFollowButton(BuildContext context) {
+    return BlocBuilder<PostItemBloc, PostItemState>(
+        buildWhen: (previous, current) =>
+            current is FollowLoading ||
+            current is FollowSuccess ||
+            current is ErrorState ||
+            current is InitState,
+        builder: (context, state) {
+          bool checkFollow = true;
+          if (post.user.id != userID) {
+            if (state is InitState || state is ErrorState) {
+              checkFollow = post.user.follower.contains(userID);
+            }
+            if (state is FollowLoading || state is FollowSuccess) {
+              if (!post.user.follower.contains(userID)) {
+                List<String> listFollow = [];
+                listFollow.addAll(post.user.follower);
+                listFollow.add(userID);
+                checkFollow = true;
+              }
+              if (state is FollowSuccess && checkFollow) {
+                post.user.follower.add(userID);
+              }
+            }
+          }
+          return checkFollow
+              ? const SizedBox.shrink()
+              : Positioned(
+                  right: 0,
+                  top: 0,
+                  child: InkWell(
+                    onTap: () {
+                      context
+                          .read<PostItemBloc>()
+                          .add(FollowUserEvent(post.user.id));
+                    },
+                    child: Container(
+                      height: 20,
+                      width: 20,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(90),
+                        border: Border.all(color: Colors.white, width: 1),
+                      ),
+                      child: const Icon(
+                        Icons.add,
+                        size: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                );
+        });
   }
 
   PopupMenuItem<int> itemPopup({
@@ -283,25 +327,6 @@ class PostItemView extends StatelessWidget {
           Icon(icon, color: color, size: 18),
           const SizedBox(width: 8),
           Text(text)
-        ],
-      ),
-    );
-  }
-
-  Widget actionItem({
-    required IconData icon,
-    required int number,
-    required String text,
-    required Color color,
-    VoidCallback? onPress,
-  }) {
-    return InkWell(
-      onTap: onPress,
-      child: Row(
-        children: [
-          Icon(icon, color: color),
-          const SizedBox(width: 5),
-          Text("$number $text")
         ],
       ),
     );

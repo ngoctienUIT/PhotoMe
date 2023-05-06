@@ -8,21 +8,18 @@ import '../../../domain/api_service/api_service.dart';
 
 class ViewFollowBloc extends Bloc<ViewFollowEvent, ViewFollowState> {
   ViewFollowBloc() : super(InitState()) {
-    on<FetchData>((event, emit) => getDataFollow(emit));
+    on<FetchData>((event, emit) => getDataFollow(event.id, emit));
 
     on<FollowEvent>((event, emit) => followUser(event.id, emit));
   }
 
-  Future getDataFollow(Emitter emit) async {
+  Future getDataFollow(String id, Emitter emit) async {
     try {
       emit(ViewFollowLoading());
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      // final prefs = await SharedPreferences.getInstance();
-      // String userID = prefs.getString("userID") ?? "";
-      String userID = "644e6a86a80a852835987bd7";
-      final followerResponse = apiService.getFollowerUser(userID);
-      final followingResponse = apiService.getFollowingUser(userID);
+      final followerResponse = apiService.getFollowerUser(id);
+      final followingResponse = apiService.getFollowingUser(id);
 
       emit(ViewFollowLoaded(
         (await followerResponse).data,
@@ -46,10 +43,8 @@ class ViewFollowBloc extends Bloc<ViewFollowEvent, ViewFollowState> {
       // final prefs = await SharedPreferences.getInstance();
       // String token = prefs.getString("token") ?? "";
       await apiService.followUser("Bearer $token", {"id_User": id});
-
-      String userID = "644e6a86a80a852835987bd7";
-      final followerResponse = apiService.getFollowerUser(userID);
-      final followingResponse = apiService.getFollowingUser(userID);
+      final followerResponse = apiService.getFollowerUser(id);
+      final followingResponse = apiService.getFollowingUser(id);
 
       emit(ViewFollowLoaded(
         (await followerResponse).data,

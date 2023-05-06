@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -8,10 +9,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 
 class AvatarWidget extends StatelessWidget {
-  const AvatarWidget({Key? key, this.image, required this.onChange})
+  const AvatarWidget(
+      {Key? key, this.image, this.avatar, required this.onChange})
       : super(key: key);
 
   final File? image;
+  final String? avatar;
   final Function(File image) onChange;
 
   @override
@@ -31,11 +34,17 @@ class AvatarWidget extends StatelessWidget {
             children: [
               ClipOval(
                 child: image == null
-                    ? Image.asset(
-                        "assets/images/avatar.jpg",
+                    ? CachedNetworkImage(
+                        imageUrl: avatar != null ? avatar! : "",
                         height: 150,
                         width: 150,
-                        fit: BoxFit.cover,
+                        placeholder: (context, url) => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => Image.asset(
+                          "assets/images/avatar.jpg",
+                          fit: BoxFit.cover,
+                        ),
                       )
                     : Image.file(image!, height: 150),
               ),

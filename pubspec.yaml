@@ -63,6 +63,7 @@ dependencies:
 #  cloud_firestore: ^4.5.2
   flutter_local_notifications: ^14.0.0
   equatable: ^2.0.5
+  timeago: ^3.4.0
 
 dev_dependencies:
   flutter_test:

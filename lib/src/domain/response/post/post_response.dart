@@ -48,5 +48,5 @@ class PostResponse extends Equatable {
   Map<String, dynamic> toJson() => _$PostResponseToJson(this);
 
   @override
-  List<Object?> get props => [description, photo, liked, comment];
+  List<Object?> get props => [description, photo, liked, comment, id, user];
 }

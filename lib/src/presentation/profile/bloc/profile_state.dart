@@ -9,13 +9,20 @@ class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
   UserResponse user;
-  List<PostResponse> post;
 
-  ProfileLoaded(this.user, this.post);
+  ProfileLoaded(this.user);
 }
 
 class ProfileError extends ProfileState {
   String error;
 
   ProfileError(this.error);
+}
+
+class PostLoading extends ProfileState {}
+
+class PostLoaded extends ProfileState {
+  List<PostResponse> post;
+
+  PostLoaded(this.post);
 }
