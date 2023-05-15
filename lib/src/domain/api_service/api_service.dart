@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:photo_me/src/domain/response/auth/auth_response.dart';
 import 'package:photo_me/src/domain/response/comment/comment_response.dart';
 import 'package:photo_me/src/domain/response/post/post_response.dart';
 import 'package:photo_me/src/domain/response/user/user_response.dart';
@@ -7,17 +8,17 @@ import 'package:retrofit/retrofit.dart';
 part 'api_service.g.dart';
 
 //flutter pub run build_runner build
-@RestApi(baseUrl: 'http://192.168.1.6:5000')
+@RestApi(baseUrl: 'http://192.168.0.113:5000')
 abstract class ApiService {
   factory ApiService(Dio dio) = _ApiService;
 
   //sign up
   @POST("/api/user/signup")
-  Future<HttpResponse> signup(@Body() Map<String, dynamic> user);
+  Future<HttpResponse> signup(@Body() Map<String, String> user);
 
   //login
   @POST("/api/user/login")
-  Future<HttpResponse> login(@Body() Map<String, dynamic> user);
+  Future<HttpResponse<AuthResponse>> login(@Body() Map<String, dynamic> user);
 
   //getUserByID
   @GET("/api/user/{id}")
