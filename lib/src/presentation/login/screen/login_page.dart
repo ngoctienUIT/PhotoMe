@@ -36,16 +36,14 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    if (context.read<LoginBloc>().state is LoginSuccess) {
-
-    }
-    // Navigator.of(context).pushReplacement(createRoute(
-    //   screen: const MainPage(),
-    //   begin: const Offset(0, 1),
-    // ));
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
-        var a = state;
+        if (state is LoginSuccess) {
+          Navigator.of(context).pushReplacement(createRoute(
+            screen: const MainPage(),
+            begin: const Offset(0, 1),
+          ));
+        }
       },
       child: Scaffold(
         body: WillPopScope(
@@ -106,13 +104,14 @@ class _LoginViewState extends State<LoginView> {
                         context.read<LoginBloc>().add(Login(
                             emailTextController.text,
                             passwordTextController.text)),
-                        if (context.read<LoginBloc>().state is LoginSuccess)
-                          {
-                            Navigator.of(context).pushReplacement(createRoute(
-                              screen: const MainPage(),
-                              begin: const Offset(0, 1),
-                            ))
-                          }
+                        print(context.read<LoginBloc>().state)
+                        // if (context.read<LoginBloc>().state is LoginSuccess)
+                        //   {
+                        //     Navigator.of(context).pushReplacement(createRoute(
+                        //       screen: const MainPage(),
+                        //       begin: const Offset(0, 1),
+                        //     ))
+                        //   }
                       },
                       child: Container(
                         width: double.infinity,
@@ -163,6 +162,8 @@ class _LoginViewState extends State<LoginView> {
           ),
         ),
       ),
+
     );
+
   }
 }
