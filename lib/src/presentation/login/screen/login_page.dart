@@ -44,6 +44,16 @@ class _LoginViewState extends State<LoginView> {
             begin: const Offset(0, 1),
           ));
         }
+        if (state is LoginError) {
+          final snackBar = SnackBar(
+            content: Text(state.error),
+            action: SnackBarAction(
+              label: "ok",
+              onPressed: () {},
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
       },
       child: Scaffold(
         body: WillPopScope(
@@ -104,14 +114,6 @@ class _LoginViewState extends State<LoginView> {
                         context.read<LoginBloc>().add(Login(
                             emailTextController.text,
                             passwordTextController.text)),
-                        print(context.read<LoginBloc>().state)
-                        // if (context.read<LoginBloc>().state is LoginSuccess)
-                        //   {
-                        //     Navigator.of(context).pushReplacement(createRoute(
-                        //       screen: const MainPage(),
-                        //       begin: const Offset(0, 1),
-                        //     ))
-                        //   }
                       },
                       child: Container(
                         width: double.infinity,
@@ -162,8 +164,6 @@ class _LoginViewState extends State<LoginView> {
           ),
         ),
       ),
-
     );
-
   }
 }

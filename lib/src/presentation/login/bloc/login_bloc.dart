@@ -21,10 +21,11 @@ class LoginBloc extends Bloc<LoginScreenEvent, LoginState> {
           await apiService.login({"email": email, "password": password});
       final prefs = await SharedPreferences.getInstance();
       prefs.setString("token", response.data.token);
+      prefs.setString("userId", response.data.user.id);
       emit(LoginSuccess());
     } catch (e) {
       emit(LoginError(e.toString()));
-      print(e);
+
     }
   }
 
