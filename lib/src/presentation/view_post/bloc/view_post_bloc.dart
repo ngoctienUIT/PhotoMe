@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/presentation/view_post/bloc/view_post_event.dart';
 import 'package:photo_me/src/presentation/view_post/bloc/view_post_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../main.dart';
 import '../../../domain/api_service/api_service.dart';
 
 class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
@@ -17,6 +17,8 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
     on<WriteComment>((event, emit) => emit(WriteCommentState(event.check)));
 
     on<LikeComment>((event, emit) => likeComment(event.id, emit));
+
+    on<DeleteComment>((event, emit) => deleteComment(event, emit));
   }
 
   Future getAllCommentPost(String id, Emitter emit) async {
@@ -60,6 +62,8 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
     try {
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
+      final prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString("token") ?? "";
       await apiService
           .commentPost(event.id, "Bearer $token", {"comment": event.comment});
       final response = await apiService.getAllCommentPost(event.id);
@@ -81,11 +85,33 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
       emit(LikeCommentLoading(id));
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
+      final prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString("token") ?? "";
       await apiService.likeComment("Bearer $token", {"id_comment": id});
       emit(LikeCommentSuccess(id));
     } on DioError catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
+      emit(ErrorState(error));
+      print(error);
+    } catch (e) {
+      emit(ErrorState(e.toString()));
+      print(e);
+    }
+  }
+
+  Future deleteComment(DeleteComment event, Emitter emit) async {
+    try {
+      ApiService apiService =
+          ApiService(Dio(BaseOptions(contentType: "application/json")));
+      final prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString("token") ?? "";
+      await apiService.deleteComment(event.idComment, "Bearer $token");
+      emit(DeleteCommentSuccess());
+    } on DioError catch (e) {
+      String error =
+          e.response != null ? e.response!.data.toString() : e.toString();
+      add(GetPost(event.idPost));
       emit(ErrorState(error));
       print(error);
     } catch (e) {

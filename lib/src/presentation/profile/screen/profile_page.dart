@@ -8,8 +8,8 @@ import 'package:photo_me/src/presentation/profile/bloc/profile_state.dart';
 import 'package:photo_me/src/presentation/view_follow/screen/view_follow_page.dart';
 import 'package:photo_me/src/presentation/view_post/screen/view_post_page.dart';
 
-import '../../../../main.dart';
 import '../../../core/function/route_function.dart';
+import '../../../core/language/bloc/language_bloc.dart';
 import '../../edit_profile/screen/edit_profile.dart';
 import '../../setting/screen/setting_page.dart';
 import '../widgets/info_item.dart';
@@ -114,8 +114,10 @@ class _ProfileViewState extends State<ProfileView>
             current is InitState ||
             current is ProfileLoading ||
             current is ProfileLoaded,
-        builder: (context, state) {
+        builder: (_, state) {
           print(state);
+          String userID = context.read<LanguageBloc>().userID ?? "";
+
           if (state is ProfileLoaded) {
             return Column(
               children: [
@@ -192,7 +194,7 @@ class _ProfileViewState extends State<ProfileView>
             current is InitState ||
             current is PostLoading ||
             current is PostLoaded,
-        builder: (context, state) {
+        builder: (_, state) {
           if (state is PostLoaded) {
             return GridView.builder(
               shrinkWrap: true,

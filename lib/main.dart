@@ -7,15 +7,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'firebase_options.dart';
-import 'src/core/language/bloc/language_cubit.dart';
+import 'src/core/language/bloc/language_bloc.dart';
 import 'src/core/language/bloc/language_state.dart';
 import 'src/core/language/localization/app_localizations_setup.dart';
 import 'src/presentation/login/screen/login_page.dart';
 
 int? language;
-String userID = "644e6a86a80a852835987bd7";
-String token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NGU2YTg2YTgwYTg1MjgzNTk4N2JkNyIsImlhdCI6MTY4MzAzNDU3NSwiZXhwIjoxNzE0NTcwNTc1fQ.aHC6R6r_w6bdJFQlztPnmIJsQu6wBmRE4ez1y9L_hTQ";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,11 +33,11 @@ class MyApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<LanguageCubit>(
-          create: (_) => LanguageCubit(language: language),
+        BlocProvider<LanguageBloc>(
+          create: (_) => LanguageBloc(language: language),
         ),
       ],
-      child: BlocBuilder<LanguageCubit, LanguageState>(
+      child: BlocBuilder<LanguageBloc, LanguageState>(
         buildWhen: (previous, current) => previous != current,
         builder: (_, settingState) {
           return MaterialApp(

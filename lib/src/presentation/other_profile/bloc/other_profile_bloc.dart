@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../main.dart';
 import '../../../domain/api_service/api_service.dart';
 import 'other_profile_event.dart';
 import 'other_profile_state.dart';
@@ -78,8 +78,8 @@ class OtherProfileBloc extends Bloc<OtherProfileEvent, OtherProfileState> {
       emit(FollowLoading());
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      // final prefs = await SharedPreferences.getInstance();
-      // String token = prefs.getString("token") ?? "";
+      final prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString("token") ?? "";
       await apiService.followUser("Bearer $token", {"id_User": id});
 
       emit(FollowSuccess());

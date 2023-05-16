@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:photo_me/main.dart';
+import 'package:photo_me/src/core/language/bloc/language_bloc.dart';
 import 'package:photo_me/src/presentation/chat_room/screen/chat_room_page.dart';
 import 'package:photo_me/src/presentation/other_profile/bloc/other_profile_bloc.dart';
 import 'package:photo_me/src/presentation/other_profile/bloc/other_profile_event.dart';
@@ -101,7 +101,7 @@ class OtherProfileView extends StatelessWidget {
               const SizedBox(height: 5),
               const Text("@ngoctienTNT"),
               const SizedBox(height: 10),
-              id == userID
+              id == context.read<LanguageBloc>().userID
                   ? OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.black,
@@ -175,6 +175,7 @@ class OtherProfileView extends StatelessWidget {
           current is! PostLoaded &&
           current is! OtherProfileError,
       builder: (context, state) {
+        String userID = context.read<LanguageBloc>().userID ?? "";
         List<String> follow = [];
         if (state is OtherProfileLoaded) {
           initFollow.addAll(state.user.follower);
@@ -217,7 +218,7 @@ class OtherProfileView extends StatelessWidget {
             current is InitState ||
             current is PostLoading ||
             current is PostLoaded,
-        builder: (context, state) {
+        builder: (_, state) {
           if (state is PostLoaded) {
             return GridView.builder(
               shrinkWrap: true,

@@ -7,3 +7,5 @@ class UpdateProfileEvent extends EditProfileEvent {
 
   UpdateProfileEvent(this.user);
 }
+
+class ChangeBirthDayEvent extends EditProfileEvent {}

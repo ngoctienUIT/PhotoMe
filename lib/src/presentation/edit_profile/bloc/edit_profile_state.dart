@@ -11,3 +11,5 @@ class UpdateError extends EditProfileState {
 
   UpdateError(this.error);
 }
+
+class ChangeBirthDayState extends EditProfileState {}

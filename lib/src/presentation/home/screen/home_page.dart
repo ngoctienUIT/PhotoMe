@@ -116,7 +116,7 @@ class _HomeViewState extends State<HomeView>
   }
 
   Widget buildBody() {
-    return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+    return BlocBuilder<HomeBloc, HomeState>(builder: (_, state) {
       print(state);
       if (state is HomeLoaded) {
         return ListView.builder(

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_me/src/core/utils/extension/string_extension.dart';
@@ -11,8 +12,9 @@ import 'package:photo_me/src/presentation/view_post/bloc/view_post_event.dart';
 import 'package:photo_me/src/presentation/view_post/bloc/view_post_state.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import '../../../../main.dart';
 import '../../../core/function/route_function.dart';
+import '../../../core/language/bloc/language_bloc.dart';
+import '../../../core/widgets/custom_alert_dialog.dart';
 import '../../../domain/response/post/post_response.dart';
 import '../../other_profile/screen/other_profile_page.dart';
 
@@ -97,7 +99,7 @@ class _ViewPostViewState extends State<ViewPostView> {
       buildWhen: (previous, current) =>
           current is InitState ||
           (current is PostSuccess && current.post != widget.post),
-      builder: (context, state) {
+      builder: (_, state) {
         PostResponse post = widget.post;
         if (state is PostSuccess && state.post != widget.post) {
           post = state.post;
@@ -111,7 +113,7 @@ class _ViewPostViewState extends State<ViewPostView> {
     return BlocBuilder<ViewPostBloc, ViewPostState>(
       buildWhen: (previous, current) =>
           current is InitState || current is WriteCommentState,
-      builder: (context, state) {
+      builder: (_, state) {
         bool check = false;
         if (state is WriteCommentState) check = state.check;
         return CustomTextInput(
@@ -145,7 +147,7 @@ class _ViewPostViewState extends State<ViewPostView> {
     return BlocBuilder<ViewPostBloc, ViewPostState>(
       buildWhen: (previous, current) =>
           current is InitState || current is CommentSuccess,
-      builder: (context, state) {
+      builder: (_, state) {
         if (state is CommentSuccess) {
           return ListView.builder(
             shrinkWrap: true,
@@ -167,10 +169,11 @@ class _ViewPostViewState extends State<ViewPostView> {
     );
   }
 
-  Future _showSimpleDialog(BuildContext context) async {
+  Future _showSimpleDialog(
+      BuildContext context, CommentResponse comment) async {
     await showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (_) {
           return SimpleDialog(
             // title: const Text('Select Booking Type'),
             children: [
@@ -184,32 +187,57 @@ class _ViewPostViewState extends State<ViewPostView> {
                 ),
               ),
               SimpleDialogOption(
-                onPressed: () {
-                  Navigator.of(context).pop();
+                onPressed: () async {
+                  await Clipboard.setData(ClipboardData(
+                      text: "${comment.user.name}: ${comment.comment}"));
+                  if (context.mounted) Navigator.of(context).pop();
                 },
                 child: const Text(
                   'Sao chép',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text(
-                  'Xóa',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+              if (context.read<LanguageBloc>().userID == comment.user.id)
+                SimpleDialogOption(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _showAlertDialog(context, () {
+                      context
+                          .read<ViewPostBloc>()
+                          .add(DeleteComment(comment.idPost!, comment.id));
+                      Navigator.pop(context);
+                    });
+                  },
+                  child: const Text(
+                    'Xóa',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
             ],
           );
         });
   }
 
+  Future _showAlertDialog(BuildContext context, VoidCallback onOK) async {
+    return showDialog(
+      context: context,
+      // barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return customAlertDialog(
+          context: context,
+          title: "Xóa bình luận",
+          content: "Bạn muốn xóa bình luận này",
+          onOK: onOK,
+        );
+      },
+    );
+  }
+
   Widget commentItem(BuildContext context, CommentResponse comment) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onLongPress: () {
-        _showSimpleDialog(context);
+        _showSimpleDialog(context, comment);
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,7 +321,9 @@ class _ViewPostViewState extends State<ViewPostView> {
           current is ErrorState ||
           current is InitState ||
           current is CommentSuccess,
-      builder: (context, state) {
+      builder: (_, state) {
+        String userID = context.read<LanguageBloc>().userID ?? "";
+
         bool checkLike = false;
         List<String> listLike = [];
         if (state is InitState ||

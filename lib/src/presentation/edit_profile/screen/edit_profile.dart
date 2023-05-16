@@ -115,11 +115,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     typeInput: const [TypeInput.text],
                   ),
                   const SizedBox(height: 20),
-                  ProfileItem(
-                    title: "Ngày sinh",
-                    controller: birthdayController,
-                    onPress: () => selectDate(),
-                  ),
+                  birthdayWidget(),
                   const SizedBox(height: 20),
                   const Align(
                     alignment: Alignment.centerLeft,
@@ -170,6 +166,20 @@ class _EditProfileViewState extends State<EditProfileView> {
     );
   }
 
+  Widget birthdayWidget() {
+    return BlocBuilder<EditProfileBloc, EditProfileState>(
+      buildWhen: (previous, current) =>
+          current is ChangeBirthDayState || current is InitState,
+      builder: (_, state) {
+        return ProfileItem(
+          title: "Ngày sinh",
+          controller: birthdayController,
+          onPress: () => selectDate(),
+        );
+      },
+    );
+  }
+
   void selectDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -178,10 +188,11 @@ class _EditProfileViewState extends State<EditProfileView> {
       lastDate: DateTime(2100),
     );
     if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-        birthdayController.text = DateFormat("dd/MM/yyyy").format(picked);
-      });
+      selectedDate = picked;
+      birthdayController.text = DateFormat("dd/MM/yyyy").format(picked);
+      if (context.mounted) {
+        context.read<EditProfileBloc>().add(ChangeBirthDayEvent());
+      }
     }
   }
 }

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:photo_me/main.dart';
 import 'package:photo_me/src/presentation/new_post/bloc/new_post_event.dart';
 import 'package:photo_me/src/presentation/new_post/bloc/new_post_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../domain/api_service/api_service.dart';
 
@@ -16,9 +16,9 @@ class NewPostBloc extends Bloc<NewPostEvent, NewPostState> {
       emit(NewPostLoading());
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      // final prefs = await SharedPreferences.getInstance();
-      // String token = prefs.getString("token") ?? "";
-      final response = await apiService.createPost(
+      final prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString("token") ?? "";
+      await apiService.createPost(
         "Bearer $token",
         {"description": event.description, "photo": []},
       );

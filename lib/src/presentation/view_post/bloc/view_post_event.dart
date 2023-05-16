@@ -30,3 +30,10 @@ class LikeComment extends ViewPostEvent {
 
   LikeComment(this.id);
 }
+
+class DeleteComment extends ViewPostEvent {
+  String idComment;
+  String idPost;
+
+  DeleteComment(this.idPost, this.idComment);
+}

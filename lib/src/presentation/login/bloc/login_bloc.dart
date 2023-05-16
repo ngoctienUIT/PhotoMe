@@ -21,11 +21,10 @@ class LoginBloc extends Bloc<LoginScreenEvent, LoginState> {
           await apiService.login({"email": email, "password": password});
       final prefs = await SharedPreferences.getInstance();
       prefs.setString("token", response.data.token);
-      prefs.setString("userId", response.data.user.id);
-      emit(LoginSuccess());
+      prefs.setString("userID", response.data.user.id);
+      emit(LoginSuccess(userID: response.data.user.id));
     } catch (e) {
       emit(LoginError(e.toString()));
-
     }
   }
 
@@ -33,9 +32,10 @@ class LoginBloc extends Bloc<LoginScreenEvent, LoginState> {
     try {
       final prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("token");
-      if (token != null) {
+      String? userID = prefs.getString("userID");
+      if (token != null && userID != null) {
         print(token);
-        emit(LoginSuccess());
+        emit(LoginSuccess(userID: userID));
       }
     } catch (e) {
       emit(LoginError(e.toString()));

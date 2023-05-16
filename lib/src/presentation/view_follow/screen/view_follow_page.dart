@@ -73,8 +73,7 @@ class _ViewFollowViewState extends State<ViewFollowView>
   }
 
   Widget buildBody() {
-    return BlocBuilder<ViewFollowBloc, ViewFollowState>(
-        builder: (context, state) {
+    return BlocBuilder<ViewFollowBloc, ViewFollowState>(builder: (_, state) {
       print(state);
       if (state is ViewFollowLoaded) {
         final list =

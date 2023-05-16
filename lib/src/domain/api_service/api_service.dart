@@ -8,7 +8,7 @@ import 'package:retrofit/retrofit.dart';
 part 'api_service.g.dart';
 
 //flutter pub run build_runner build
-@RestApi(baseUrl: 'http://192.168.0.113:5000')
+@RestApi(baseUrl: 'http://192.168.1.219:5000')
 abstract class ApiService {
   factory ApiService(Dio dio) = _ApiService;
 
@@ -92,6 +92,13 @@ abstract class ApiService {
   Future<HttpResponse> likeComment(
     @Header('Authorization') String token,
     @Body() body,
+  );
+
+  //deleteComment
+  @DELETE("/api/comment/{id}")
+  Future<HttpResponse> deleteComment(
+    @Path("id") String id,
+    @Header('Authorization') String token,
   );
 
   //getAllPost

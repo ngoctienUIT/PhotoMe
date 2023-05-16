@@ -43,3 +43,5 @@ class LikeCommentSuccess extends ViewPostState {
 
   LikeCommentSuccess(this.id);
 }
+
+class DeleteCommentSuccess extends ViewPostState {}

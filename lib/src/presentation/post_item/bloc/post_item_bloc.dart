@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/presentation/post_item/bloc/post_item_event.dart';
 import 'package:photo_me/src/presentation/post_item/bloc/post_item_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../main.dart';
 import '../../../domain/api_service/api_service.dart';
 
 class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
@@ -20,8 +20,8 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
       emit(LikeLoading());
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      // final prefs = await SharedPreferences.getInstance();
-      // String token = prefs.getString("token") ?? "";
+      final prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString("token") ?? "";
       await apiService.likePost("Bearer $token", {"id_Post": id});
       emit(LikeSuccess());
     } on DioError catch (e) {
@@ -39,8 +39,8 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
     try {
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      // final prefs = await SharedPreferences.getInstance();
-      // String token = prefs.getString("token") ?? "";
+      final prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString("token") ?? "";
       await apiService.followUser("Bearer $token", {"id_User": id});
       emit(FollowSuccess());
     } on DioError catch (e) {
@@ -58,8 +58,8 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
     try {
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      // final prefs = await SharedPreferences.getInstance();
-      // String token = prefs.getString("token") ?? "";
+      final prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString("token") ?? "";
       await apiService.deletePostByID("Bearer $token", id);
       emit(DeleteSuccess());
     } on DioError catch (e) {
