@@ -34,7 +34,7 @@ class _SignupViewState extends State<SignupView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener(
+    return BlocListener<SignupBloc,SignupState>(
       listener: (context, state) {
         if (state is SignupSuccess) {
           Navigator.of(context).pushReplacement(createRoute(
