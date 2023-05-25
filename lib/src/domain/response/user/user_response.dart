@@ -44,6 +44,12 @@ class UserResponse extends Equatable {
   @JsonKey(name: "following")
   final List<String> following;
 
+  @JsonKey(name: "notifications")
+  final List<String>? notifications;
+
+  @JsonKey(name: "device_token")
+  final String? deviceToken;
+
   const UserResponse(
     this.id,
     this.name,
@@ -58,6 +64,8 @@ class UserResponse extends Equatable {
     this.post,
     this.follower,
     this.following,
+    this.notifications,
+    this.deviceToken,
   );
 
   factory UserResponse.fromJson(Map<String, dynamic> json) =>

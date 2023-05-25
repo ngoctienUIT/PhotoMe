@@ -20,6 +20,10 @@ UserResponse _$UserResponseFromJson(Map<String, dynamic> json) => UserResponse(
       (json['post'] as List<dynamic>?)?.map((e) => e as String).toList(),
       (json['follower'] as List<dynamic>).map((e) => e as String).toList(),
       (json['following'] as List<dynamic>).map((e) => e as String).toList(),
+      (json['notifications'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      json['device_token'] as String?,
     );
 
 Map<String, dynamic> _$UserResponseToJson(UserResponse instance) =>
@@ -37,4 +41,6 @@ Map<String, dynamic> _$UserResponseToJson(UserResponse instance) =>
       'post': instance.post,
       'follower': instance.follower,
       'following': instance.following,
+      'notifications': instance.notifications,
+      'device_token': instance.deviceToken,
     };

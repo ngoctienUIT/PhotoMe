@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:photo_me/src/domain/response/auth/auth_response.dart';
 import 'package:photo_me/src/domain/response/comment/comment_response.dart';
+import 'package:photo_me/src/domain/response/notification/notification_response.dart';
 import 'package:photo_me/src/domain/response/post/post_response.dart';
 import 'package:photo_me/src/domain/response/user/user_response.dart';
 import 'package:retrofit/retrofit.dart';
@@ -112,5 +114,10 @@ abstract class ApiService {
   //getAllCommentPost
   @GET("/api/comment/{id}")
   Future<HttpResponse<List<CommentResponse>>> getAllCommentPost(
+      @Path("id") String id);
+
+  @GET("/api/user/{id}/notification")
+  Future<HttpResponse<List<NotificationHmResponse>>> getAllNotification(
+      @Header('Authorization') String token,
       @Path("id") String id);
 }
