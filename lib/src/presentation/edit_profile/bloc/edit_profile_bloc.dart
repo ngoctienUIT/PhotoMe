@@ -12,6 +12,10 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
     on<UpdateProfileEvent>((event, emit) => updateProfile(event.user, emit));
 
     on<ChangeBirthDayEvent>((event, emit) => emit(ChangeBirthDayState()));
+
+    on<ChangeGenderEvent>((event, emit) => emit(ChangeGenderState()));
+
+    on<ChangeAvatarEvent>((event, emit) => emit(ChangeAvatarState()));
   }
 
   Future updateProfile(User user, Emitter emit) async {

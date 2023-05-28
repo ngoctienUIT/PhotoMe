@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/core/function/route_function.dart';
+import 'package:photo_me/src/presentation/login/screen/login_page.dart';
 import 'package:photo_me/src/presentation/main/screen/main_page.dart';
 import 'package:photo_me/src/presentation/signup/bloc/signup_bloc.dart';
 import 'package:photo_me/src/presentation/signup/bloc/signup_state.dart';
+
+import '../../../core/utils/constants/app_images.dart';
+import '../../edit_profile/widgets/custom_text_input.dart';
+import '../../login/widget/custom_button.dart';
 
 // enum SingingCharacter { Ma }
 class SignupPage extends StatelessWidget {
@@ -54,119 +59,129 @@ class _SignupViewState extends State<SignupView> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Create an account'),
-        ),
         body: SafeArea(
           child: SingleChildScrollView(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              const SizedBox(height: 30),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: TextField(
-                  controller: emailTextController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Email",
-                      prefixIcon: Icon(Icons.person)),
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 80, right: 100, left: 100),
+                  child: Image.asset(AppImages.imgLogoB, height: 120),
                 ),
-              ),
+                const SizedBox(height: 20),
 
-              //password
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: TextField(
-                  controller: passwordTextController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Password",
-                      prefixIcon: Icon(Icons.lock)),
+                const Text(
+                  "PhotoMe App",
+                  style: TextStyle(
+                    fontSize: 30,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: TextField(
-                  controller: confirmPasswordController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Re-password",
-                      prefixIcon: Icon(Icons.lock)),
+                const SizedBox(height: 70),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: CustomTextInput(
+                    controller: emailTextController,
+                    hint: "Email",
+                    prefixIcon: const Icon(Icons.person),
+                  ),
                 ),
-              ),
-
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: RadioListTile(
-              //         value: 0,
-              //         groupValue: group,
-              //         onChanged: (value) => {},
-              //         title: const Text("Male"),
-              //       ),
-              //     ),
-              //     Expanded(
-              //       child: RadioListTile(
-              //         value: 0,
-              //         groupValue: group,
-              //         onChanged: (value) => {},
-              //         title: const Text("Female"),
-              //       ),
-              //     )
-              //   ],
-              // ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: ElevatedButton(
-                  onPressed: () => {print("asd")},
-                  child: Container(
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(16),
-                    child: const Text(
-                      "Sign up",
-                      style: TextStyle(fontSize: 20),
+                const SizedBox(height: 15),
+                //password
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: CustomTextInput(
+                    controller: passwordTextController,
+                    hint: "Password",
+                    prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.remove_red_eye_rounded),
                     ),
                   ),
                 ),
-              ),
+                const SizedBox(height: 15),
 
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: const TextSpan(
-                    text: "By registering, you confirm that you accept our ",
-                    style: TextStyle(color: Colors.black, fontSize: 20),
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: 'Term of service',
-                          style: TextStyle(color: Colors.amber)),
-                      TextSpan(text: ' and '),
-                      TextSpan(
-                          text: 'Privacy policy',
-                          style: TextStyle(color: Colors.amber)),
-                    ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: CustomTextInput(
+                    controller: confirmPasswordController,
+                    hint: "Password",
+                    prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.remove_red_eye_rounded),
+                    ),
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () => {
-                  print('asasdasd'),
-                  Navigator.pop(context),
-                },
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 32),
-                  child: Text(
-                    "Have an account? Sign in",
-                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                const SizedBox(height: 40),
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: RadioListTile(
+                //         value: 0,
+                //         groupValue: group,
+                //         onChanged: (value) => {},
+                //         title: const Text("Male"),
+                //       ),
+                //     ),
+                //     Expanded(
+                //       child: RadioListTile(
+                //         value: 0,
+                //         groupValue: group,
+                //         onChanged: (value) => {},
+                //         title: const Text("Female"),
+                //       ),
+                //     )
+                //   ],
+                // ),
+                customButton(
+                  text: "Sign up",
+                  onPress: () {},
+                ),
+                const SizedBox(height: 20),
+
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: const TextSpan(
+                      text: "By registering, you confirm that you accept our ",
+                      style: TextStyle(color: Colors.black, fontSize: 20),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: 'Term of service',
+                            style: TextStyle(color: Colors.amber)),
+                        TextSpan(text: ' and '),
+                        TextSpan(
+                            text: 'Privacy policy',
+                            style: TextStyle(color: Colors.amber)),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ]),
+                GestureDetector(
+                  onTap: () => {
+                    print('asasdasd'),
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()),
+                    ),
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 32),
+                    child: Text(
+                      "Have an account? Sign in",
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

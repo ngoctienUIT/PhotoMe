@@ -4,9 +4,11 @@ import 'package:photo_me/src/core/function/route_function.dart';
 import 'package:photo_me/src/core/language/bloc/language_bloc.dart';
 import 'package:photo_me/src/core/language/bloc/language_event.dart';
 import 'package:photo_me/src/core/utils/constants/constants.dart';
+import 'package:photo_me/src/presentation/edit_profile/widgets/custom_text_input.dart';
 import 'package:photo_me/src/presentation/login/bloc/login_bloc.dart';
 import 'package:photo_me/src/presentation/login/bloc/login_event.dart';
 import 'package:photo_me/src/presentation/login/bloc/login_state.dart';
+import 'package:photo_me/src/presentation/login/widget/custom_button.dart';
 import 'package:photo_me/src/presentation/main/screen/main_page.dart';
 
 import '../../../core/function/on_will_pop.dart';
@@ -43,10 +45,13 @@ class _LoginViewState extends State<LoginView> {
         print(state);
         if (state is LoginSuccess) {
           context.read<LanguageBloc>().add(SetUserID(state.userID));
-          Navigator.of(context).pushReplacement(createRoute(
-            screen: const MainPage(),
-            begin: const Offset(0, 1),
-          ));
+          Navigator.of(context).pushAndRemoveUntil(
+            createRoute(
+              screen: const MainPage(),
+              begin: const Offset(0, 1),
+            ),
+            (route) => false,
+          );
         }
         if (state is LoginError) {
           final snackBar = SnackBar(
@@ -67,102 +72,95 @@ class _LoginViewState extends State<LoginView> {
           ),
           child: SafeArea(
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // image, app text
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 80, right: 100, left: 100),
-                    child: Image.asset(AppImages.imgLogoB),
-                  ),
-                  const Text(
-                    "PhotoMe App",
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+              physics: const BouncingScrollPhysics(),
+              child: Form(
+                child: Column(
+                  children: [
+                    // image, app text
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 80, right: 100, left: 100),
+                      child: Image.asset(AppImages.imgLogoB, height: 120),
                     ),
-                  ),
+                    const SizedBox(height: 20),
 
-                  // email
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: TextField(
-                      controller: emailTextController,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Email",
-                          prefixIcon: Icon(Icons.person)),
+                    const Text(
+                      "PhotoMe App",
+                      style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-
-                  //password
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    child: TextField(
-                      controller: passwordTextController,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Password",
-                          prefixIcon: Icon(Icons.lock)),
+                    const SizedBox(height: 70),
+                    // email
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: CustomTextInput(
+                        controller: emailTextController,
+                        hint: "Email",
+                        prefixIcon: const Icon(Icons.person),
+                      ),
                     ),
-                  ),
-
-                  //login button
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: ElevatedButton(
-                      onPressed: () => {
-                        context.read<LoginBloc>().add(Login(
-                            emailTextController.text,
-                            passwordTextController.text)),
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(16),
-                        child: const Text(
-                          "Sign in",
-                          style: TextStyle(fontSize: 20),
+                    const SizedBox(height: 20),
+                    //password
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: CustomTextInput(
+                        controller: passwordTextController,
+                        hint: "Password",
+                        prefixIcon: const Icon(Icons.lock),
+                        suffixIcon: IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.remove_red_eye_rounded),
                         ),
                       ),
                     ),
-                  ),
-
-                  // forgot password
-
-                  GestureDetector(
-                    onTap: () => {print("forgot password")},
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40),
-                      child: Text(
-                        "Forgot password",
-                        style: TextStyle(color: Colors.blue, fontSize: 16),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 15),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            "Forgot password",
+                            style: TextStyle(color: Colors.blue, fontSize: 14),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-
-                  GestureDetector(
-                    onTap: () => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignupPage()),
-                      ),
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 32),
-                      child: Text(
-                        "Don't have an account? Create here ",
-                        style: TextStyle(color: Colors.blue, fontSize: 16),
+                    const SizedBox(height: 10),
+                    //login button
+                    customButton(
+                      text: "Sign in",
+                      onPress: () {
+                        context.read<LoginBloc>().add(Login(
+                            emailTextController.text,
+                            passwordTextController.text));
+                      },
+                    ),
+                    // forgot password
+                    GestureDetector(
+                      onTap: () => {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignupPage()),
+                        ),
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 32),
+                        child: Text(
+                          "Don't have an account? Create here ",
+                          style: TextStyle(color: Colors.blue, fontSize: 16),
+                        ),
                       ),
                     ),
-                  ),
 
-                  // dont have password
-                ],
+                    // dont have password
+                  ],
+                ),
               ),
             ),
           ),

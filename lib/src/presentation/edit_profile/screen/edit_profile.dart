@@ -103,11 +103,7 @@ class _EditProfileViewState extends State<EditProfileView> {
               key: _formKey,
               child: Column(
                 children: [
-                  AvatarWidget(
-                    onChange: (image) => setState(() => this.image = image),
-                    image: image,
-                    avatar: widget.user.avatar,
-                  ),
+                  avatarWidget(),
                   const SizedBox(height: 30),
                   ProfileItem(
                     title: "Tên",
@@ -131,14 +127,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                   const SizedBox(height: 20),
                   Row(
                     children: [
-                      Expanded(
-                        child: GenderWidget(
-                          isPick: isPick,
-                          controller: genderController,
-                          onChange: (isPick) =>
-                              setState(() => this.isPick = isPick),
-                        ),
-                      ),
+                      Expanded(child: genderWidget()),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Column(
@@ -163,6 +152,40 @@ class _EditProfileViewState extends State<EditProfileView> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget avatarWidget() {
+    return BlocBuilder<EditProfileBloc, EditProfileState>(
+      buildWhen: (previous, current) =>
+          current is ChangeAvatarState || current is InitState,
+      builder: (_, state) {
+        return AvatarWidget(
+          onChange: (image) {
+            this.image = image;
+            context.read<EditProfileBloc>().add(ChangeAvatarEvent());
+          },
+          image: image,
+          avatar: widget.user.avatar,
+        );
+      },
+    );
+  }
+
+  Widget genderWidget() {
+    return BlocBuilder<EditProfileBloc, EditProfileState>(
+      buildWhen: (previous, current) =>
+          current is ChangeGenderState || current is InitState,
+      builder: (_, state) {
+        return GenderWidget(
+          isPick: isPick,
+          controller: genderController,
+          onChange: (isPick) {
+            this.isPick = isPick;
+            context.read<EditProfileBloc>().add(ChangeGenderEvent());
+          },
+        );
+      },
     );
   }
 

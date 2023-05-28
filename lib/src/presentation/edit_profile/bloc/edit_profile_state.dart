@@ -13,3 +13,7 @@ class UpdateError extends EditProfileState {
 }
 
 class ChangeBirthDayState extends EditProfileState {}
+
+class ChangeGenderState extends EditProfileState {}
+
+class ChangeAvatarState extends EditProfileState {}

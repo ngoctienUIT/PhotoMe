@@ -10,10 +10,12 @@ class CustomTextInput extends StatelessWidget {
     this.title,
     this.radius = 5,
     this.suffixIcon,
+    this.prefixIcon,
     this.textStyle,
     this.isBorder = true,
     required this.hint,
     this.isEnabled = true,
+    this.validator,
     this.maxLines,
     this.onPress,
     this.onChange,
@@ -31,6 +33,7 @@ class CustomTextInput extends StatelessWidget {
   final String? title;
   final double radius;
   final Widget? suffixIcon;
+  final Widget? prefixIcon;
   final TextStyle? textStyle;
   final bool isBorder;
   final int? maxLines;
@@ -47,6 +50,7 @@ class CustomTextInput extends StatelessWidget {
   final Color colorBorder;
   final TextCapitalization textCapitalization;
   final EdgeInsetsGeometry contentPadding;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +66,12 @@ class CustomTextInput extends StatelessWidget {
       readOnly: onPress == null ? false : true,
       maxLines: maxLines,
       onChanged: onChange,
+      validator: validator,
       decoration: InputDecoration(
         filled: true,
         hintText: hint,
         suffixIcon: suffixIcon,
+        prefixIcon: prefixIcon,
         fillColor: backgroundColor,
         contentPadding: contentPadding,
         border: !isBorder
@@ -93,12 +99,6 @@ class CustomTextInput extends StatelessWidget {
                 borderSide: BorderSide(color: colorBorder, width: 0.7),
               ),
       ),
-      validator: (value) {
-        if (typeInput != null) {
-          return showError(context, value, title, typeInput!);
-        }
-        return null;
-      },
     );
   }
 

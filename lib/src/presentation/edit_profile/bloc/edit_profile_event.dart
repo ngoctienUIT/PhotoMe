@@ -9,3 +9,7 @@ class UpdateProfileEvent extends EditProfileEvent {
 }
 
 class ChangeBirthDayEvent extends EditProfileEvent {}
+
+class ChangeGenderEvent extends EditProfileEvent {}
+
+class ChangeAvatarEvent extends EditProfileEvent {}

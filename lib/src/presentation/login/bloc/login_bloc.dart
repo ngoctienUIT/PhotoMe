@@ -51,9 +51,9 @@ class LoginBloc extends Bloc<LoginScreenEvent, LoginState> {
   Future init(Emitter emit) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString("token");
-      String? userID = prefs.getString("userID");
-      if (token != null && userID != null) {
+      String token = prefs.getString("token") ?? "";
+      String userID = prefs.getString("userID") ?? "";
+      if (token.isNotEmpty && userID.isNotEmpty) {
         print(token);
         emit(LoginSuccess(userID: userID));
       }
