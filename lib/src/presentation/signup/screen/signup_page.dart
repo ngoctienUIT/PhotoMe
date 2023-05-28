@@ -8,6 +8,7 @@ import 'package:photo_me/src/presentation/signup/bloc/signup_state.dart';
 
 import '../../../core/utils/constants/app_images.dart';
 import '../../edit_profile/widgets/custom_text_input.dart';
+import '../../edit_profile/widgets/gender_widget.dart';
 import '../../login/widget/custom_button.dart';
 
 // enum SingingCharacter { Ma }
@@ -32,10 +33,13 @@ class SignupView extends StatefulWidget {
 
 class _SignupViewState extends State<SignupView> {
   final TextEditingController emailTextController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController genderController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
   int group = 1;
+  bool isPick = true;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +85,23 @@ class _SignupViewState extends State<SignupView> {
                   ),
                 ),
                 const SizedBox(height: 70),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: CustomTextInput(
+                    controller: nameController,
+                    hint: "Name",
+                    prefixIcon: const Icon(Icons.person),
+                  ),
+                ),
+                GenderWidget(
+                  isPick: isPick,
+                  controller: genderController,
+                  onChange: (isPick) {
+                    setState(() {
+                      this.isPick = isPick;
+                    });
+                  },
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: CustomTextInput(
