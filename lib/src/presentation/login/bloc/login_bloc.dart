@@ -19,11 +19,31 @@ class LoginBloc extends Bloc<LoginScreenEvent, LoginState> {
           ApiService(Dio(BaseOptions(contentType: "application/json")));
       final response =
           await apiService.login({"email": email, "password": password});
+
       final prefs = await SharedPreferences.getInstance();
       prefs.setString("token", response.data.token);
       prefs.setString("userID", response.data.user.id);
+
+      print("token: ${response.data.token}");
+
+      final deviceToken = prefs.getString("device") ?? "";
+
+      print(deviceToken);
+
+      print(response.data.user.id);
+
+      final deviceTokenResponse = await apiService.setDeviceToken(
+        "Bearer ${response.data.token}",
+        response.data.user.id,
+        {"deviceToken": deviceToken},
+      );
+
+      print("ok?");
+
+      // print(deviceTokenResponse.data.deviceToken);
       emit(LoginSuccess(userID: response.data.user.id));
     } catch (e) {
+      print(e);
       emit(LoginError(e.toString()));
     }
   }

@@ -37,26 +37,17 @@ Future<void> setupFlutterNotifications() async {
     return;
   }
   channel = const AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications', // title
-    description:
-        'This channel is used for important notifications.', // description
+    'high_importance_channel',
+    'High Importance Notifications',
+    description: 'This channel is used for important notifications.',
     importance: Importance.high,
   );
 
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-  /// Create an Android Notification Channel.
-  ///
-  /// We use this channel in the `AndroidManifest.xml` file to override the
-  /// default FCM channel to enable heads up notifications.
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
-
-  /// Update the iOS foreground notification presentation options to allow
-  /// heads up notifications.
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
     badge: true,
@@ -78,8 +69,6 @@ void showFlutterNotification(RemoteMessage message) {
           channel.id,
           channel.name,
           channelDescription: channel.description,
-          // TODO add a proper drawable resource to android, for now using
-          //      one that already exists in example app.
           icon: 'launch_background',
         ),
       ),
@@ -89,19 +78,6 @@ void showFlutterNotification(RemoteMessage message) {
 
 /// Initialize the [FlutterLocalNotificationsPlugin] package.
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-//   // Set the background messaging handler early on, as a named top-level function
-//   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-//
-//   if (!kIsWeb) {
-//     await setupFlutterNotifications();
-//   }
-//
-//   runApp(MessagingExampleApp());
-// }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -118,6 +94,7 @@ void main() async {
   }
 
   final prefs = await SharedPreferences.getInstance();
+  prefs.setString("device", fcmToken ?? "");
   language = prefs.getInt('language');
   runApp(const MyApp());
 }

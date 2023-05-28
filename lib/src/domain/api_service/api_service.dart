@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:photo_me/src/domain/response/auth/auth_response.dart';
 import 'package:photo_me/src/domain/response/comment/comment_response.dart';
 import 'package:photo_me/src/domain/response/notification/notification_response.dart';
@@ -10,7 +9,7 @@ import 'package:retrofit/retrofit.dart';
 part 'api_service.g.dart';
 
 //flutter pub run build_runner build
-@RestApi(baseUrl: 'http://192.168.1.219:5000')
+@RestApi(baseUrl: 'http://192.168.0.113:5000')
 abstract class ApiService {
   factory ApiService(Dio dio) = _ApiService;
 
@@ -116,8 +115,22 @@ abstract class ApiService {
   Future<HttpResponse<List<CommentResponse>>> getAllCommentPost(
       @Path("id") String id);
 
+  // get All notification
   @GET("/api/user/{id}/notification")
   Future<HttpResponse<List<NotificationHmResponse>>> getAllNotification(
-      @Header('Authorization') String token,
-      @Path("id") String id);
+      @Header('Authorization') String token, @Path("id") String id);
+
+  // set device token
+  @PUT("/api/user/{id}/deviceToken")
+  Future<HttpResponse> setDeviceToken(
+    @Header('Authorization') String token,
+    @Path("id") String id,
+    @Body() Map<String, String> body,
+  );
+
+  @GET("/api/user/{id}/deviceToken")
+  Future<HttpResponse> getDeviceToken(
+    @Header('Authorization') String token,
+    @Path("id") String id,
+  );
 }
