@@ -8,8 +8,8 @@ import 'package:photo_me/src/presentation/signup/bloc/signup_state.dart';
 
 import '../../../core/utils/constants/app_images.dart';
 import '../../edit_profile/widgets/custom_text_input.dart';
-import '../../edit_profile/widgets/gender_widget.dart';
 import '../../login/widget/custom_button.dart';
+import '../bloc/signup_event.dart';
 
 // enum SingingCharacter { Ma }
 class SignupPage extends StatelessWidget {
@@ -36,10 +36,10 @@ class _SignupViewState extends State<SignupView> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
+  final TextEditingController phoneTextController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-  int group = 1;
-  bool isPick = true;
+  String? gender = 'male';
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class _SignupViewState extends State<SignupView> {
       listener: (context, state) {
         if (state is SignupSuccess) {
           Navigator.of(context).pushReplacement(createRoute(
-            screen: const MainPage(),
+            screen: const LoginPage(),
             begin: const Offset(0, 1),
           ));
         }
@@ -55,7 +55,7 @@ class _SignupViewState extends State<SignupView> {
           final snackBar = SnackBar(
             content: const Text('Error'),
             action: SnackBarAction(
-              label: 'Error nào thì không biết',
+              label: state.error,
               onPressed: () {},
             ),
           );
@@ -71,7 +71,7 @@ class _SignupViewState extends State<SignupView> {
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.only(top: 80, right: 100, left: 100),
+                      const EdgeInsets.only(top: 50, right: 100, left: 100),
                   child: Image.asset(AppImages.imgLogoB, height: 120),
                 ),
                 const SizedBox(height: 20),
@@ -84,29 +84,40 @@ class _SignupViewState extends State<SignupView> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 70),
+                const SizedBox(height: 20),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                   child: CustomTextInput(
                     controller: nameController,
                     hint: "Name",
                     prefixIcon: const Icon(Icons.person),
                   ),
                 ),
-                GenderWidget(
-                  isPick: isPick,
-                  controller: genderController,
-                  onChange: (isPick) {
-                    setState(() {
-                      this.isPick = isPick;
-                    });
-                  },
-                ),
+                // GenderWidget(
+                //   isPick: isPick,
+                //   controller: genderController,
+                //   onChange: (isPick) {
+                //     setState(() {
+                //       this.isPick = isPick;
+                //     });
+                //   },
+                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: CustomTextInput(
                     controller: emailTextController,
                     hint: "Email",
+                    prefixIcon: const Icon(Icons.person),
+                  ),
+                ),
+                const SizedBox(height: 15),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: CustomTextInput(
+                    controller: phoneTextController,
+                    hint: "Phone",
                     prefixIcon: const Icon(Icons.person),
                   ),
                 ),
@@ -138,52 +149,49 @@ class _SignupViewState extends State<SignupView> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 40),
-                // Row(
-                //   children: [
-                //     Expanded(
-                //       child: RadioListTile(
-                //         value: 0,
-                //         groupValue: group,
-                //         onChanged: (value) => {},
-                //         title: const Text("Male"),
-                //       ),
-                //     ),
-                //     Expanded(
-                //       child: RadioListTile(
-                //         value: 0,
-                //         groupValue: group,
-                //         onChanged: (value) => {},
-                //         title: const Text("Female"),
-                //       ),
-                //     )
-                //   ],
-                // ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: RadioListTile(
+                        value: 'male',
+                        groupValue: gender,
+                        onChanged: (value) => {
+                          setState(() {
+                            gender = value;
+                          })
+                        },
+                        title: const Text("Male"),
+                      ),
+                    ),
+                    Expanded(
+                      child: RadioListTile(
+                        value: 'female',
+                        groupValue: gender,
+                        onChanged: (value) => {
+                          setState(() {
+                            gender = value;
+                          })
+                        },
+                        title: const Text("Female"),
+                      ),
+                    )
+                  ],
+                ),
                 customButton(
                   text: "Sign up",
-                  onPress: () {},
+                  onPress: () {
+                    context.read<SignupBloc>().add(Signup(
+                          emailTextController.text,
+                          nameController.text,
+                          gender ?? "",
+                          phoneTextController.text,
+                          passwordTextController.text,
+                          confirmPasswordController.text,
+                        ));
+                  },
                 ),
                 const SizedBox(height: 20),
-
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: const TextSpan(
-                      text: "By registering, you confirm that you accept our ",
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: 'Term of service',
-                            style: TextStyle(color: Colors.amber)),
-                        TextSpan(text: ' and '),
-                        TextSpan(
-                            text: 'Privacy policy',
-                            style: TextStyle(color: Colors.amber)),
-                      ],
-                    ),
-                  ),
-                ),
                 GestureDetector(
                   onTap: () => {
                     print('asasdasd'),

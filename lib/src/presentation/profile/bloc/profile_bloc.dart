@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/presentation/profile/bloc/profile_event.dart';
 import 'package:photo_me/src/presentation/profile/bloc/profile_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../domain/api_service/api_service.dart';
 
@@ -17,9 +18,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileLoading());
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      // final prefs = await SharedPreferences.getInstance();
-      // String userID = prefs.getString("userID") ?? "";
-      String userID = "644e6a86a80a852835987bd7";
+      final prefs = await SharedPreferences.getInstance();
+      String userID = prefs.getString("userID") ?? "";
+      // String userID = "644e6a86a80a852835987bd7";
       final userResponse = await apiService.getUserByID(userID);
 
       emit(ProfileLoaded(userResponse.data));
@@ -39,9 +40,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(PostLoading());
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      // final prefs = await SharedPreferences.getInstance();
-      // String userID = prefs.getString("userID") ?? "";
-      String userID = "644e6a86a80a852835987bd7";
+      final prefs = await SharedPreferences.getInstance();
+      String userID = prefs.getString("userID") ?? "";
+      // String userID = "644e6a86a80a852835987bd7";
       final postResponse = await apiService.getPostUser(userID);
 
       emit(PostLoaded(postResponse.data));

@@ -8,16 +8,35 @@ import '../../../domain/api_service/api_service.dart';
 
 class SignupBloc extends Bloc<SignupScreenEvent, SignupState> {
   SignupBloc() : super(InitState()) {
-    on<Signup>((event, emit) => login(event.email, event.password, emit));
+    on<Signup>(
+      (event, emit) => signup(event.email, event.password, event.rePassword,
+          event.gender, event.name, event.phone, emit),
+    );
   }
 
-  Future login(String email, String password, Emitter emit) async {
+  Future signup(
+    String email,
+    String password,
+    String rePassword,
+    String gender,
+    String name,
+    String phone,
+    Emitter emit,
+  ) async {
     try {
       emit(SignupLoading());
+      if (password != rePassword) {
+        emit(SignupError("Password not match"));
+      }
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      final response =
-          await apiService.login({"email": email, "password": password});
+      final response = await apiService.signup({
+        "email": email,
+        "password": password,
+        "gender": gender,
+        "name": name,
+        "phoneNumber": phone,
+      });
       final prefs = await SharedPreferences.getInstance();
       prefs.setString("token", response.data.token);
       emit(SignupSuccess());
