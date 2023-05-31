@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:photo_me/src/core/utils/extension/string_extension.dart';
+import 'package:photo_me/src/core/widgets/item_loading.dart';
 import 'package:photo_me/src/domain/response/comment/comment_response.dart';
 import 'package:photo_me/src/presentation/edit_profile/widgets/custom_text_input.dart';
 import 'package:photo_me/src/presentation/post_item/post_item.dart';
@@ -144,20 +144,30 @@ class _ViewPostViewState extends State<ViewPostView> {
   }
 
   Widget buildListComment() {
+    List<CommentResponse> list = [];
     return BlocBuilder<ViewPostBloc, ViewPostState>(
       buildWhen: (previous, current) =>
-          current is InitState || current is CommentSuccess,
+          current is InitState ||
+          current is CommentSuccess ||
+          current is DeleteCommentSuccess,
       builder: (_, state) {
-        if (state is CommentSuccess) {
+        if (state is CommentSuccess || state is DeleteCommentSuccess) {
+          if (state is CommentSuccess) {
+            list = [];
+            list.addAll(state.list);
+          }
+          if (state is DeleteCommentSuccess) {
+            list.removeWhere((element) => element.id == state.id);
+          }
           return ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: state.list.length,
+            itemCount: list.length,
             padding: const EdgeInsets.all(10),
             itemBuilder: (context, index) {
               return Column(
                 children: [
-                  commentItem(context, state.list[index]),
+                  commentItem(context, list[index]),
                   const SizedBox(height: 15),
                 ],
               );
@@ -165,6 +175,47 @@ class _ViewPostViewState extends State<ViewPostView> {
           );
         }
         return const Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+
+  Widget buildLoading() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 10,
+      padding: const EdgeInsets.all(10),
+      itemBuilder: (context, index) {
+        return Column(
+          children: [
+            Row(
+              children: [
+                itemLoading(50, 50, 90),
+                const SizedBox(width: 10),
+                Column(
+                  children: [
+                    itemLoading(20, 120, 5),
+                    const SizedBox(height: 5),
+                    itemLoading(15, 120, 5),
+                    const SizedBox(height: 5),
+                    itemLoading(15, 120, 5),
+                  ],
+                ),
+                const Spacer(),
+                Row(
+                  children: [
+                    itemLoadingWidget(
+                        const Icon(Icons.favorite_border_rounded)),
+                    const SizedBox(width: 5),
+                    itemLoading(20, 30, 5),
+                  ],
+                ),
+                const SizedBox(width: 25),
+              ],
+            ),
+            const SizedBox(height: 15),
+          ],
+        );
       },
     );
   }
@@ -202,10 +253,9 @@ class _ViewPostViewState extends State<ViewPostView> {
                   onPressed: () {
                     Navigator.of(context).pop();
                     _showAlertDialog(context, () {
-                      context
-                          .read<ViewPostBloc>()
-                          .add(DeleteComment(comment.idPost!, comment.id));
-                      Navigator.pop(context);
+                      context.read<ViewPostBloc>().add(DeleteComment(
+                          comment.idPost ?? widget.post.id, comment.id));
+                      Navigator.of(context).pop();
                     });
                   },
                   child: const Text(
@@ -288,7 +338,7 @@ class _ViewPostViewState extends State<ViewPostView> {
                 Row(
                   children: [
                     Text(
-                      timeago.format(comment.registration.toDateTime(),
+                      timeago.format(DateTime.parse(comment.registration),
                           locale: "vi"),
                       overflow: TextOverflow.ellipsis,
                     ),

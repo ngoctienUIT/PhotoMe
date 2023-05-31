@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/core/function/route_function.dart';
 import 'package:photo_me/src/presentation/login/screen/login_page.dart';
-import 'package:photo_me/src/presentation/main/screen/main_page.dart';
 import 'package:photo_me/src/presentation/signup/bloc/signup_bloc.dart';
 import 'package:photo_me/src/presentation/signup/bloc/signup_state.dart';
 

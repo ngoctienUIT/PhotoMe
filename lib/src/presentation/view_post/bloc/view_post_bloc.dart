@@ -107,11 +107,11 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
       final prefs = await SharedPreferences.getInstance();
       String token = prefs.getString("token") ?? "";
       await apiService.deleteComment(event.idComment, "Bearer $token");
-      emit(DeleteCommentSuccess());
+      emit(DeleteCommentSuccess(event.idComment));
     } on DioError catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
-      add(GetPost(event.idPost));
+      // add(GetPost(event.idPost));
       emit(ErrorState(error));
       print(error);
     } catch (e) {

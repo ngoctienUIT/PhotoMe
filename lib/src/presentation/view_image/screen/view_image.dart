@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/function/save_image.dart';
@@ -37,13 +40,15 @@ class _ViewImageImageState extends State<ViewImage> {
               elevation: 0,
               iconTheme: const IconThemeData(color: Colors.white),
               actions: [
-                InkWell(
-                  onTap: () => saveImage(""),
-                  child: const Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Icon(Icons.download),
-                  ),
-                )
+                if (widget.url.contains("https://") ||
+                    widget.url.contains("http://"))
+                  InkWell(
+                    onTap: () => saveImage(""),
+                    child: const Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Icon(Icons.download),
+                    ),
+                  )
               ],
             )
           : null,
@@ -73,7 +78,24 @@ class _ViewImageImageState extends State<ViewImage> {
               clipBehavior: Clip.none,
               minScale: 1,
               maxScale: 4,
-              child: Image.asset(widget.url),
+              child: widget.url.contains("https://") ||
+                      widget.url.contains("http://")
+                  ? CachedNetworkImage(
+                      imageUrl: widget.url,
+                      height: 150,
+                      width: 150,
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      errorWidget: (context, url, error) => Image.asset(
+                        "assets/images/post.png",
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : Image.file(
+                      File(widget.url),
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
         ),

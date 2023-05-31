@@ -64,11 +64,10 @@ dependencies:
   flutter_local_notifications: ^14.0.0
   equatable: ^2.0.5
   timeago: ^3.4.0
-  cloudinary_flutter: ^0.9.0
-  cloudinary_url_gen: ^0.9.0
   firebase_analytics: ^10.4.1
   connectivity_plus: ^4.0.1
   shimmer: ^3.0.0
+  firebase_storage: ^11.2.2
 
 dev_dependencies:
   flutter_test:

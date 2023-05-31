@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -24,6 +26,7 @@ class _ImageWidgetState extends State<ImageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.images);
     return SizedBox(
       height: MediaQuery.of(context).size.width,
       width: MediaQuery.of(context).size.width,
@@ -42,18 +45,24 @@ class _ImageWidgetState extends State<ImageWidget> {
                     builder: (context) => ViewImage(url: widget.images[index]),
                   ));
                 },
-                child: CachedNetworkImage(
-                  imageUrl: widget.images[index],
-                  height: 150,
-                  width: 150,
-                  placeholder: (context, url) => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  errorWidget: (context, url, error) => Image.asset(
-                    "assets/images/post.png",
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                child: widget.images[index].contains("https://") ||
+                        widget.images[index].contains("http://")
+                    ? CachedNetworkImage(
+                        imageUrl: widget.images[index],
+                        height: 150,
+                        width: 150,
+                        placeholder: (context, url) => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => Image.asset(
+                          "assets/images/post.png",
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Image.file(
+                        File(widget.images[index]),
+                        fit: BoxFit.cover,
+                      ),
               );
             },
           ),

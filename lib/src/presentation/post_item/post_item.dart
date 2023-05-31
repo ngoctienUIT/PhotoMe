@@ -2,14 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/domain/response/post/post_response.dart';
 import 'package:photo_me/src/presentation/home/widgets/image_widget.dart';
 import 'package:photo_me/src/presentation/other_profile/screen/other_profile_page.dart';
 import 'package:photo_me/src/presentation/post_item/bloc/post_item_event.dart';
 import 'package:photo_me/src/presentation/post_item/bloc/post_item_state.dart';
 import 'package:photo_me/src/presentation/view_post/screen/view_post_page.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 import '../../core/function/route_function.dart';
 import '../../core/language/bloc/language_bloc.dart';
@@ -42,64 +40,71 @@ class PostItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        color: const Color(0xFFF5F5F5),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).push(createRoute(
-                    screen: ViewPostPage(post: post),
-                    begin: const Offset(0, 1),
-                  ));
-                },
-                child: infoPost(context),
+    return BlocListener<PostItemBloc, PostItemState>(
+      listener: (context, state) {
+        if (state is DeleteSuccess && checkViewPost) {
+          Navigator.pop(context);
+        }
+      },
+      child: InkWell(
+        onTap: () {},
+        child: Container(
+          color: const Color(0xFFF5F5F5),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(createRoute(
+                      screen: ViewPostPage(post: post),
+                      begin: const Offset(0, 1),
+                    ));
+                  },
+                  child: infoPost(context),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(post.description),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(post.description),
+                ),
               ),
-            ),
-            if (post.photo.isNotEmpty)
-              ImageWidget(
-                images: List.generate(
-                    post.photo.length, (index) => post.photo[index]),
-              ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  buildFavoriteWidget(),
-                  InkWell(
-                    onTap: checkViewPost
-                        ? null
-                        : () {
-                            Navigator.of(context).push(createRoute(
-                              screen: ViewPostPage(post: post),
-                              begin: const Offset(0, 1),
-                            ));
-                          },
-                    child: Row(
-                      children: [
-                        const Icon(FontAwesomeIcons.comment,
-                            color: Colors.black),
-                        const SizedBox(width: 5),
-                        Text("${post.comment.length} Comment")
-                      ],
+              if (post.photo.isNotEmpty)
+                ImageWidget(
+                  images: List.generate(
+                      post.photo.length, (index) => post.photo[index]),
+                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    buildFavoriteWidget(),
+                    InkWell(
+                      onTap: checkViewPost
+                          ? null
+                          : () {
+                              Navigator.of(context).push(createRoute(
+                                screen: ViewPostPage(post: post),
+                                begin: const Offset(0, 1),
+                              ));
+                            },
+                      child: Row(
+                        children: [
+                          const Icon(FontAwesomeIcons.comment,
+                              color: Colors.black),
+                          const SizedBox(width: 5),
+                          Text("${post.comments.length} Comment")
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            )
-          ],
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -210,7 +215,9 @@ class PostItemView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 5),
-            Text(timeago.format(post.registration.toDateTime(), locale: "vi")),
+            Text(post.registration), // Todo
+            // Text(timeago.format(DateTime.parse(post.registration),
+            //     locale: "vi")),
           ],
         ),
         const Spacer(),
@@ -225,10 +232,9 @@ class PostItemView extends StatelessWidget {
                 case 0:
                   break;
                 case 1:
-                  break;
-                case 2:
                   _showAlertDialog(context, () {
                     context.read<PostItemBloc>().add(DeletePostEvent(post.id));
+                    Navigator.pop(context);
                   });
                   break;
               }
@@ -242,17 +248,17 @@ class PostItemView extends StatelessWidget {
                   color: const Color.fromRGBO(59, 190, 253, 1),
                   index: 0,
                 ),
-                itemPopup(
-                  text: 'Ai có thể xem',
-                  icon: FontAwesomeIcons.globe,
-                  color: const Color.fromRGBO(26, 191, 185, 1),
-                  index: 1,
-                ),
+                // itemPopup(
+                //   text: 'Ai có thể xem',
+                //   icon: FontAwesomeIcons.globe,
+                //   color: const Color.fromRGBO(26, 191, 185, 1),
+                //   index: 1,
+                // ),
                 itemPopup(
                   text: 'Xóa',
                   icon: FontAwesomeIcons.trash,
                   color: const Color.fromRGBO(26, 191, 185, 1),
-                  index: 2,
+                  index: 1,
                 ),
               ];
             },

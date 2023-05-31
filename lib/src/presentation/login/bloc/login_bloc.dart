@@ -32,11 +32,11 @@ class LoginBloc extends Bloc<LoginScreenEvent, LoginState> {
 
       print(response.data.user.id);
 
-      final deviceTokenResponse = await apiService.setDeviceToken(
-        "Bearer ${response.data.token}",
-        response.data.user.id,
-        {"deviceToken": deviceToken},
-      );
+      // final deviceTokenResponse = await apiService.setDeviceToken(
+      //   "Bearer ${response.data.token}",
+      //   response.data.user.id,
+      //   {"deviceToken": deviceToken},
+      // );
 
       print("ok?");
 

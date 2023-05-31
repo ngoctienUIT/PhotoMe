@@ -9,7 +9,7 @@ import 'package:retrofit/retrofit.dart';
 part 'api_service.g.dart';
 
 //flutter pub run build_runner build
-@RestApi(baseUrl: 'http://192.168.0.113:5000')
+@RestApi(baseUrl: 'http://192.168.1.219:5000')
 abstract class ApiService {
   factory ApiService(Dio dio) = _ApiService;
 
@@ -61,8 +61,16 @@ abstract class ApiService {
 
   //createPost
   @POST("/api/post")
-  Future<HttpResponse> createPost(
+  Future<HttpResponse<String>> createPost(
     @Header('Authorization') String token,
+    @Body() body,
+  );
+
+  //updatePost
+  @PUT("/api/post/{id}")
+  Future<HttpResponse> updatePost(
+    @Header('Authorization') String token,
+    @Path("id") String id,
     @Body() body,
   );
 
@@ -106,7 +114,7 @@ abstract class ApiService {
   @GET("/api/post")
   Future<HttpResponse<List<PostResponse>>> getAllPost();
 
-  //getAllPost
+  //getPostByID
   @GET("/api/post/{id}")
   Future<HttpResponse<PostResponse>> getPostByID(@Path("id") String id);
 

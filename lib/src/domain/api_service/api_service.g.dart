@@ -13,7 +13,7 @@ class _ApiService implements ApiService {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.0.113:5000';
+    baseUrl ??= 'http://192.168.1.219:5000';
   }
 
   final Dio _dio;
@@ -257,7 +257,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<HttpResponse<dynamic>> createPost(
+  Future<HttpResponse<String>> createPost(
     String token,
     dynamic body,
   ) async {
@@ -267,7 +267,7 @@ class _ApiService implements ApiService {
     _headers.removeWhere((k, v) => v == null);
     final _data = body;
     final _result =
-        await _dio.fetch(_setStreamType<HttpResponse<dynamic>>(Options(
+        await _dio.fetch<String>(_setStreamType<HttpResponse<String>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -275,6 +275,35 @@ class _ApiService implements ApiService {
             .compose(
               _dio.options,
               '/api/post',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = _result.data!;
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<dynamic>> updatePost(
+    String token,
+    String id,
+    dynamic body,
+  ) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = body;
+    final _result =
+        await _dio.fetch(_setStreamType<HttpResponse<dynamic>>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/post/${id}',
               queryParameters: queryParameters,
               data: _data,
             )

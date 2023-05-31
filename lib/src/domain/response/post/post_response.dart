@@ -25,8 +25,8 @@ class PostResponse extends Equatable {
   @JsonKey(name: "liked")
   final List<String> liked;
 
-  @JsonKey(name: "comment")
-  final List<String> comment;
+  @JsonKey(name: "comments")
+  final List<String> comments;
 
   @JsonKey(name: "registration_data")
   final String registration;
@@ -37,7 +37,7 @@ class PostResponse extends Equatable {
     this.description,
     this.photo,
     this.liked,
-    this.comment,
+    this.comments,
     this.user,
     this.registration,
   );
@@ -48,5 +48,5 @@ class PostResponse extends Equatable {
   Map<String, dynamic> toJson() => _$PostResponseToJson(this);
 
   @override
-  List<Object?> get props => [description, photo, liked, comment, id, user];
+  List<Object?> get props => [description, photo, liked, comments, id, user];
 }

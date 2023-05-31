@@ -15,3 +15,11 @@ Widget itemLoading(double height, double width, double radius) {
     ),
   );
 }
+
+Widget itemLoadingWidget(Widget child) {
+  return Shimmer.fromColors(
+    baseColor: Colors.grey[300]!,
+    highlightColor: Colors.grey[100]!,
+    child: child,
+  );
+}

@@ -116,6 +116,7 @@ class _NewPostViewState extends State<NewPostView> {
                   XFile? pickImage =
                       await ImagePicker().pickImage(source: ImageSource.camera);
                   if (pickImage != null) {
+                    print(pickImage.path);
                     setState(() => images.add(pickImage));
                   }
                 }
