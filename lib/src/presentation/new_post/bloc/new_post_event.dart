@@ -6,3 +6,11 @@ class CreatePostEvent extends NewPostEvent {
 
   CreatePostEvent(this.description, this.photo);
 }
+
+class UpdatePostEvent extends NewPostEvent {
+  String id;
+  String description;
+  List<String> photo;
+
+  UpdatePostEvent(this.id, this.description, this.photo);
+}

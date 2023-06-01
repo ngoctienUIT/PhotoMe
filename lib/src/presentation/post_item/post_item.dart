@@ -4,10 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_me/src/domain/response/post/post_response.dart';
 import 'package:photo_me/src/presentation/home/widgets/image_widget.dart';
+import 'package:photo_me/src/presentation/new_post/screen/new_post_page.dart';
 import 'package:photo_me/src/presentation/other_profile/screen/other_profile_page.dart';
 import 'package:photo_me/src/presentation/post_item/bloc/post_item_event.dart';
 import 'package:photo_me/src/presentation/post_item/bloc/post_item_state.dart';
 import 'package:photo_me/src/presentation/view_post/screen/view_post_page.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 import '../../core/function/route_function.dart';
 import '../../core/language/bloc/language_bloc.dart';
@@ -215,9 +217,8 @@ class PostItemView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 5),
-            Text(post.registration), // Todo
-            // Text(timeago.format(DateTime.parse(post.registration),
-            //     locale: "vi")),
+            Text(timeago.format(DateTime.parse(post.registration),
+                locale: "vi")),
           ],
         ),
         const Spacer(),
@@ -230,6 +231,10 @@ class PostItemView extends StatelessWidget {
             onSelected: (value) {
               switch (value) {
                 case 0:
+                  Navigator.of(context).push(createRoute(
+                    screen: NewPostPage(post: post),
+                    begin: const Offset(0, 1),
+                  ));
                   break;
                 case 1:
                   _showAlertDialog(context, () {

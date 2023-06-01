@@ -4,13 +4,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_me/src/core/function/loading_animation.dart';
+import 'package:photo_me/src/domain/response/post/post_response.dart';
 import 'package:photo_me/src/presentation/home/widgets/image_widget.dart';
 import 'package:photo_me/src/presentation/new_post/bloc/new_post_bloc.dart';
 import 'package:photo_me/src/presentation/new_post/bloc/new_post_event.dart';
 import 'package:photo_me/src/presentation/new_post/bloc/new_post_state.dart';
 
 class NewPostPage extends StatelessWidget {
-  const NewPostPage({Key? key}) : super(key: key);
+  const NewPostPage({Key? key, this.post}) : super(key: key);
+
+  final PostResponse? post;
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +29,16 @@ class NewPostPage extends StatelessWidget {
             Navigator.pop(context);
           }
         },
-        child: const NewPostView(),
+        child: NewPostView(post: post),
       ),
     );
   }
 }
 
 class NewPostView extends StatefulWidget {
-  const NewPostView({Key? key}) : super(key: key);
+  const NewPostView({Key? key, this.post}) : super(key: key);
+
+  final PostResponse? post;
 
   @override
   State<NewPostView> createState() => _NewPostViewState();
@@ -41,7 +46,17 @@ class NewPostView extends StatefulWidget {
 
 class _NewPostViewState extends State<NewPostView> {
   List<XFile> images = [];
+  List<String> networkImages = [];
   TextEditingController contentController = TextEditingController();
+
+  @override
+  void initState() {
+    if (widget.post != null) {
+      contentController.text = widget.post!.description;
+      networkImages = widget.post!.photo;
+    }
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -56,9 +71,9 @@ class _NewPostViewState extends State<NewPostView> {
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
-          "New Post",
-          style: TextStyle(color: Colors.black),
+        title: Text(
+          widget.post != null ? "Update post" : "New Post",
+          style: const TextStyle(color: Colors.black),
         ),
         centerTitle: true,
         actions: [
@@ -67,12 +82,20 @@ class _NewPostViewState extends State<NewPostView> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(elevation: 0),
               onPressed: () {
-                context.read<NewPostBloc>().add(CreatePostEvent(
-                      contentController.text,
-                      images.map((e) => e.path).toList(),
-                    ));
+                if (widget.post == null) {
+                  context.read<NewPostBloc>().add(CreatePostEvent(
+                        contentController.text,
+                        images.map((e) => e.path).toList(),
+                      ));
+                } else {
+                  List<String> list = [];
+                  list.addAll(networkImages);
+                  list.addAll(images.map((e) => e.path).toList());
+                  context.read<NewPostBloc>().add(UpdatePostEvent(
+                      widget.post!.id, contentController.text, list));
+                }
               },
-              child: const Text("Upload"),
+              child: Text(widget.post != null ? "Update" : "Upload"),
             ),
           ),
         ],
@@ -93,8 +116,11 @@ class _NewPostViewState extends State<NewPostView> {
                 ),
               ),
             ),
-            if (images.isNotEmpty)
-              ImageWidget(images: images.map((e) => e.path).toList()),
+            if (images.isNotEmpty || networkImages.isNotEmpty)
+              ImageWidget(
+                images: images.map((e) => e.path).toList(),
+                networkImages: networkImages,
+              ),
           ],
         ),
       ),

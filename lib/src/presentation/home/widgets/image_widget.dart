@@ -7,8 +7,14 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../view_image/screen/view_image.dart';
 
 class ImageWidget extends StatefulWidget {
-  const ImageWidget({Key? key, required this.images}) : super(key: key);
+  const ImageWidget({
+    Key? key,
+    required this.images,
+    this.networkImages = const [],
+  }) : super(key: key);
+
   final List<String> images;
+  final List<String> networkImages;
 
   @override
   State<ImageWidget> createState() => _ImageWidgetState();
@@ -26,7 +32,9 @@ class _ImageWidgetState extends State<ImageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.images);
+    List<String> list = [];
+    list.addAll(widget.networkImages);
+    list.addAll(widget.images);
     return SizedBox(
       height: MediaQuery.of(context).size.width,
       width: MediaQuery.of(context).size.width,
@@ -36,37 +44,40 @@ class _ImageWidgetState extends State<ImageWidget> {
             physics: const BouncingScrollPhysics(),
             controller: controller,
             scrollDirection: Axis.horizontal,
-            itemCount: widget.images.length,
+            itemCount: list.length,
             onPageChanged: (value) => setState(() => currentIndex = value),
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ViewImage(url: widget.images[index]),
+                    builder: (context) => ViewImage(url: list[index]),
                   ));
                 },
-                child: widget.images[index].contains("https://") ||
-                        widget.images[index].contains("http://")
-                    ? CachedNetworkImage(
-                        imageUrl: widget.images[index],
-                        height: 150,
-                        width: 150,
-                        placeholder: (context, url) => const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                        errorWidget: (context, url, error) => Image.asset(
-                          "assets/images/post.png",
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : Image.file(
-                        File(widget.images[index]),
-                        fit: BoxFit.cover,
-                      ),
+                child: list[index].contains("assets/")
+                    ? Image.asset(list[index], fit: BoxFit.cover)
+                    : (list[index].contains("https://") ||
+                            list[index].contains("http://")
+                        ? CachedNetworkImage(
+                            imageUrl: list[index],
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                            errorWidget: (context, url, error) => Image.asset(
+                              "assets/images/post.png",
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Image.file(
+                            File(list[index]),
+                            fit: BoxFit.cover,
+                          )),
               );
             },
           ),
-          if (widget.images.length > 1)
+          if (list.length > 1)
             Positioned(
               bottom: 10,
               child: SizedBox(
@@ -74,7 +85,7 @@ class _ImageWidgetState extends State<ImageWidget> {
                 child: Center(
                   child: SmoothPageIndicator(
                     controller: controller,
-                    count: widget.images.length,
+                    count: list.length,
                     effect: const ScrollingDotsEffect(
                       // activeDotColor: Colors.red,
                       activeStrokeWidth: 2.6,
@@ -89,7 +100,7 @@ class _ImageWidgetState extends State<ImageWidget> {
                 ),
               ),
             ),
-          if (widget.images.length > 1)
+          if (list.length > 1)
             Positioned(
               top: 10,
               right: 20,
@@ -100,7 +111,7 @@ class _ImageWidgetState extends State<ImageWidget> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  "${currentIndex + 1}/${widget.images.length}",
+                  "${currentIndex + 1}/${list.length}",
                   style: const TextStyle(color: Colors.white),
                 ),
               ),
