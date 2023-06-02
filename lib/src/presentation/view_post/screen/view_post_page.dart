@@ -168,6 +168,30 @@ class _ViewPostViewState extends State<ViewPostView> {
               return Column(
                 children: [
                   commentItem(context, list[index]),
+                  if (list[index].reply.isNotEmpty) const SizedBox(height: 10),
+                  Visibility(
+                    visible: list[index].reply.isNotEmpty,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 60,
+                          child: Divider(
+                            indent: 15,
+                            endIndent: 10,
+                            thickness: 1,
+                            color: Colors.black.withOpacity(0.5),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: Text(
+                            "Xem ${list[index].reply.length} câu trả lời",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 15),
                 ],
               );

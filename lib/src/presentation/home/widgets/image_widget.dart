@@ -11,10 +11,14 @@ class ImageWidget extends StatefulWidget {
     Key? key,
     required this.images,
     this.networkImages = const [],
+    this.showDelete = false,
+    this.onDelete,
   }) : super(key: key);
 
   final List<String> images;
   final List<String> networkImages;
+  final bool showDelete;
+  final Function(int index)? onDelete;
 
   @override
   State<ImageWidget> createState() => _ImageWidgetState();
@@ -47,33 +51,63 @@ class _ImageWidgetState extends State<ImageWidget> {
             itemCount: list.length,
             onPageChanged: (value) => setState(() => currentIndex = value),
             itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ViewImage(url: list[index]),
-                  ));
-                },
-                child: list[index].contains("assets/")
-                    ? Image.asset(list[index], fit: BoxFit.cover)
-                    : (list[index].contains("https://") ||
-                            list[index].contains("http://")
-                        ? CachedNetworkImage(
-                            imageUrl: list[index],
-                            height: 150,
-                            width: 150,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => const Center(
-                              child: CircularProgressIndicator(),
+              return Stack(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ViewImage(url: list[index]),
+                      ));
+                    },
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width,
+                      child: list[index].contains("assets/")
+                          ? Image.asset(list[index], fit: BoxFit.cover)
+                          : (list[index].contains("https://") ||
+                                  list[index].contains("http://")
+                              ? CachedNetworkImage(
+                                  imageUrl: list[index],
+                                  height: 150,
+                                  width: 150,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(
+                                    "assets/images/post.png",
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Image.file(
+                                  File(list[index]),
+                                  fit: BoxFit.cover,
+                                )),
+                    ),
+                  ),
+                  if (widget.showDelete)
+                    Positioned(
+                      top: 10,
+                      left: 10,
+                      child: GestureDetector(
+                        onTap: () => widget.onDelete!(index),
+                        child: Material(
+                          elevation: 5,
+                          borderRadius: BorderRadius.circular(30),
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30),
                             ),
-                            errorWidget: (context, url, error) => Image.asset(
-                              "assets/images/post.png",
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : Image.file(
-                            File(list[index]),
-                            fit: BoxFit.cover,
-                          )),
+                            child: const Icon(Icons.close),
+                          ),
+                        ),
+                      ),
+                    )
+                ],
               );
             },
           ),

@@ -47,6 +47,7 @@ class NewPostView extends StatefulWidget {
 class _NewPostViewState extends State<NewPostView> {
   List<XFile> images = [];
   List<String> networkImages = [];
+  List<String> deleteImages = [];
   TextEditingController contentController = TextEditingController();
 
   @override
@@ -120,6 +121,10 @@ class _NewPostViewState extends State<NewPostView> {
               ImageWidget(
                 images: images.map((e) => e.path).toList(),
                 networkImages: networkImages,
+                showDelete: true,
+                onDelete: (index) {
+                  if (index > images.length - 1) {}
+                },
               ),
           ],
         ),

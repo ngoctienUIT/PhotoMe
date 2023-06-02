@@ -77,12 +77,12 @@ class NewPostBloc extends Bloc<NewPostEvent, NewPostState> {
   }
 
   Future<List<String>> uploadImage(List<String> list, String id) async {
+    Reference reference = FirebaseStorage.instance.ref();
     List<String> listURL = [];
     for (var item in list) {
       if (!item.contains("https://") && !item.contains("http://")) {
-        Reference upload = FirebaseStorage.instance
-            .ref()
-            .child("post/$id/${DateTime.now().microsecond}");
+        Reference upload =
+            reference.child("post/$id/${DateTime.now().microsecond}");
         final result = await upload.putFile(File(item));
         print(result.ref.fullPath);
         listURL.add(await upload.getDownloadURL());
