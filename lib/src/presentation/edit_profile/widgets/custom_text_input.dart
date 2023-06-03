@@ -23,6 +23,7 @@ class CustomTextInput extends StatelessWidget {
     this.keyboardType,
     this.textInputAction,
     this.controller,
+    this.focusNode,
     this.backgroundColor = Colors.white,
     this.inputFormatters,
     this.colorBorder = Colors.black54,
@@ -50,6 +51,7 @@ class CustomTextInput extends StatelessWidget {
   final Color colorBorder;
   final TextCapitalization textCapitalization;
   final EdgeInsetsGeometry contentPadding;
+  final FocusNode? focusNode;
   final String? Function(String?)? validator;
 
   @override
@@ -60,6 +62,7 @@ class CustomTextInput extends StatelessWidget {
       enabled: isEnabled,
       controller: controller,
       keyboardType: keyboardType,
+      focusNode: focusNode,
       textInputAction: textInputAction,
       inputFormatters: inputFormatters,
       textCapitalization: textCapitalization,

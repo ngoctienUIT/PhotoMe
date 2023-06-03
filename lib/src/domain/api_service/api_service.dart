@@ -96,6 +96,14 @@ abstract class ApiService {
     @Body() body,
   );
 
+  //replyComment
+  @POST("/api/comment/{id}/reply")
+  Future<HttpResponse> replyComment(
+    @Path("id") String id,
+    @Header('Authorization') String token,
+    @Body() body,
+  );
+
   //likeComment
   @POST("/api/comment/like")
   Future<HttpResponse> likeComment(
@@ -121,6 +129,11 @@ abstract class ApiService {
   //getAllCommentPost
   @GET("/api/comment/{id}")
   Future<HttpResponse<List<CommentResponse>>> getAllCommentPost(
+      @Path("id") String id);
+
+  //getAllReplyComment
+  @GET("/api/comment/{id}/reply")
+  Future<HttpResponse<List<CommentResponse>>> getAllReplyComment(
       @Path("id") String id);
 
   // get All notification

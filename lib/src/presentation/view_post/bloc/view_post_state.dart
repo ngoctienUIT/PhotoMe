@@ -8,6 +8,8 @@ class InitState extends ViewPostState {}
 
 class CommentLoading extends ViewPostState {}
 
+class ChangeCommentState extends ViewPostState {}
+
 class ErrorState extends ViewPostState {
   String error;
 
@@ -24,6 +26,13 @@ class PostSuccess extends ViewPostState {
   PostResponse post;
 
   PostSuccess(this.post);
+}
+
+class GetReplySuccess extends ViewPostState {
+  List<CommentResponse> list;
+  String id;
+
+  GetReplySuccess(this.id, this.list);
 }
 
 class WriteCommentState extends ViewPostState {

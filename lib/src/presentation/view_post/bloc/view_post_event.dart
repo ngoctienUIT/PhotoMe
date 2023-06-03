@@ -19,6 +19,26 @@ class CommentPost extends ViewPostEvent {
   CommentPost(this.id, this.comment);
 }
 
+class ReplyComment extends ViewPostEvent {
+  String idComment;
+  String idPost;
+  String comment;
+
+  ReplyComment({
+    required this.idPost,
+    required this.idComment,
+    required this.comment,
+  });
+}
+
+class GetReplyComment extends ViewPostEvent {
+  String id;
+
+  GetReplyComment(this.id);
+}
+
+class ChangeCommentEvent extends ViewPostEvent {}
+
 class WriteComment extends ViewPostEvent {
   bool check;
 

@@ -14,11 +14,17 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
 
     on<CommentPost>((event, emit) => commentPost(event, emit));
 
+    on<ReplyComment>((event, emit) => replyComment(event, emit));
+
+    on<GetReplyComment>((event, emit) => getReplyComment(event.id, emit));
+
     on<WriteComment>((event, emit) => emit(WriteCommentState(event.check)));
 
     on<LikeComment>((event, emit) => likeComment(event.id, emit));
 
     on<DeleteComment>((event, emit) => deleteComment(event, emit));
+
+    on<ChangeCommentEvent>((event, emit) => emit(ChangeCommentState()));
   }
 
   Future getAllCommentPost(String id, Emitter emit) async {
@@ -69,6 +75,46 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
       final response = await apiService.getAllCommentPost(event.id);
       add(GetPost(event.id));
       emit(CommentSuccess(response.data));
+    } on DioError catch (e) {
+      String error =
+          e.response != null ? e.response!.data.toString() : e.toString();
+      emit(ErrorState(error));
+      print(error);
+    } catch (e) {
+      emit(ErrorState(e.toString()));
+      print(e);
+    }
+  }
+
+  Future replyComment(ReplyComment event, Emitter emit) async {
+    try {
+      ApiService apiService =
+          ApiService(Dio(BaseOptions(contentType: "application/json")));
+      final prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString("token") ?? "";
+      await apiService.replyComment(
+          event.idComment, "Bearer $token", {"comment": event.comment});
+      final response = await apiService.getAllReplyComment(event.idComment);
+      add(GetPost(event.idPost));
+      add(GetComment(event.idPost));
+      emit(GetReplySuccess(event.idComment, response.data));
+    } on DioError catch (e) {
+      String error =
+          e.response != null ? e.response!.data.toString() : e.toString();
+      emit(ErrorState(error));
+      print(error);
+    } catch (e) {
+      emit(ErrorState(e.toString()));
+      print(e);
+    }
+  }
+
+  Future getReplyComment(String id, Emitter emit) async {
+    try {
+      ApiService apiService =
+          ApiService(Dio(BaseOptions(contentType: "application/json")));
+      final response = await apiService.getAllReplyComment(id);
+      emit(GetReplySuccess(id, response.data));
     } on DioError catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();

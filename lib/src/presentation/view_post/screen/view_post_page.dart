@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,8 +45,37 @@ class ViewPostView extends StatefulWidget {
   State<ViewPostView> createState() => _ViewPostViewState();
 }
 
-class _ViewPostViewState extends State<ViewPostView> {
+class _ViewPostViewState extends State<ViewPostView>
+    with WidgetsBindingObserver {
   TextEditingController commentController = TextEditingController();
+  CommentResponse? replyComment;
+  FocusNode commentFocusNode = FocusNode();
+  bool _isKeyboardVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final newValue = MediaQuery.of(context).viewInsets.bottom > 0.0;
+    if (newValue != _isKeyboardVisible) {
+      if (!newValue && replyComment != null) {
+        commentFocusNode.unfocus();
+        replyComment = null;
+      }
+      _isKeyboardVisible = newValue;
+      context.read<ViewPostBloc>().add(ChangeCommentEvent());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,10 +111,7 @@ class _ViewPostViewState extends State<ViewPostView> {
           child: Row(
             children: [
               ClipOval(
-                child: Image.asset(
-                  "assets/images/avatar.jpg",
-                  height: 50,
-                ),
+                child: Image.asset("assets/images/avatar.jpg", height: 50),
               ),
               const SizedBox(width: 10),
               Expanded(child: writeCommentWidget()),
@@ -112,14 +140,19 @@ class _ViewPostViewState extends State<ViewPostView> {
   Widget writeCommentWidget() {
     return BlocBuilder<ViewPostBloc, ViewPostState>(
       buildWhen: (previous, current) =>
-          current is InitState || current is WriteCommentState,
+          current is InitState ||
+          current is WriteCommentState ||
+          current is ChangeCommentState,
       builder: (_, state) {
         bool check = false;
         if (state is WriteCommentState) check = state.check;
         return CustomTextInput(
           controller: commentController,
-          hint: "Thêm bình luận",
+          hint: replyComment != null
+              ? "Trả lời ${replyComment!.user.name}"
+              : "Thêm bình luận",
           radius: 30,
+          focusNode: commentFocusNode,
           contentPadding: const EdgeInsets.all(10),
           onChange: (text) {
             context.read<ViewPostBloc>().add(WriteComment(text.isNotEmpty));
@@ -127,10 +160,20 @@ class _ViewPostViewState extends State<ViewPostView> {
           suffixIcon: check
               ? InkWell(
                   onTap: () {
-                    context.read<ViewPostBloc>().add(
-                        CommentPost(widget.post.id, commentController.text));
-                    commentController.text = "";
-                    FocusManager.instance.primaryFocus?.unfocus();
+                    if (replyComment == null) {
+                      context.read<ViewPostBloc>().add(
+                          CommentPost(widget.post.id, commentController.text));
+                      commentController.text = "";
+                      commentFocusNode.unfocus();
+                    } else {
+                      context.read<ViewPostBloc>().add(ReplyComment(
+                          idPost: widget.post.id,
+                          idComment: replyComment!.id,
+                          comment: commentController.text));
+                      // replyComment=null;
+                      commentController.text = "";
+                      commentFocusNode.unfocus();
+                    }
                   },
                   child: const Icon(
                     FontAwesomeIcons.paperPlane,
@@ -165,41 +208,162 @@ class _ViewPostViewState extends State<ViewPostView> {
             itemCount: list.length,
             padding: const EdgeInsets.all(10),
             itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  commentItem(context, list[index]),
-                  if (list[index].reply.isNotEmpty) const SizedBox(height: 10),
-                  Visibility(
-                    visible: list[index].reply.isNotEmpty,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 60,
-                          child: Divider(
-                            indent: 15,
-                            endIndent: 10,
-                            thickness: 1,
-                            color: Colors.black.withOpacity(0.5),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {},
-                          child: Text(
-                            "Xem ${list[index].reply.length} câu trả lời",
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                ],
-              );
+              return buildComment(list[index]);
             },
           );
         }
         return const Center(child: CircularProgressIndicator());
       },
+    );
+  }
+
+  Widget buildComment(CommentResponse comment) {
+    return BlocBuilder<ViewPostBloc, ViewPostState>(
+        buildWhen: (previous, current) =>
+            current is GetReplySuccess && current.id == comment.id,
+        builder: (context, state) {
+          return Column(
+            children: [
+              commentItem(context, comment),
+              if (comment.reply.isNotEmpty &&
+                  !(state is GetReplySuccess && state.id == comment.id))
+                const SizedBox(height: 10),
+              Visibility(
+                visible: comment.reply.isNotEmpty &&
+                    !(state is GetReplySuccess && state.id == comment.id),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 60,
+                      child: Divider(
+                        indent: 15,
+                        endIndent: 10,
+                        thickness: 1,
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        context
+                            .read<ViewPostBloc>()
+                            .add(GetReplyComment(comment.id));
+                      },
+                      child: Text(
+                        "Xem ${comment.reply.length} câu trả lời",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (state is GetReplySuccess && state.id == comment.id)
+                ListView.builder(
+                  padding: const EdgeInsets.only(left: 50),
+                  itemCount: state.list.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        if (index == 0) const SizedBox(height: 15),
+                        commentItem(context, state.list[index], 35),
+                        if (index < state.list.length - 1)
+                          const SizedBox(height: 15),
+                      ],
+                    );
+                  },
+                ),
+              const SizedBox(height: 15),
+            ],
+          );
+        });
+  }
+
+  Widget commentItem(BuildContext context, CommentResponse comment,
+      [double size = 50]) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onLongPress: () {
+        _showSimpleDialog(context, comment);
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          InkWell(
+            onTap: () {
+              Navigator.of(context).push(createRoute(
+                screen: OtherProfilePage(id: comment.user.id),
+                begin: const Offset(0, 1),
+              ));
+            },
+            child: ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: comment.user.avatar,
+                height: size,
+                width: size,
+                placeholder: (context, url) => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                errorWidget: (context, url, error) => Image.asset(
+                  "assets/images/avatar.jpg",
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(createRoute(
+                      screen: OtherProfilePage(id: comment.user.id),
+                      begin: const Offset(0, 1),
+                    ));
+                  },
+                  child: Text(
+                    comment.user.name,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(comment.comment),
+                const SizedBox(height: 5),
+                Row(
+                  children: [
+                    Text(
+                      timeago.format(DateTime.parse(comment.registration),
+                          locale: "vi"),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(width: 10),
+                    InkWell(
+                      onTap: () {
+                        commentFocusNode.requestFocus();
+                        replyComment = comment;
+                        context.read<ViewPostBloc>().add(ChangeCommentEvent());
+                      },
+                      child: const Text("Trả lời"),
+                    ),
+                    const Spacer(),
+                    buildFavoriteWidget(comment),
+                    const SizedBox(width: 25),
+                    // InkWell(
+                    //   onTap: () {},
+                    //   child: const Icon(FontAwesomeIcons.thumbsDown),
+                    // ),
+                    // const SizedBox(width: 3),
+                    // Text(comment.liked.length.toString()),
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -304,86 +468,6 @@ class _ViewPostViewState extends State<ViewPostView> {
           onOK: onOK,
         );
       },
-    );
-  }
-
-  Widget commentItem(BuildContext context, CommentResponse comment) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onLongPress: () {
-        _showSimpleDialog(context, comment);
-      },
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          InkWell(
-            onTap: () {
-              Navigator.of(context).push(createRoute(
-                screen: OtherProfilePage(id: comment.user.id),
-                begin: const Offset(0, 1),
-              ));
-            },
-            child: ClipOval(
-              child: CachedNetworkImage(
-                imageUrl: comment.user.avatar,
-                height: 50,
-                width: 50,
-                placeholder: (context, url) => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                errorWidget: (context, url, error) => Image.asset(
-                  "assets/images/avatar.jpg",
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(createRoute(
-                      screen: OtherProfilePage(id: comment.user.id),
-                      begin: const Offset(0, 1),
-                    ));
-                  },
-                  child: Text(
-                    comment.user.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(comment.comment),
-                const SizedBox(height: 5),
-                Row(
-                  children: [
-                    Text(
-                      timeago.format(DateTime.parse(comment.registration),
-                          locale: "vi"),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(width: 10),
-                    InkWell(onTap: () {}, child: const Text("Trả lời")),
-                    const Spacer(),
-                    buildFavoriteWidget(comment),
-                    const SizedBox(width: 25),
-                    // InkWell(
-                    //   onTap: () {},
-                    //   child: const Icon(FontAwesomeIcons.thumbsDown),
-                    // ),
-                    // const SizedBox(width: 3),
-                    // Text(comment.liked.length.toString()),
-                  ],
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
     );
   }
 
