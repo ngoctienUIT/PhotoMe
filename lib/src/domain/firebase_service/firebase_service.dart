@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:firebase_storage/firebase_storage.dart';
 
 class FirebaseService {
-  static Future deleteImage(String url, String id) async {
+  static Future deleteImage(String url) async {
     try {
       Reference reference = FirebaseStorage.instance.ref(url);
       List<String> list = reference.name.split("%2F");
@@ -24,5 +26,22 @@ class FirebaseService {
     } catch (e) {
       print(e);
     }
+  }
+
+  static Future<List<String>> uploadImage(List<String> list, String id) async {
+    Reference reference = FirebaseStorage.instance.ref();
+    List<String> listURL = [];
+    for (var item in list) {
+      if (!item.contains("https://") && !item.contains("http://")) {
+        Reference upload =
+            reference.child("post/$id/${DateTime.now().microsecond}");
+        final result = await upload.putFile(File(item));
+        print(result.ref.fullPath);
+        listURL.add(await upload.getDownloadURL());
+      } else {
+        listURL.add(item);
+      }
+    }
+    return listURL;
   }
 }

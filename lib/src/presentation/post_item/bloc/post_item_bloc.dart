@@ -5,6 +5,7 @@ import 'package:photo_me/src/presentation/post_item/bloc/post_item_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../domain/api_service/api_service.dart';
+import '../../../domain/firebase_service/firebase_service.dart';
 
 class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
   PostItemBloc() : super(InitState()) {
@@ -56,6 +57,7 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
 
   Future deletePost(String id, Emitter emit) async {
     try {
+      FirebaseService.deleteFolder(id);
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
       final prefs = await SharedPreferences.getInstance();

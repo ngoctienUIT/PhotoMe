@@ -36,9 +36,7 @@ class _ImageWidgetState extends State<ImageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> list = [];
-    list.addAll(widget.networkImages);
-    list.addAll(widget.images);
+    List<String> list = [...widget.networkImages, ...widget.images];
     return SizedBox(
       height: MediaQuery.of(context).size.width,
       width: MediaQuery.of(context).size.width,

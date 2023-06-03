@@ -11,6 +11,14 @@ class UpdatePostEvent extends NewPostEvent {
   String id;
   String description;
   List<String> photo;
+  List<String> deletePhoto;
 
-  UpdatePostEvent(this.id, this.description, this.photo);
+  UpdatePostEvent({
+    required this.id,
+    required this.description,
+    required this.photo,
+    required this.deletePhoto,
+  });
 }
+
+class ChangeImageListEvent extends NewPostEvent {}

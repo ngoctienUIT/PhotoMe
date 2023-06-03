@@ -54,7 +54,7 @@ class _NewPostViewState extends State<NewPostView> {
   void initState() {
     if (widget.post != null) {
       contentController.text = widget.post!.description;
-      networkImages = widget.post!.photo;
+      networkImages = [...widget.post!.photo];
     }
     super.initState();
   }
@@ -89,11 +89,15 @@ class _NewPostViewState extends State<NewPostView> {
                         images.map((e) => e.path).toList(),
                       ));
                 } else {
-                  List<String> list = [];
-                  list.addAll(networkImages);
-                  list.addAll(images.map((e) => e.path).toList());
+                  List<String> list = [
+                    ...networkImages,
+                    ...images.map((e) => e.path).toList()
+                  ];
                   context.read<NewPostBloc>().add(UpdatePostEvent(
-                      widget.post!.id, contentController.text, list));
+                      id: widget.post!.id,
+                      description: contentController.text,
+                      photo: list,
+                      deletePhoto: deleteImages));
                 }
               },
               child: Text(widget.post != null ? "Update" : "Upload"),
@@ -117,15 +121,7 @@ class _NewPostViewState extends State<NewPostView> {
                 ),
               ),
             ),
-            if (images.isNotEmpty || networkImages.isNotEmpty)
-              ImageWidget(
-                images: images.map((e) => e.path).toList(),
-                networkImages: networkImages,
-                showDelete: true,
-                onDelete: (index) {
-                  if (index > images.length - 1) {}
-                },
-              ),
+            if (images.isNotEmpty || networkImages.isNotEmpty) showListImage()
           ],
         ),
       ),
@@ -148,7 +144,10 @@ class _NewPostViewState extends State<NewPostView> {
                       await ImagePicker().pickImage(source: ImageSource.camera);
                   if (pickImage != null) {
                     print(pickImage.path);
-                    setState(() => images.add(pickImage));
+                    images.add(pickImage);
+                    if (context.mounted) {
+                      context.read<NewPostBloc>().add(ChangeImageListEvent());
+                    }
                   }
                 }
               }),
@@ -163,13 +162,39 @@ class _NewPostViewState extends State<NewPostView> {
                 if (status.isGranted) {
                   final List<XFile> images =
                       await ImagePicker().pickMultiImage();
-                  setState(() => this.images.addAll(images));
+                  // setState(() => this.images.addAll(images));
+                  this.images.addAll(images);
+                  if (context.mounted) {
+                    context.read<NewPostBloc>().add(ChangeImageListEvent());
+                  }
                 }
               }),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget showListImage() {
+    return BlocBuilder<NewPostBloc, NewPostState>(
+      buildWhen: (previous, current) => current is ChangeImageListState,
+      builder: (context, state) {
+        return ImageWidget(
+          images: images.map((e) => e.path).toList(),
+          networkImages: networkImages,
+          showDelete: true,
+          onDelete: (index) {
+            if (index > networkImages.length - 1) {
+              images.removeAt(index - networkImages.length);
+            } else {
+              deleteImages.add(networkImages[index]);
+              networkImages.removeAt(index);
+            }
+            context.read<NewPostBloc>().add(ChangeImageListEvent());
+          },
+        );
+      },
     );
   }
 

@@ -11,3 +11,5 @@ class NewPostError extends NewPostState {
 
   NewPostError(this.error);
 }
+
+class ChangeImageListState extends NewPostState {}

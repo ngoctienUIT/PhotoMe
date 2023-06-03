@@ -288,9 +288,7 @@ class PostItemView extends StatelessWidget {
             }
             if (state is FollowLoading || state is FollowSuccess) {
               if (!post.user.follower.contains(userID)) {
-                List<String> listFollow = [];
-                listFollow.addAll(post.user.follower);
-                listFollow.add(userID);
+                List<String> listFollow = [...post.user.follower, userID];
                 checkFollow = true;
               }
               if (state is FollowSuccess && checkFollow) {
