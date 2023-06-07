@@ -15,5 +15,7 @@
   "view_profile_picture": "Xem hình trang cá nhân",
   "delete_profile_picture": "Xóa hình trang cá nhân",
   "cancel": "Hủy",
-  "ok": "Ok"
+  "ok": "Ok",
+  "internet_connection_is_available": "Đã có kết nối internet",
+  "no_internet_connection": "Không có kết nối Internet"
 }

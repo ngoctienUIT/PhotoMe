@@ -1,18 +1,28 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:photo_me/src/core/bloc/service_event.dart';
 import 'package:photo_me/src/core/utils/constants/constants.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
+import 'package:photo_me/src/data/model/service_model.dart';
+import 'package:photo_me/src/presentation/main/screen/main_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'firebase_options.dart';
+import 'src/core/bloc/service_bloc.dart';
+import 'src/core/function/custom_toast.dart';
+import 'src/core/function/network_connectivity.dart';
 import 'src/core/language/bloc/language_bloc.dart';
 import 'src/core/language/bloc/language_state.dart';
 import 'src/core/language/localization/app_localizations_setup.dart';
+import 'src/domain/api_service/api_service.dart';
 import 'src/presentation/login/screen/login_page.dart';
 
 int? language;
@@ -111,6 +121,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<LanguageBloc>(
           create: (_) => LanguageBloc(language: language),
         ),
+        BlocProvider(create: (_) => ServiceBloc()),
       ],
       child: BlocBuilder<LanguageBloc, LanguageState>(
         buildWhen: (previous, current) => previous != current,
@@ -138,14 +149,72 @@ class MyApp extends StatelessWidget {
                 centerTitle: true,
               ),
             ),
-            home: AnimatedSplashScreen(
-              nextScreen: const LoginPage(),
-              splash: AppImages.imgLogoB,
-              splashIconSize: 250,
-            ),
+            home: const SplashScreen(),
           );
         },
       ),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  final NetworkConnectivity _networkConnectivity = NetworkConnectivity.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _networkConnectivity.initialise();
+    _networkConnectivity.myStream.listen((source) {
+      print('source $source');
+      switch (source) {
+        case ConnectivityResult.mobile:
+        case ConnectivityResult.wifi:
+          customToast(
+              context, "internet_connection_is_available".translate(context));
+          break;
+        case ConnectivityResult.none:
+          customToast(context, "no_internet_connection".translate(context));
+          break;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _networkConnectivity.disposeStream();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSplashScreen.withScreenFunction(
+      splash: AppImages.imgLogoB,
+      splashIconSize: 200,
+      screenFunction: () async {
+        final prefs = await SharedPreferences.getInstance();
+        String token = prefs.getString("token") ?? "";
+        String userID = prefs.getString("userID") ?? "";
+        ApiService apiService =
+            ApiService(Dio(BaseOptions(contentType: "application/json")));
+        final response = await apiService.getAllPost();
+        if (mounted) {
+          context
+              .read<ServiceBloc>()
+              .add(SetServiceModel(ServiceModel(posts: response.data)));
+        }
+        if (token.isNotEmpty && userID.isNotEmpty) {
+          print(token);
+          return const MainPage();
+        }
+        return const LoginPage();
+      },
     );
   }
 }
