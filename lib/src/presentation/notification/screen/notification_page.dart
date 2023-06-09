@@ -4,6 +4,8 @@ import 'package:photo_me/src/presentation/notification/bloc/notification_bloc.da
 import 'package:photo_me/src/presentation/notification/bloc/notification_state.dart';
 import 'package:photo_me/src/presentation/notification/widgets/notification_item.dart';
 
+import '../../../core/function/route_function.dart';
+import '../../view_post/screen/view_post_page.dart';
 import '../bloc/notification_event.dart';
 
 class NotificationPage extends StatelessWidget {
@@ -49,10 +51,21 @@ class NotificationView extends StatelessWidget {
             return Column(
               children: [
                 const SizedBox(height: 20),
-                NotificationItem(
-                  imageUrl: "assets/images/avatar.jpg",
-                  name: state.notifications[index].toUser.name,
-                  action: state.notifications[index].text,
+                InkWell(
+                  onTap: () {
+                    if(state.notifications[index].post != null){
+                      Navigator.of(context).push(createRoute(
+                        screen: ViewPostPage(post: state.notifications[index].post!),
+                        begin: const Offset(0, 1),
+                      ));
+                    }
+
+                  },
+                  child: NotificationItem(
+                    imageUrl: state.notifications[index].toUser.avatar,
+                    name: state.notifications[index].toUser.name,
+                    action: state.notifications[index].text,
+                  ),
                 ),
               ],
             );

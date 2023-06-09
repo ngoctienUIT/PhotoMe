@@ -16,6 +16,10 @@ NotificationHmResponse _$NotificationHmResponseFromJson(
       json['isRead'] as bool,
       json['time'] as String,
       UserResponse.fromJson(json['to_user'] as Map<String, dynamic>),
+      json['to_Post'] as String?,
+      json['post'] == null
+          ? null
+          : PostResponse.fromJson(json['post'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$NotificationHmResponseToJson(
@@ -27,5 +31,7 @@ Map<String, dynamic> _$NotificationHmResponseToJson(
       'text': instance.text,
       'isRead': instance.isRead,
       'time': instance.time,
+      'to_Post': instance.toPost,
       'to_user': instance.toUser,
+      'post': instance.post,
     };

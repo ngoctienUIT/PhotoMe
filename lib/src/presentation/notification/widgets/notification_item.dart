@@ -1,5 +1,6 @@
 // ignore_for_file: use_key_in_widget_constructors
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class NotificationItem extends StatelessWidget {
@@ -19,8 +20,11 @@ class NotificationItem extends StatelessWidget {
         child: Row(
           children: [
             ClipOval(
-              child: Image.asset(
-                imageUrl,
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
                 height: 70,
                 width: 70,
                 fit: BoxFit.cover,
