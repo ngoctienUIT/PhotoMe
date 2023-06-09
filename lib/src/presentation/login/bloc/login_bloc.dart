@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/presentation/login/bloc/login_event.dart';
 import 'package:photo_me/src/presentation/login/bloc/login_state.dart';
@@ -26,17 +27,18 @@ class LoginBloc extends Bloc<LoginScreenEvent, LoginState> {
 
       print("token: ${response.data.token}");
 
-      final deviceToken = prefs.getString("device") ?? "";
+      final deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
 
       print(deviceToken);
 
       print(response.data.user.id);
 
-      // final deviceTokenResponse = await apiService.setDeviceToken(
-      //   "Bearer ${response.data.token}",
-      //   response.data.user.id,
-      //   {"deviceToken": deviceToken},
-      // );
+      final deviceTokenResponse = await apiService.setDeviceToken(
+        "Bearer ${response.data.token}",
+        response.data.user.id,
+        {"deviceToken": deviceToken},
+      );
+
 
       print("ok?");
 
