@@ -45,7 +45,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       // String userID = "644e6a86a80a852835987bd7";
       final postResponse = await apiService.getPostUser(userID);
 
-      emit(PostLoaded(postResponse.data));
+      emit(PostLoaded(postResponse.data.reversed.toList()));
     } on DioError catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();

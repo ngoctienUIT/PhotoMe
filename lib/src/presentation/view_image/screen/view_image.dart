@@ -82,8 +82,6 @@ class _ViewImageImageState extends State<ViewImage> {
                       widget.url.contains("http://")
                   ? CachedNetworkImage(
                       imageUrl: widget.url,
-                      height: 150,
-                      width: 150,
                       placeholder: (context, url) => const Center(
                         child: CircularProgressIndicator(),
                       ),

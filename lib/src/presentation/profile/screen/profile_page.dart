@@ -147,7 +147,8 @@ class _ProfileViewState extends State<ProfileView>
                       fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 const SizedBox(height: 5),
-                const Text("@ngoctienTNT"),
+                if (state.user.description != null)
+                  Text(state.user.description ?? ""),
                 const SizedBox(height: 10),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
@@ -218,9 +219,18 @@ class _ProfileViewState extends State<ProfileView>
                   },
                   child: Stack(
                     children: [
-                      Image.asset(
-                        "assets/images/avatar.jpg",
+                      CachedNetworkImage(
+                        imageUrl: state.post[index].photo[0],
+                        height: 150,
+                        width: 150,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => Image.asset(
+                          "assets/images/post.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       Positioned(
                         right: 5,

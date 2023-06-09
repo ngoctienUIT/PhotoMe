@@ -77,33 +77,7 @@ class _NewPostViewState extends State<NewPostView> {
           style: const TextStyle(color: Colors.black),
         ),
         centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(elevation: 0),
-              onPressed: () {
-                if (widget.post == null) {
-                  context.read<NewPostBloc>().add(CreatePostEvent(
-                        contentController.text,
-                        images.map((e) => e.path).toList(),
-                      ));
-                } else {
-                  List<String> list = [
-                    ...networkImages,
-                    ...images.map((e) => e.path).toList()
-                  ];
-                  context.read<NewPostBloc>().add(UpdatePostEvent(
-                      id: widget.post!.id,
-                      description: contentController.text,
-                      photo: list,
-                      deletePhoto: deleteImages));
-                }
-              },
-              child: Text(widget.post != null ? "Update" : "Upload"),
-            ),
-          ),
-        ],
+        actions: [buttonUpload()],
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -121,7 +95,7 @@ class _NewPostViewState extends State<NewPostView> {
                 ),
               ),
             ),
-            if (images.isNotEmpty || networkImages.isNotEmpty) showListImage()
+            showListImage(),
           ],
         ),
       ),
@@ -176,23 +150,61 @@ class _NewPostViewState extends State<NewPostView> {
     );
   }
 
+  Widget buttonUpload() {
+    return BlocBuilder<NewPostBloc, NewPostState>(
+      buildWhen: (previous, current) => current is ChangeImageListState,
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.all(10),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(elevation: 0),
+            onPressed: images.isNotEmpty || networkImages.isNotEmpty
+                ? () {
+                    if (widget.post == null) {
+                      context.read<NewPostBloc>().add(CreatePostEvent(
+                            contentController.text,
+                            images.map((e) => e.path).toList(),
+                          ));
+                    } else {
+                      List<String> list = [
+                        ...networkImages,
+                        ...images.map((e) => e.path).toList()
+                      ];
+                      context.read<NewPostBloc>().add(UpdatePostEvent(
+                          id: widget.post!.id,
+                          description: contentController.text,
+                          photo: list,
+                          deletePhoto: deleteImages));
+                    }
+                  }
+                : null,
+            child: Text(widget.post != null ? "Update" : "Upload"),
+          ),
+        );
+      },
+    );
+  }
+
   Widget showListImage() {
     return BlocBuilder<NewPostBloc, NewPostState>(
       buildWhen: (previous, current) => current is ChangeImageListState,
       builder: (context, state) {
-        return ImageWidget(
-          images: images.map((e) => e.path).toList(),
-          networkImages: networkImages,
-          showDelete: true,
-          onDelete: (index) {
-            if (index > networkImages.length - 1) {
-              images.removeAt(index - networkImages.length);
-            } else {
-              deleteImages.add(networkImages[index]);
-              networkImages.removeAt(index);
-            }
-            context.read<NewPostBloc>().add(ChangeImageListEvent());
-          },
+        return Visibility(
+          visible: images.isNotEmpty || networkImages.isNotEmpty,
+          child: ImageWidget(
+            images: images.map((e) => e.path).toList(),
+            networkImages: networkImages,
+            showDelete: true,
+            onDelete: (index) {
+              if (index > networkImages.length - 1) {
+                images.removeAt(index - networkImages.length);
+              } else {
+                deleteImages.add(networkImages[index]);
+                networkImages.removeAt(index);
+              }
+              context.read<NewPostBloc>().add(ChangeImageListEvent());
+            },
+          ),
         );
       },
     );

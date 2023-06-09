@@ -5,7 +5,7 @@ class User {
   final String description;
   final String gender;
   DateTime birthday;
-  final String avatar;
+  String avatar;
   final String job;
 
   User({

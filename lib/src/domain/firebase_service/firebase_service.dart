@@ -28,13 +28,14 @@ class FirebaseService {
     }
   }
 
-  static Future<List<String>> uploadImage(List<String> list, String id) async {
+  static Future<List<String>> uploadImage(List<String> list, String id,
+      [String folder = "post"]) async {
     Reference reference = FirebaseStorage.instance.ref();
     List<String> listURL = [];
     for (var item in list) {
       if (!item.contains("https://") && !item.contains("http://")) {
         Reference upload =
-            reference.child("post/$id/${DateTime.now().microsecond}");
+            reference.child("$folder/$id/${DateTime.now().microsecond}");
         final result = await upload.putFile(File(item));
         print(result.ref.fullPath);
         listURL.add(await upload.getDownloadURL());
