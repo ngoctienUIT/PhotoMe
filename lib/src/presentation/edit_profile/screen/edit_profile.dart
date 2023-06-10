@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:photo_me/src/core/bloc/service_event.dart';
 import 'package:photo_me/src/core/function/loading_animation.dart';
 import 'package:photo_me/src/data/model/user.dart';
 import 'package:photo_me/src/domain/response/user/user_response.dart';
@@ -15,6 +16,9 @@ import 'package:photo_me/src/presentation/edit_profile/widgets/custom_text_input
 import 'package:photo_me/src/presentation/edit_profile/widgets/gender_widget.dart';
 import 'package:photo_me/src/presentation/edit_profile/widgets/profile_item.dart';
 
+import '../../../core/bloc/service_bloc.dart';
+import '../../../data/model/service_model.dart';
+
 class EditProfile extends StatelessWidget {
   const EditProfile({Key? key, required this.user}) : super(key: key);
 
@@ -22,8 +26,9 @@ class EditProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ServiceModel serviceModel = context.read<ServiceBloc>().serviceModel;
     return BlocProvider(
-      create: (context) => EditProfileBloc(),
+      create: (context) => EditProfileBloc(serviceModel),
       child: EditProfileView(user: user),
     );
   }
@@ -76,6 +81,7 @@ class _EditProfileViewState extends State<EditProfileView> {
           loadingAnimation(context);
         }
         if (state is UpdateSuccess) {
+          context.read<ServiceBloc>().add(UpdateUserEvent(state.user));
           Navigator.pop(context);
           Navigator.pop(context);
         }

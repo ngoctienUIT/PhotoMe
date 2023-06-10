@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_me/src/core/widgets/item_loading.dart';
+import 'package:photo_me/src/data/model/service_model.dart';
 import 'package:photo_me/src/presentation/profile/bloc/profile_bloc.dart';
 import 'package:photo_me/src/presentation/profile/bloc/profile_event.dart';
 import 'package:photo_me/src/presentation/profile/bloc/profile_state.dart';
@@ -10,6 +11,7 @@ import 'package:photo_me/src/presentation/view_follow/screen/view_follow_page.da
 import 'package:photo_me/src/presentation/view_post/screen/view_post_page.dart';
 
 import '../../../core/bloc/service_bloc.dart';
+import '../../../core/bloc/service_state.dart' as service;
 import '../../../core/function/route_function.dart';
 import '../../edit_profile/screen/edit_profile.dart';
 import '../../setting/screen/setting_page.dart';
@@ -20,8 +22,9 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ServiceModel serviceModel = context.read<ServiceBloc>().serviceModel;
     return BlocProvider(
-      create: (context) => ProfileBloc()
+      create: (context) => ProfileBloc(serviceModel)
         ..add(GetProfileData())
         ..add(GetPostData()),
       child: const ProfileView(),
@@ -42,24 +45,6 @@ class _ProfileViewState extends State<ProfileView>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      // drawer: Drawer(
-      //   child: Column(
-      //     children: [
-      //       const Spacer(),
-      //       const Divider(),
-      //       ListTile(
-      //           leading: const Icon(Icons.logout),
-      //           title: const Text('Sign Out'),
-      //           onTap: () {
-      //             Navigator.of(context).pushReplacement(createRoute(
-      //               screen: const LoginPage(),
-      //               begin: const Offset(0, 1),
-      //             ));
-      //           }),
-      //       const Divider(),
-      //     ],
-      //   ),
-      // ),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -75,36 +60,29 @@ class _ProfileViewState extends State<ProfileView>
           ),
           const SizedBox(width: 10),
         ],
-        // actions: [
-        //   InkWell(
-        //     onTap: () {
-        //       Navigator.of(context).push(createRoute(
-        //         screen: const MessagePage(),
-        //         begin: const Offset(1, 0),
-        //       ));
-        //     },
-        //     child: const Padding(
-        //       padding: EdgeInsets.symmetric(horizontal: 15),
-        //       child: Icon(FontAwesomeIcons.paperPlane),
-        //     ),
-        //   ),
-        // ],
       ),
       body: buildBody(context),
     );
   }
 
   Widget buildBody(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        context.read<ProfileBloc>().add(GetPostData());
-        context.read<ProfileBloc>().add(GetProfileData());
+    return BlocListener<ServiceBloc, service.ServiceState>(
+      listener: (context, state) {
+        if (state is service.UpdateUserState) {
+          context.read<ProfileBloc>().add(GetPostData());
+        }
       },
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
+      child: RefreshIndicator(
+        onRefresh: () async {
+          context.read<ProfileBloc>().add(GetPostData());
+          context.read<ProfileBloc>().add(GetProfileData());
+        },
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          child: Column(children: [buildInfo(), buildListPost()]),
         ),
-        child: Column(children: [buildInfo(), buildListPost()]),
       ),
     );
   }

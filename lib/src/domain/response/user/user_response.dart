@@ -74,5 +74,6 @@ class UserResponse extends Equatable {
   Map<String, dynamic> toJson() => _$UserResponseToJson(this);
 
   @override
-  List<Object?> get props => [id, name, avatar, following, follower];
+  List<Object?> get props =>
+      [id, name, avatar, following, follower, description, job, birthday];
 }

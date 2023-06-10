@@ -5,10 +5,13 @@ import 'package:photo_me/src/presentation/new_post/bloc/new_post_event.dart';
 import 'package:photo_me/src/presentation/new_post/bloc/new_post_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../data/model/service_model.dart';
 import '../../../domain/api_service/api_service.dart';
 
 class NewPostBloc extends Bloc<NewPostEvent, NewPostState> {
-  NewPostBloc() : super(InitState()) {
+  ServiceModel serviceModel;
+
+  NewPostBloc(this.serviceModel) : super(InitState()) {
     on<CreatePostEvent>((event, emit) => createPost(event, emit));
 
     on<UpdatePostEvent>((event, emit) => updatePost(event, emit));
@@ -21,10 +24,8 @@ class NewPostBloc extends Bloc<NewPostEvent, NewPostState> {
       emit(NewPostLoading());
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      final prefs = await SharedPreferences.getInstance();
-      String token = prefs.getString("token") ?? "";
       final response = await apiService.createPost(
-        "Bearer $token",
+        "Bearer ${serviceModel.token}",
         {"description": event.description, "photo": []},
       );
       print(response.data);
@@ -32,7 +33,7 @@ class NewPostBloc extends Bloc<NewPostEvent, NewPostState> {
         final imageList = await FirebaseService.uploadImage(
             event.photo, response.data.replaceAll('"', ""));
         await apiService.updatePost(
-          "Bearer $token",
+          "Bearer ${serviceModel.token}",
           response.data.replaceAll('"', ""),
           {"description": event.description, "photo": imageList},
         );
@@ -57,12 +58,10 @@ class NewPostBloc extends Bloc<NewPostEvent, NewPostState> {
       }
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      final prefs = await SharedPreferences.getInstance();
-      String token = prefs.getString("token") ?? "";
       final imageList =
           await FirebaseService.uploadImage(event.photo, event.id);
       await apiService.updatePost(
-        "Bearer $token",
+        "Bearer ${serviceModel.token}",
         event.id,
         {"description": event.description, "photo": imageList},
       );

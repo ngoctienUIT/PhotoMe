@@ -32,7 +32,7 @@ abstract class ApiService {
 
   //updateUserByID
   @PUT("/api/user/{id}")
-  Future<HttpResponse> updateUserByID(
+  Future<HttpResponse<UserResponse>> updateUserByID(
     @Path("id") String id,
     @Header('Authorization') String token,
     @Body() body,

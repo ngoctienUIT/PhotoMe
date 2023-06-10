@@ -27,12 +27,14 @@ class NotificationView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<NotificationBloc, NotificationState>(
       listener: (_, state) {},
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        child: Column(
-          children: [buildBody()],
+      child: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          child: Column(
+            children: [buildBody()],
+          ),
         ),
       ),
     );
@@ -53,13 +55,13 @@ class NotificationView extends StatelessWidget {
                 const SizedBox(height: 20),
                 InkWell(
                   onTap: () {
-                    if(state.notifications[index].post != null){
+                    if (state.notifications[index].post != null) {
                       Navigator.of(context).push(createRoute(
-                        screen: ViewPostPage(post: state.notifications[index].post!),
+                        screen: ViewPostPage(
+                            post: state.notifications[index].post!),
                         begin: const Offset(0, 1),
                       ));
                     }
-
                   },
                   child: NotificationItem(
                     imageUrl: state.notifications[index].toUser.avatar,

@@ -2,12 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/presentation/view_post/bloc/view_post_event.dart';
 import 'package:photo_me/src/presentation/view_post/bloc/view_post_state.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../data/model/service_model.dart';
 import '../../../domain/api_service/api_service.dart';
 
 class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
-  ViewPostBloc() : super(InitState()) {
+  ServiceModel serviceModel;
+
+  ViewPostBloc(this.serviceModel) : super(InitState()) {
     on<GetComment>((event, emit) => getAllCommentPost(event.id, emit));
 
     on<GetPost>((event, emit) => getPost(event.id, emit));
@@ -68,10 +70,8 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
     try {
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      final prefs = await SharedPreferences.getInstance();
-      String token = prefs.getString("token") ?? "";
-      await apiService
-          .commentPost(event.id, "Bearer $token", {"comment": event.comment});
+      await apiService.commentPost(
+          event.id, "Bearer ${serviceModel.token}", {"comment": event.comment});
       final response = await apiService.getAllCommentPost(event.id);
       add(GetPost(event.id));
       emit(CommentSuccess(response.data));
@@ -90,10 +90,8 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
     try {
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      final prefs = await SharedPreferences.getInstance();
-      String token = prefs.getString("token") ?? "";
-      await apiService.replyComment(
-          event.idComment, "Bearer $token", {"comment": event.comment});
+      await apiService.replyComment(event.idComment,
+          "Bearer ${serviceModel.token}", {"comment": event.comment});
       final response = await apiService.getAllReplyComment(event.idComment);
       add(GetPost(event.idPost));
       add(GetComment(event.idPost));
@@ -131,9 +129,8 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
       emit(LikeCommentLoading(id));
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      final prefs = await SharedPreferences.getInstance();
-      String token = prefs.getString("token") ?? "";
-      await apiService.likeComment("Bearer $token", {"id_comment": id});
+      await apiService
+          .likeComment("Bearer ${serviceModel.token}", {"id_comment": id});
       emit(LikeCommentSuccess(id));
     } on DioError catch (e) {
       String error =
@@ -150,9 +147,8 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
     try {
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      final prefs = await SharedPreferences.getInstance();
-      String token = prefs.getString("token") ?? "";
-      await apiService.deleteComment(event.idComment, "Bearer $token");
+      await apiService.deleteComment(
+          event.idComment, "Bearer ${serviceModel.token}");
       emit(DeleteCommentSuccess(event.idComment));
     } on DioError catch (e) {
       String error =

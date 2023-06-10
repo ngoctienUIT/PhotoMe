@@ -209,6 +209,13 @@ class _SplashScreenState extends State<SplashScreen> {
       splash: AppImages.imgLogoB,
       splashIconSize: 200,
       screenFunction: () async {
+        var connectivityResult = await Connectivity().checkConnectivity();
+        if (connectivityResult == ConnectivityResult.none) {
+          if (context.mounted) {
+            customToast(context, "no_internet_connection".translate(context));
+          }
+          return const LoginPage();
+        }
         final prefs = await SharedPreferences.getInstance();
         String token = prefs.getString("token") ?? "";
         String userID = prefs.getString("userID") ?? "";

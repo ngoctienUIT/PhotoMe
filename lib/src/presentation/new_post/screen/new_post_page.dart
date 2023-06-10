@@ -10,6 +10,9 @@ import 'package:photo_me/src/presentation/new_post/bloc/new_post_bloc.dart';
 import 'package:photo_me/src/presentation/new_post/bloc/new_post_event.dart';
 import 'package:photo_me/src/presentation/new_post/bloc/new_post_state.dart';
 
+import '../../../core/bloc/service_bloc.dart';
+import '../../../data/model/service_model.dart';
+
 class NewPostPage extends StatelessWidget {
   const NewPostPage({Key? key, this.post}) : super(key: key);
 
@@ -17,8 +20,9 @@ class NewPostPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ServiceModel serviceModel = context.read<ServiceBloc>().serviceModel;
     return BlocProvider(
-      create: (context) => NewPostBloc(),
+      create: (context) => NewPostBloc(serviceModel),
       child: BlocListener<NewPostBloc, NewPostState>(
         listener: (context, state) {
           if (state is NewPostLoading) {

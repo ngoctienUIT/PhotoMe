@@ -17,6 +17,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import '../../../core/bloc/service_bloc.dart';
 import '../../../core/function/route_function.dart';
 import '../../../core/widgets/custom_alert_dialog.dart';
+import '../../../data/model/service_model.dart';
 import '../../../domain/response/post/post_response.dart';
 import '../../other_profile/screen/other_profile_page.dart';
 
@@ -27,8 +28,9 @@ class ViewPostPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ServiceModel serviceModel = context.read<ServiceBloc>().serviceModel;
     return BlocProvider(
-      create: (context) => ViewPostBloc()
+      create: (context) => ViewPostBloc(serviceModel)
         ..add(GetComment(post.id))
         ..add(GetPost(post.id)),
       child: ViewPostView(post: post),

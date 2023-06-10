@@ -1,8 +1,14 @@
+import 'package:photo_me/src/domain/response/user/user_response.dart';
+
 abstract class EditProfileState {}
 
 class InitState extends EditProfileState {}
 
-class UpdateSuccess extends EditProfileState {}
+class UpdateSuccess extends EditProfileState {
+  UserResponse user;
+
+  UpdateSuccess(this.user);
+}
 
 class UpdateLoading extends EditProfileState {}
 
