@@ -8,7 +8,7 @@ part of 'auth_response.dart';
 
 AuthResponse _$AuthResponseFromJson(Map<String, dynamic> json) => AuthResponse(
       json['token'] as String,
-      SubAuth.fromJson(json['user'] as Map<String, dynamic>),
+      UserResponse.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$AuthResponseToJson(AuthResponse instance) =>

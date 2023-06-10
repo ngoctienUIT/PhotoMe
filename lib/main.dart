@@ -97,7 +97,8 @@ void main() async {
   final fcmToken = await FirebaseMessaging.instance.getToken();
   print(fcmToken);
 
-  NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
+  NotificationSettings settings =
+      await FirebaseMessaging.instance.requestPermission(
     alert: true,
     announcement: false,
     badge: true,
@@ -211,16 +212,14 @@ class _SplashScreenState extends State<SplashScreen> {
         final prefs = await SharedPreferences.getInstance();
         String token = prefs.getString("token") ?? "";
         String userID = prefs.getString("userID") ?? "";
-        ApiService apiService =
-            ApiService(Dio(BaseOptions(contentType: "application/json")));
-        final response = await apiService.getAllPost();
-        if (mounted) {
-          context
-              .read<ServiceBloc>()
-              .add(SetServiceModel(ServiceModel(posts: response.data)));
-        }
-        if (token.isNotEmpty && userID.isNotEmpty) {
-          print(token);
+        if (userID.isNotEmpty) {
+          ApiService apiService =
+              ApiService(Dio(BaseOptions(contentType: "application/json")));
+          final response = await apiService.getUserByID(userID);
+          if (mounted) {
+            context.read<ServiceBloc>().add(SetServiceModel(
+                ServiceModel(user: response.data, token: token)));
+          }
           return const MainPage();
         }
         return const LoginPage();

@@ -8,12 +8,9 @@ import 'language_state.dart';
 
 class LanguageBloc extends Bloc<LanguageEvent, LanguageState> {
   int? language;
-  String? userID;
 
   LanguageBloc({this.language}) : super(LanguageChange(getLocal(language))) {
     on<ChangeLanguageEvent>((event, emit) => changeLanguage(event.isVN, emit));
-
-    on<SetUserID>((event, emit) => userID = event.userID);
   }
 
   static Locale getLocal(int? lang) {

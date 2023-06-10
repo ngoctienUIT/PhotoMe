@@ -9,7 +9,7 @@ import '../../../domain/api_service/api_service.dart';
 
 class LoginBloc extends Bloc<LoginScreenEvent, LoginState> {
   LoginBloc() : super(InitState()) {
-    on<Init>((event, emit) => init(emit));
+    // on<Init>((event, emit) => init(emit));
     on<Login>((event, emit) => login(event.email, event.password, emit));
   }
 
@@ -21,47 +21,44 @@ class LoginBloc extends Bloc<LoginScreenEvent, LoginState> {
       final response =
           await apiService.login({"email": email, "password": password});
 
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setString("token", response.data.token);
-      prefs.setString("userID", response.data.user.id);
+      SharedPreferences.getInstance().then((value) {
+        value.setString("token", response.data.token);
+        value.setString("userID", response.data.user.id);
+      });
 
       print("token: ${response.data.token}");
+      FirebaseMessaging.instance.getToken().then((value) {
+        print(value);
+        print(response.data.user.id);
 
-      final deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
-
-      print(deviceToken);
-
-      print(response.data.user.id);
-
-      final deviceTokenResponse = await apiService.setDeviceToken(
-        "Bearer ${response.data.token}",
-        response.data.user.id,
-        {"deviceToken": deviceToken},
-      );
-
+        apiService.setDeviceToken(
+          "Bearer ${response.data.token}",
+          response.data.user.id,
+          {"deviceToken": value!},
+        );
+      });
 
       print("ok?");
-
       // print(deviceTokenResponse.data.deviceToken);
-      emit(LoginSuccess(userID: response.data.user.id));
+      emit(LoginSuccess(response.data.user));
     } catch (e) {
       print(e);
       emit(LoginError(e.toString()));
     }
   }
 
-  Future init(Emitter emit) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      String token = prefs.getString("token") ?? "";
-      String userID = prefs.getString("userID") ?? "";
-      if (token.isNotEmpty && userID.isNotEmpty) {
-        print(token);
-        emit(LoginSuccess(userID: userID));
-      }
-    } catch (e) {
-      emit(LoginError(e.toString()));
-      print(e);
-    }
-  }
+// Future init(Emitter emit) async {
+//   try {
+//     final prefs = await SharedPreferences.getInstance();
+//     String token = prefs.getString("token") ?? "";
+//     String userID = prefs.getString("userID") ?? "";
+//     if (token.isNotEmpty && userID.isNotEmpty) {
+//       print(token);
+//       emit(LoginSuccess(user: userID));
+//     }
+//   } catch (e) {
+//     emit(LoginError(e.toString()));
+//     print(e);
+//   }
+// }
 }

@@ -14,8 +14,8 @@ import 'package:photo_me/src/presentation/view_post/bloc/view_post_event.dart';
 import 'package:photo_me/src/presentation/view_post/bloc/view_post_state.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../../../core/bloc/service_bloc.dart';
 import '../../../core/function/route_function.dart';
-import '../../../core/language/bloc/language_bloc.dart';
 import '../../../core/widgets/custom_alert_dialog.dart';
 import '../../../domain/response/post/post_response.dart';
 import '../../other_profile/screen/other_profile_page.dart';
@@ -436,7 +436,8 @@ class _ViewPostViewState extends State<ViewPostView>
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              if (context.read<LanguageBloc>().userID == comment.user.id)
+              if (context.read<ServiceBloc>().serviceModel.user!.id ==
+                  comment.user.id)
                 SimpleDialogOption(
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -480,7 +481,7 @@ class _ViewPostViewState extends State<ViewPostView>
           current is InitState ||
           current is CommentSuccess,
       builder: (_, state) {
-        String userID = context.read<LanguageBloc>().userID ?? "";
+        String userID = context.read<ServiceBloc>().serviceModel.user!.id;
 
         bool checkLike = false;
         List<String> listLike = [];

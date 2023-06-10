@@ -10,5 +10,10 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
   ServiceBloc() : super(InitState()) {
     on<SetServiceModel>(
         (event, emit) => serviceModel = event.serviceModel.copyWith());
+
+    on<UpdateUserEvent>((event, emit) {
+      serviceModel = serviceModel.copyWith(user: event.user);
+      emit(UpdateUserState());
+    });
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:photo_me/src/core/bloc/service_bloc.dart';
+import 'package:photo_me/src/core/bloc/service_event.dart';
 import 'package:photo_me/src/core/function/route_function.dart';
-import 'package:photo_me/src/core/language/bloc/language_bloc.dart';
-import 'package:photo_me/src/core/language/bloc/language_event.dart';
 import 'package:photo_me/src/core/utils/constants/constants.dart';
 import 'package:photo_me/src/presentation/edit_profile/widgets/custom_text_input.dart';
 import 'package:photo_me/src/presentation/login/bloc/login_bloc.dart';
@@ -44,7 +44,7 @@ class _LoginViewState extends State<LoginView> {
       listener: (_, state) {
         print(state);
         if (state is LoginSuccess) {
-          context.read<LanguageBloc>().add(SetUserID(state.userID));
+          context.read<ServiceBloc>().add(UpdateUserEvent(state.user));
           Navigator.of(context).pushAndRemoveUntil(
             createRoute(
               screen: const MainPage(),

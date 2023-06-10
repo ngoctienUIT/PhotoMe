@@ -1,7 +1,4 @@
-import 'package:photo_me/src/data/model/user.dart';
 import 'package:photo_me/src/domain/response/user/user_response.dart';
-
-import '../../../domain/response/post/post_response.dart';
 
 abstract class SearchState {}
 

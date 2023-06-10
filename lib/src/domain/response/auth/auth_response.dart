@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:photo_me/src/domain/response/auth/SubAuth.dart';
+import 'package:photo_me/src/domain/response/user/user_response.dart';
 
 part 'auth_response.g.dart';
 
@@ -9,7 +9,7 @@ class AuthResponse {
   final String token;
 
   @JsonKey(name: "user")
-  final SubAuth user;
+  final UserResponse user;
 
   AuthResponse(this.token, this.user);
 

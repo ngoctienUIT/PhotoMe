@@ -1,13 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_me/src/data/model/user.dart';
 
 class SearchItem extends StatelessWidget {
   final String imgUrl;
   final String name;
   final Function() navigate;
 
-  const SearchItem({Key? key, required this.imgUrl, required this.name, required this.navigate})
+  const SearchItem(
+      {Key? key,
+      required this.imgUrl,
+      required this.name,
+      required this.navigate})
       : super(key: key);
 
   @override
@@ -22,15 +25,15 @@ class SearchItem extends StatelessWidget {
           child: Row(
             children: [
               ClipOval(
-                  child: CachedNetworkImage(
-                    imageUrl: imgUrl,
-                    placeholder: (context,
-                        url) => const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => const Icon(Icons.error),
-                    height: 48,
-                    width: 48,
-                    fit: BoxFit.fill,
-                  ),
+                child: CachedNetworkImage(
+                  imageUrl: imgUrl,
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  height: 48,
+                  width: 48,
+                  fit: BoxFit.fill,
+                ),
               ),
               const SizedBox(width: 8),
               Text(

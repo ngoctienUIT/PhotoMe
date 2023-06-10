@@ -5,9 +5,3 @@ class ChangeLanguageEvent extends LanguageEvent {
 
   ChangeLanguageEvent(this.isVN);
 }
-
-class SetUserID extends LanguageEvent {
-  String? userID;
-
-  SetUserID(this.userID);
-}

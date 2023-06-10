@@ -11,8 +11,8 @@ import 'package:photo_me/src/presentation/post_item/bloc/post_item_state.dart';
 import 'package:photo_me/src/presentation/view_post/screen/view_post_page.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../../core/bloc/service_bloc.dart';
 import '../../core/function/route_function.dart';
-import '../../core/language/bloc/language_bloc.dart';
 import '../../core/widgets/custom_alert_dialog.dart';
 import 'bloc/post_item_bloc.dart';
 
@@ -120,7 +120,7 @@ class PostItemView extends StatelessWidget {
           current is ErrorState ||
           current is InitState,
       builder: (context, state) {
-        String userID = context.read<LanguageBloc>().userID ?? "";
+        String userID = context.read<ServiceBloc>().serviceModel.user!.id;
 
         bool checkLike = true;
         List<String> listLike = [];
@@ -222,7 +222,7 @@ class PostItemView extends StatelessWidget {
           ],
         ),
         const Spacer(),
-        if (post.user.id == context.read<LanguageBloc>().userID)
+        if (post.user.id == context.read<ServiceBloc>().serviceModel.user!.id)
           PopupMenuButton<int>(
             padding: const EdgeInsets.all(0),
             shape: const RoundedRectangleBorder(
@@ -280,7 +280,7 @@ class PostItemView extends StatelessWidget {
             current is ErrorState ||
             current is InitState,
         builder: (_, state) {
-          String userID = context.read<LanguageBloc>().userID ?? "";
+          String userID = context.read<ServiceBloc>().serviceModel.user!.id;
           bool checkFollow = true;
           if (post.user.id != userID) {
             if (state is InitState || state is ErrorState) {
