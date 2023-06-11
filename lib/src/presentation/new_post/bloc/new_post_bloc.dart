@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/domain/firebase_service/firebase_service.dart';
 import 'package:photo_me/src/presentation/new_post/bloc/new_post_event.dart';
 import 'package:photo_me/src/presentation/new_post/bloc/new_post_state.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/model/service_model.dart';
 import '../../../domain/api_service/api_service.dart';

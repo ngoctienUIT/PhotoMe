@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ Widget emojiSelect(TextEditingController controller) {
       skinToneDialogBgColor: Colors.white,
       skinToneIndicatorColor: Colors.grey,
       enableSkinTones: true,
-      showRecentsTab: true,
+      // showRecentsTab: true,
       recentsLimit: 28,
       noRecents: const Text(
         'No Recents',

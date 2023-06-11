@@ -98,7 +98,7 @@ class PostItemView extends StatelessWidget {
                           const Icon(FontAwesomeIcons.comment,
                               color: Colors.black),
                           const SizedBox(width: 5),
-                          Text("${post.comments.length} Comment")
+                          Text("${post.numComments} Comment")
                         ],
                       ),
                     ),
