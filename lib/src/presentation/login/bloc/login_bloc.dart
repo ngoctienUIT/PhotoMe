@@ -40,7 +40,7 @@ class LoginBloc extends Bloc<LoginScreenEvent, LoginState> {
 
       print("ok?");
       // print(deviceTokenResponse.data.deviceToken);
-      emit(LoginSuccess(response.data.user));
+      emit(LoginSuccess(response.data.user, response.data.token));
     } catch (e) {
       print(e);
       emit(LoginError(e.toString()));

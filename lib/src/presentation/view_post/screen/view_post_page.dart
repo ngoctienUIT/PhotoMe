@@ -221,64 +221,65 @@ class _ViewPostViewState extends State<ViewPostView>
 
   Widget buildComment(CommentResponse comment) {
     return BlocBuilder<ViewPostBloc, ViewPostState>(
-        buildWhen: (previous, current) =>
-            current is GetReplySuccess && current.id == comment.id,
-        builder: (context, state) {
-          return Column(
-            children: [
-              commentItem(context, comment),
-              if (comment.reply.isNotEmpty &&
-                  !(state is GetReplySuccess && state.id == comment.id))
-                const SizedBox(height: 10),
-              Visibility(
-                visible: comment.reply.isNotEmpty &&
-                    !(state is GetReplySuccess && state.id == comment.id),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 60,
-                      child: Divider(
-                        indent: 15,
-                        endIndent: 10,
-                        thickness: 1,
-                        color: Colors.black.withOpacity(0.5),
-                      ),
+      buildWhen: (previous, current) =>
+          current is GetReplySuccess && current.id == comment.id,
+      builder: (context, state) {
+        return Column(
+          children: [
+            commentItem(context, comment),
+            if (comment.reply.isNotEmpty &&
+                !(state is GetReplySuccess && state.id == comment.id))
+              const SizedBox(height: 10),
+            Visibility(
+              visible: comment.reply.isNotEmpty &&
+                  !(state is GetReplySuccess && state.id == comment.id),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 60,
+                    child: Divider(
+                      indent: 15,
+                      endIndent: 10,
+                      thickness: 1,
+                      color: Colors.black.withOpacity(0.5),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        context
-                            .read<ViewPostBloc>()
-                            .add(GetReplyComment(comment.id));
-                      },
-                      child: Text(
-                        "Xem ${comment.reply.length} câu trả lời",
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      context
+                          .read<ViewPostBloc>()
+                          .add(GetReplyComment(comment.id));
+                    },
+                    child: Text(
+                      "Xem ${comment.reply.length} câu trả lời",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              if (state is GetReplySuccess && state.id == comment.id)
-                ListView.builder(
-                  padding: const EdgeInsets.only(left: 50),
-                  itemCount: state.list.length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        if (index == 0) const SizedBox(height: 15),
-                        commentItem(context, state.list[index], 35),
-                        if (index < state.list.length - 1)
-                          const SizedBox(height: 15),
-                      ],
-                    );
-                  },
-                ),
-              const SizedBox(height: 15),
-            ],
-          );
-        });
+            ),
+            if (state is GetReplySuccess && state.id == comment.id)
+              ListView.builder(
+                padding: const EdgeInsets.only(left: 50),
+                itemCount: state.list.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      if (index == 0) const SizedBox(height: 15),
+                      commentItem(context, state.list[index], 35),
+                      if (index < state.list.length - 1)
+                        const SizedBox(height: 15),
+                    ],
+                  );
+                },
+              ),
+            const SizedBox(height: 15),
+          ],
+        );
+      },
+    );
   }
 
   Widget commentItem(BuildContext context, CommentResponse comment,
@@ -479,17 +480,20 @@ class _ViewPostViewState extends State<ViewPostView>
       buildWhen: (previous, current) =>
           (current is LikeCommentLoading && current.id == comment.id) ||
           (current is LikeCommentSuccess && current.id == comment.id) ||
+          (current is CommentSuccess && current.list.contains(comment)) ||
+          (current is GetReplySuccess && current.list.contains(comment)) ||
           current is ErrorState ||
-          current is InitState ||
-          current is CommentSuccess,
+          current is InitState,
       builder: (_, state) {
+        print(state);
         String userID = context.read<ServiceBloc>().serviceModel.user!.id;
 
         bool checkLike = false;
         List<String> listLike = [];
         if (state is InitState ||
             state is ErrorState ||
-            state is CommentSuccess) {
+            state is CommentSuccess ||
+            state is GetReplySuccess) {
           listLike.addAll(comment.liked);
           checkLike = comment.liked.contains(userID);
         }
@@ -513,6 +517,8 @@ class _ViewPostViewState extends State<ViewPostView>
           children: [
             InkWell(
               onTap: () {
+                print("click");
+                print(comment.id);
                 context.read<ViewPostBloc>().add(LikeComment(comment.id));
               },
               child: Icon(

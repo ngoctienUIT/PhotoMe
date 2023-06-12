@@ -8,8 +8,9 @@ class LoginLoading extends LoginState {}
 
 class LoginSuccess extends LoginState {
   UserResponse user;
+  String token;
 
-  LoginSuccess(this.user);
+  LoginSuccess(this.user, this.token);
 }
 
 class LoginPending extends LoginState {}

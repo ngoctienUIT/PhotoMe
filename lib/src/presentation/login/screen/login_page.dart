@@ -4,6 +4,7 @@ import 'package:photo_me/src/core/bloc/service_bloc.dart';
 import 'package:photo_me/src/core/bloc/service_event.dart';
 import 'package:photo_me/src/core/function/route_function.dart';
 import 'package:photo_me/src/core/utils/constants/constants.dart';
+import 'package:photo_me/src/data/model/service_model.dart';
 import 'package:photo_me/src/presentation/edit_profile/widgets/custom_text_input.dart';
 import 'package:photo_me/src/presentation/login/bloc/login_bloc.dart';
 import 'package:photo_me/src/presentation/login/bloc/login_event.dart';
@@ -44,7 +45,8 @@ class _LoginViewState extends State<LoginView> {
       listener: (_, state) {
         print(state);
         if (state is LoginSuccess) {
-          context.read<ServiceBloc>().add(UpdateUserEvent(state.user));
+          context.read<ServiceBloc>().add(SetServiceModel(
+              ServiceModel(user: state.user, token: state.token)));
           Navigator.of(context).pushAndRemoveUntil(
             createRoute(
               screen: const MainPage(),
