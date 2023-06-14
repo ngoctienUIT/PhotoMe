@@ -6,6 +6,7 @@ import '../utils/constants/app_images.dart';
 Widget toast(String text) {
   return Card(
     elevation: 5,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
     child: Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -14,7 +15,7 @@ Widget toast(String text) {
       ),
       child: Row(
         children: [
-          Image.asset(AppImages.imgLogoB, height: 40),
+          Image.asset(AppImages.imgLogoB, height: 35),
           const SizedBox(width: 10),
           Flexible(
             child: Text(

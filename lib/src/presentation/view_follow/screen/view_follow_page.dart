@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_me/src/core/bloc/service_bloc.dart';
 import 'package:photo_me/src/presentation/view_follow/bloc/view_follow_bloc.dart';
 import 'package:photo_me/src/presentation/view_follow/bloc/view_follow_event.dart';
 import 'package:photo_me/src/presentation/view_follow/bloc/view_follow_state.dart';
@@ -73,6 +74,8 @@ class _ViewFollowViewState extends State<ViewFollowView>
   }
 
   Widget buildBody() {
+    bool checkId =
+        context.read<ServiceBloc>().serviceModel.user!.id == widget.id;
     return BlocBuilder<ViewFollowBloc, ViewFollowState>(builder: (_, state) {
       print(state);
       if (state is ViewFollowLoaded) {
@@ -89,6 +92,8 @@ class _ViewFollowViewState extends State<ViewFollowView>
             ),
             itemCount: list.length,
             itemBuilder: (context, index) {
+              bool check = list[index].id ==
+                  context.read<ServiceBloc>().serviceModel.user!.id;
               return InkWell(
                 onTap: () {
                   Navigator.of(context).push(createRoute(
@@ -116,49 +121,46 @@ class _ViewFollowViewState extends State<ViewFollowView>
                         ),
                       ),
                       const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            list[index].name,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          const Text("@ngoctienTNT"),
-                        ],
+                      Text(
+                        list[index].name,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const Spacer(),
-                      _followController.index == 0
-                          ? ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor: Colors.red,
-                              ),
-                              onPressed: () {
-                                print(list[index].id);
-                                context
-                                    .read<ViewFollowBloc>()
-                                    .add(FollowEvent(list[index].id));
-                              },
-                              child: const Text("Follow lại"),
-                            )
-                          : OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.black,
-                                side: const BorderSide(color: Colors.black12),
-                              ),
-                              onPressed: () {
-                                print(list[index].id);
-                                context
-                                    .read<ViewFollowBloc>()
-                                    .add(FollowEvent(list[index].id));
-                              },
-                              child: const Text("Đang Follow"),
-                            ),
+                      !check
+                          ? _followController.index == 0
+                              ? ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    print(list[index].id);
+                                    context
+                                        .read<ViewFollowBloc>()
+                                        .add(FollowEvent(list[index].id));
+                                  },
+                                  child:
+                                      Text(checkId ? "Follow lại" : "Follow"),
+                                )
+                              : OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                    side:
+                                        const BorderSide(color: Colors.black12),
+                                  ),
+                                  onPressed: () {
+                                    print(list[index].id);
+                                    context
+                                        .read<ViewFollowBloc>()
+                                        .add(FollowEvent(list[index].id));
+                                  },
+                                  child: const Text("Đang Follow"),
+                                )
+                          : const SizedBox(),
                       const SizedBox(width: 5),
                       InkWell(
                         onTap: () {
@@ -168,7 +170,7 @@ class _ViewFollowViewState extends State<ViewFollowView>
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: _followController.index == 0
+                          child: _followController.index == 1
                               ? const Icon(Icons.notifications)
                               : const Icon(FontAwesomeIcons.ellipsisVertical),
                         ),

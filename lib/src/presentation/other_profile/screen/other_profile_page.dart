@@ -2,11 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/core/bloc/service_bloc.dart';
-import 'package:photo_me/src/presentation/chat_room/screen/chat_room_page.dart';
 import 'package:photo_me/src/presentation/other_profile/bloc/other_profile_bloc.dart';
 import 'package:photo_me/src/presentation/other_profile/bloc/other_profile_event.dart';
 import 'package:photo_me/src/presentation/other_profile/bloc/other_profile_state.dart';
+import 'package:photo_me/src/presentation/profile/widgets/build_loading_profile.dart';
 
+import '../../../core/function/custom_toast.dart';
 import '../../../core/function/route_function.dart';
 import '../../edit_profile/screen/edit_profile.dart';
 import '../../profile/widgets/info_item.dart';
@@ -98,8 +99,12 @@ class OtherProfileView extends StatelessWidget {
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
-              const SizedBox(height: 5),
-              const Text("@ngoctienTNT"),
+              if (state.user.description != null &&
+                  state.user.description!.isNotEmpty)
+                const SizedBox(height: 5),
+              if (state.user.description != null &&
+                  state.user.description!.isNotEmpty)
+                Text(state.user.description ?? ""),
               const SizedBox(height: 10),
               id == context.read<ServiceBloc>().serviceModel.user!.id
                   ? OutlinedButton(
@@ -115,35 +120,15 @@ class OtherProfileView extends StatelessWidget {
                       },
                       child: const Text("Edit profile"),
                     )
-                  : Row(
-                      children: [
-                        const Spacer(),
-                        SizedBox(
-                          width: 100,
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.black,
-                              side: const BorderSide(color: Colors.black54),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).push(createRoute(
-                                screen: const ChatRoomPage(),
-                                begin: const Offset(0, 1),
-                              ));
-                            },
-                            child: const Text("Message"),
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        buildButtonFollow(),
-                        const Spacer(),
-                      ],
-                    ),
+                  : buildButtonFollow(),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  infoItem("Post", state.user.post!.length, () {}),
+                  infoItem("Post", state.user.post!.length, () {
+                    customToast(context,
+                        "Số lượng bài viết của ${state.user.name}");
+                  }),
                   infoItem("Followers", state.user.follower.length, () {
                     Navigator.of(context).push(createRoute(
                       screen: ViewFollowPage(index: 0, id: id),
@@ -162,7 +147,7 @@ class OtherProfileView extends StatelessWidget {
             ],
           );
         }
-        return const Center(child: CircularProgressIndicator());
+        return buildLoadingHeader();
       },
     );
   }
@@ -241,9 +226,18 @@ class OtherProfileView extends StatelessWidget {
                   },
                   child: Stack(
                     children: [
-                      Image.asset(
-                        "assets/images/avatar.jpg",
+                      CachedNetworkImage(
+                        imageUrl: state.post[index].photo[0],
+                        height: 150,
+                        width: 150,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => Image.asset(
+                          "assets/images/post.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       Positioned(
                         right: 5,
@@ -278,7 +272,7 @@ class OtherProfileView extends StatelessWidget {
               },
             );
           }
-          return const Center(child: CircularProgressIndicator());
+          return buildLoadingBody();
         });
   }
 }
