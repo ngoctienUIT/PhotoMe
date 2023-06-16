@@ -20,24 +20,19 @@ import '../../../core/bloc/service_bloc.dart';
 import '../../../data/model/service_model.dart';
 
 class EditProfile extends StatelessWidget {
-  const EditProfile({Key? key, required this.user}) : super(key: key);
-
-  final UserResponse user;
-
+  const EditProfile({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     ServiceModel serviceModel = context.read<ServiceBloc>().serviceModel;
     return BlocProvider(
       create: (context) => EditProfileBloc(serviceModel),
-      child: EditProfileView(user: user),
+      child: const EditProfileView(),
     );
   }
 }
 
 class EditProfileView extends StatefulWidget {
-  const EditProfileView({Key? key, required this.user}) : super(key: key);
-
-  final UserResponse user;
+  const EditProfileView({Key? key}) : super(key: key);
 
   @override
   State<EditProfileView> createState() => _EditProfileViewState();
@@ -53,13 +48,15 @@ class _EditProfileViewState extends State<EditProfileView> {
   final _formKey = GlobalKey<FormState>();
   bool isPick = true;
   File? image;
+  late UserResponse user;
 
   @override
   void initState() {
-    nameController.text = widget.user.name;
-    birthdayController.text = widget.user.birthday!;
-    genderController.text = widget.user.gender!;
-    descriptionController.text = widget.user.description!;
+    user = context.read<ServiceBloc>().serviceModel.user!;
+    nameController.text = user.name;
+    birthdayController.text = user.birthday!;
+    genderController.text = user.gender!;
+    descriptionController.text = user.description!;
     super.initState();
   }
 
@@ -94,7 +91,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     name: nameController.text,
                     gender: genderController.text,
                     description: descriptionController.text,
-                    avatar: image != null ? image!.path : widget.user.avatar,
+                    avatar: image != null ? image!.path : user.avatar,
                     birthday: selectedDate,
                     job: workController.text,
                   )));
@@ -172,7 +169,7 @@ class _EditProfileViewState extends State<EditProfileView> {
             context.read<EditProfileBloc>().add(ChangeAvatarEvent());
           },
           image: image,
-          avatar: widget.user.avatar,
+          avatar: user.avatar,
         );
       },
     );

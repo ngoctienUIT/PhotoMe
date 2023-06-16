@@ -8,4 +8,5 @@ class AppImages {
   static const String imgVietNam = 'assets/images/vietnam.png';
   static const String imgEnglish = 'assets/images/english.png';
   static const String imgNonAvatar = 'assets/images/avatar.jpg';
+  static const String imgBuyMeCoffee = 'assets/images/buy-me-a-coffee.png';
 }

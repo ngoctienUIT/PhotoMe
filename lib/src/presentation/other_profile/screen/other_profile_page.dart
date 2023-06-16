@@ -114,7 +114,7 @@ class OtherProfileView extends StatelessWidget {
                       ),
                       onPressed: () {
                         Navigator.of(context).push(createRoute(
-                          screen: EditProfile(user: state.user),
+                          screen: const EditProfile(),
                           begin: const Offset(0, 1),
                         ));
                       },

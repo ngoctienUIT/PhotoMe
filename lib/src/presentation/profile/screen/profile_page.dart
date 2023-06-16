@@ -139,7 +139,7 @@ class _ProfileViewState extends State<ProfileView>
                   ),
                   onPressed: () {
                     Navigator.of(context).push(createRoute(
-                      screen: EditProfile(user: state.user),
+                      screen: const EditProfile(),
                       begin: const Offset(0, 1),
                     ));
                   },
