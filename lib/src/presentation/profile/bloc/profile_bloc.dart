@@ -26,7 +26,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if (userResponse.data != serviceModel.user) {
         emit(ProfileLoaded(userResponse.data));
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(ProfileError(error));
@@ -46,7 +46,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       final postResponse = await apiService.getPostUser(serviceModel.user!.id);
 
       emit(PostLoaded(postResponse.data.reversed.toList()));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(ProfileError(error));

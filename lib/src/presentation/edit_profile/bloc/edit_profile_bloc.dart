@@ -31,7 +31,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
       final response = await apiService.updateUserByID(
           serviceModel.user!.id, "Bearer ${serviceModel.token}", user.toJson());
       emit(UpdateSuccess(response.data));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(UpdateError(error));

@@ -1,138 +1,196 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:photo_me/src/core/function/loading_animation.dart';
 import 'package:photo_me/src/presentation/change_password/screen/change_password_page.dart';
 import 'package:photo_me/src/presentation/login/screen/login_page.dart';
 import 'package:photo_me/src/presentation/login/widget/custom_button.dart';
+import 'package:photo_me/src/presentation/policy/screen/policy_page.dart';
+import 'package:photo_me/src/presentation/setting/bloc/setting_bloc.dart';
+import 'package:photo_me/src/presentation/setting/bloc/setting_event.dart';
+import 'package:photo_me/src/presentation/setting/bloc/setting_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/bloc/service_bloc.dart';
+import '../../../core/function/custom_toast.dart';
 import '../../../core/function/route_function.dart';
 import '../../../core/widgets/custom_alert_dialog.dart';
+import '../../../data/model/service_model.dart';
 import '../../edit_profile/screen/edit_profile.dart';
 import '../../info/screen/info_page.dart';
 
 class SettingPage extends StatelessWidget {
-  const SettingPage({Key? key}) : super(key: key);
+  const SettingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(elevation: 0, title: const Text("Cài đặt")),
-      body: Column(
+    ServiceModel serviceModel = context.read<ServiceBloc>().serviceModel;
+    return BlocProvider(
+      create: (_) => SettingBloc(serviceModel),
+      child: const SettingView(),
+    );
+  }
+}
+
+class SettingView extends StatelessWidget {
+  const SettingView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<SettingBloc, SettingState>(
+      listener: (context, state) {
+        if (state is LoadingState) {
+          loadingAnimation(context);
+        }
+        if (state is SuccessState) {
+          customToast(context, "Xóa tài khoản thành công");
+          Navigator.of(context).pushAndRemoveUntil(
+            createRoute(
+              screen: const LoginPage(),
+              begin: const Offset(0, 1),
+            ),
+            (route) => false,
+          );
+        }
+        if (state is ErrorState) {
+          customToast(context, state.error);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(elevation: 0, title: const Text("Cài đặt")),
+        body: Column(
+          children: [
+            accountWidget(context),
+            infoWidget(context),
+            const SizedBox(height: 10),
+            customButton(
+              text: "Đăng xuất",
+              onPress: () async {
+                final prefs = await SharedPreferences.getInstance();
+                prefs.setString("token", "");
+                prefs.setString("userID", "");
+                if (context.mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    createRoute(
+                      screen: const LoginPage(),
+                      begin: const Offset(0, 1),
+                    ),
+                    (route) => false,
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget accountWidget(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8),
+          const Padding(
+            padding: EdgeInsets.only(left: 8, top: 5),
+            child: Text("Tài khoản", style: TextStyle(fontSize: 15)),
+          ),
+          const SizedBox(height: 10),
+          Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 8, top: 5),
-                  child: Text("Tài khoản", style: TextStyle(fontSize: 15)),
+                const SizedBox(height: 10),
+                settingItem(() {
+                  Navigator.of(context).push(createRoute(
+                    screen: const EditProfile(),
+                    begin: const Offset(1, 0),
+                  ));
+                }, Icons.person, "Tài khoản"),
+                const SizedBox(height: 20),
+                settingItem(
+                  () {
+                    Navigator.of(context).push(createRoute(
+                      screen: const ChangePasswordPage(),
+                      begin: const Offset(1, 0),
+                    ));
+                  },
+                  Icons.lock_outline_rounded,
+                  "Đổi mật khẩu",
+                ),
+                const SizedBox(height: 20),
+                settingItem(
+                  () async {
+                    return showDialog(
+                      context: context,
+                      // barrierDismissible: false, // user must tap button!
+                      builder: (BuildContext context) {
+                        return customAlertDialog(
+                          context: context,
+                          title: "Xóa tài khoản",
+                          content: "Bạn muốn xóa tài khoản này",
+                          onOK: () => context
+                              .read<SettingBloc>()
+                              .add(DeleteUserEvent()),
+                        );
+                      },
+                    );
+                  },
+                  Icons.delete,
+                  "Xóa tài khoản",
                 ),
                 const SizedBox(height: 10),
-                Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      settingItem(() {
-                        Navigator.of(context).push(createRoute(
-                          screen: const EditProfile(),
-                          begin: const Offset(1, 0),
-                        ));
-                      }, Icons.person, "Tài khoản"),
-                      const SizedBox(height: 20),
-                      settingItem(
-                        () {
-                          Navigator.of(context).push(createRoute(
-                            screen: const ChangePasswordPage(),
-                            begin: const Offset(1, 0),
-                          ));
-                        },
-                        Icons.lock_outline_rounded,
-                        "Đổi mật khẩu",
-                      ),
-                      const SizedBox(height: 20),
-                      settingItem(
-                        () async {
-                          return showDialog(
-                            context: context,
-                            // barrierDismissible: false, // user must tap button!
-                            builder: (BuildContext context) {
-                              return customAlertDialog(
-                                context: context,
-                                title: "Xóa tài khoản",
-                                content: "Bạn muốn xóa tài khoản này",
-                                onOK: () {},
-                              );
-                            },
-                          );
-                        },
-                        Icons.delete,
-                        "Xóa tài khoản",
-                      ),
-                      const SizedBox(height: 10),
-                    ],
-                  ),
-                )
               ],
             ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget infoWidget(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(left: 8, top: 5),
+            child: Text("Thông tin", style: TextStyle(fontSize: 15)),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8),
+          const SizedBox(height: 10),
+          Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 8, top: 5),
-                  child: Text("Thông tin", style: TextStyle(fontSize: 15)),
+                const SizedBox(height: 10),
+                settingItem(
+                  () {
+                    Navigator.of(context).push(createRoute(
+                      screen: const PolicyPage(),
+                      begin: const Offset(1, 0),
+                    ));
+                  },
+                  Icons.security_rounded,
+                  "Điều khoản và chính sách",
+                ),
+                const SizedBox(height: 20),
+                settingItem(
+                  () {
+                    Navigator.of(context).push(createRoute(
+                      screen: const InfoPage(),
+                      begin: const Offset(1, 0),
+                    ));
+                  },
+                  Icons.info_outline_rounded,
+                  "Thông tin ứng dụng",
                 ),
                 const SizedBox(height: 10),
-                Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      settingItem(
-                        () {},
-                        Icons.policy_rounded,
-                        "Điều khoản và dịch vụ",
-                      ),
-                      const SizedBox(height: 20),
-                      settingItem(
-                        () {
-                          Navigator.of(context).push(createRoute(
-                            screen: const InfoPage(),
-                            begin: const Offset(1, 0),
-                          ));
-                        },
-                        Icons.info_outline_rounded,
-                        "Thông tin ứng dụng",
-                      ),
-                      const SizedBox(height: 10),
-                    ],
-                  ),
-                )
               ],
             ),
-          ),
-          customButton(
-            text: "Đăng xuất",
-            onPress: () async {
-              final prefs = await SharedPreferences.getInstance();
-              prefs.setString("token", "");
-              prefs.setString("userID", "");
-              if (context.mounted) {
-                Navigator.of(context).pushAndRemoveUntil(
-                  createRoute(
-                    screen: const LoginPage(),
-                    begin: const Offset(0, 1),
-                  ),
-                  (route) => false,
-                );
-              }
-            },
-          ),
+          )
         ],
       ),
     );

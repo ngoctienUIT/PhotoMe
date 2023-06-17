@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/presentation/search/bloc/search_event.dart';
 import 'package:photo_me/src/presentation/search/bloc/search_state.dart';
 
-
 import '../../../domain/api_service/api_service.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
@@ -21,7 +20,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       final response = await apiService.searchUserByName(searchText);
       print(response.data);
       emit(SearchSuccess(response.data));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(SearchError(error));

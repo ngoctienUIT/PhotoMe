@@ -10,6 +10,7 @@ class CustomPasswordInput extends StatelessWidget {
     this.keyboardType,
     this.confirmPassword,
     this.borderColor = Colors.black54,
+    this.validator,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -19,6 +20,7 @@ class CustomPasswordInput extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? confirmPassword;
   final Color borderColor;
+  final String? Function(String? value)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -26,24 +28,7 @@ class CustomPasswordInput extends StatelessWidget {
       controller: controller,
       obscureText: hide,
       keyboardType: keyboardType,
-      validator: (value) {
-        // if (confirmPassword != null) {
-        //   print(confirmPassword != value);
-        // }
-        // if (confirmPassword != null && confirmPassword != value) {
-        //   return "confirmation_password_not_match".translate(context);
-        // }
-        // if (!value!.isSpecialCharacters()) {
-        //   return "requires_special_characters".translate(context);
-        // }
-        // if (value.isEmpty) {
-        //   return "please_enter_password".translate(context);
-        // }
-        // if (value.length < 8) {
-        //   return "password_length_characters".translate(context);
-        // }
-        // return null;
-      },
+      validator: validator,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: 10),
         hintText: hint,

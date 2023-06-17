@@ -11,3 +11,9 @@ class FollowEvent extends ViewFollowEvent {
 
   FollowEvent(this.id);
 }
+
+class DeleteFollowEvent extends ViewFollowEvent {
+  String id;
+
+  DeleteFollowEvent(this.id);
+}

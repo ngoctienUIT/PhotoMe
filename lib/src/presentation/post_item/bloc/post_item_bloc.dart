@@ -25,7 +25,7 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
       String token = prefs.getString("token") ?? "";
       await apiService.likePost("Bearer $token", {"id_Post": id});
       emit(LikeSuccess());
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(ErrorState(error));
@@ -44,7 +44,7 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
       String token = prefs.getString("token") ?? "";
       await apiService.followUser("Bearer $token", {"id_User": id});
       emit(FollowSuccess());
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(ErrorState(error));
@@ -64,7 +64,7 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
       String token = prefs.getString("token") ?? "";
       await apiService.deletePostByID("Bearer $token", id);
       emit(DeleteSuccess());
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(ErrorState(error));

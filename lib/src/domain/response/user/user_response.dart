@@ -73,6 +73,34 @@ class UserResponse extends Equatable {
 
   Map<String, dynamic> toJson() => _$UserResponseToJson(this);
 
+  UserResponse copyWith({
+    String? name,
+    String? job,
+    String? description,
+    String? avatar,
+    String? birthday,
+    String? password,
+    String? gender,
+  }) {
+    return UserResponse(
+      id,
+      name ?? this.name,
+      email,
+      phoneNumber,
+      password ?? this.password,
+      gender ?? this.gender,
+      birthday ?? this.birthday,
+      avatar ?? this.avatar,
+      description ?? this.description,
+      job ?? this.job,
+      post,
+      follower,
+      following,
+      notifications,
+      deviceToken,
+    );
+  }
+
   @override
   List<Object?> get props =>
       [id, name, avatar, following, follower, description, job, birthday];

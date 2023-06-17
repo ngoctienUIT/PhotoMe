@@ -1,10 +1,10 @@
 abstract class ChangePasswordEvent {}
 
-// class ClickChangePasswordEvent extends ChangePasswordEvent {
-//   User user;
-//
-//   ClickChangePasswordEvent(this.user);
-// }
+class ClickChangePasswordEvent extends ChangePasswordEvent {
+  String password;
+
+  ClickChangePasswordEvent(this.password);
+}
 
 class ShowChangeButtonEvent extends ChangePasswordEvent {
   bool isContinue;

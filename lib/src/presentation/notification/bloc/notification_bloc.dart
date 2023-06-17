@@ -25,7 +25,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           await apiService.getAllNotification("Bearer $token", userID);
       print(response.data);
       emit(LoadingSuccess(response.data));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(ErrorState(error));

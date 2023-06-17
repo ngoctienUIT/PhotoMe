@@ -38,7 +38,7 @@ class NewPostBloc extends Bloc<NewPostEvent, NewPostState> {
         );
       }
       emit(NewPostSuccess());
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(NewPostError(error));
@@ -65,7 +65,7 @@ class NewPostBloc extends Bloc<NewPostEvent, NewPostState> {
         {"description": event.description, "photo": imageList},
       );
       emit(NewPostSuccess());
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(NewPostError(error));

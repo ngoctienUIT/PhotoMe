@@ -37,7 +37,7 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
       final response = await apiService.getAllCommentPost(id);
 
       emit(CommentSuccess(response.data));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(ErrorState(error));
@@ -55,7 +55,7 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
       final response = await apiService.getPostByID(id);
 
       emit(PostSuccess(response.data));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(ErrorState(error));
@@ -75,7 +75,7 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
       final response = await apiService.getAllCommentPost(event.id);
       add(GetPost(event.id));
       emit(CommentSuccess(response.data));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(ErrorState(error));
@@ -96,7 +96,7 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
       add(GetPost(event.idPost));
       add(GetComment(event.idPost));
       emit(GetReplySuccess(event.idComment, response.data));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(ErrorState(error));
@@ -113,7 +113,7 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
           ApiService(Dio(BaseOptions(contentType: "application/json")));
       final response = await apiService.getAllReplyComment(id);
       emit(GetReplySuccess(id, response.data));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(ErrorState(error));
@@ -132,7 +132,7 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
       await apiService
           .likeComment("Bearer ${serviceModel.token}", {"id_comment": id});
       emit(LikeCommentSuccess(id));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(ErrorState(error));
@@ -150,7 +150,7 @@ class ViewPostBloc extends Bloc<ViewPostEvent, ViewPostState> {
       await apiService.deleteComment(
           event.idComment, "Bearer ${serviceModel.token}");
       emit(DeleteCommentSuccess(event.idComment));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       // add(GetPost(event.idPost));

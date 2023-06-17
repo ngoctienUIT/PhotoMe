@@ -17,7 +17,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           ApiService(Dio(BaseOptions(contentType: "application/json")));
       final response = await apiService.getAllPost();
       emit(HomeLoaded(response.data.reversed.toList()));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(HomeError(error));

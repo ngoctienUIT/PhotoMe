@@ -38,6 +38,13 @@ abstract class ApiService {
     @Body() body,
   );
 
+  //updateUserByID
+  @POST("/api/user/password")
+  Future<HttpResponse> updatePassword(
+    @Header('Authorization') String token,
+    @Body() body,
+  );
+
   //getPostUser
   @GET("/api/user/{id}/post")
   Future<HttpResponse<List<PostResponse>>> getPostUser(@Path("id") String id);
@@ -57,6 +64,20 @@ abstract class ApiService {
   Future<HttpResponse> followUser(
     @Header('Authorization') String token,
     @Body() body,
+  );
+
+  //delete follow
+  @DELETE("/api/user/follow/{id}")
+  Future<HttpResponse> deleteFollow(
+    @Header('Authorization') String token,
+    @Path("id") String id,
+  );
+
+  //delete User
+  @DELETE("/api/user/{id}")
+  Future<HttpResponse> deleteUser(
+    @Header('Authorization') String token,
+    @Path("id") String id,
   );
 
   //createPost

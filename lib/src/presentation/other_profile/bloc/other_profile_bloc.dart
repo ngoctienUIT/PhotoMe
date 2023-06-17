@@ -25,7 +25,7 @@ class OtherProfileBloc extends Bloc<OtherProfileEvent, OtherProfileState> {
       final userResponse = await apiService.getUserByID(id);
 
       emit(OtherProfileLoaded(userResponse.data));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(OtherProfileError(error));
@@ -43,7 +43,7 @@ class OtherProfileBloc extends Bloc<OtherProfileEvent, OtherProfileState> {
       final userResponse = await apiService.getUserByID(id);
 
       emit(OtherProfileLoaded(userResponse.data));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(OtherProfileError(error));
@@ -62,7 +62,7 @@ class OtherProfileBloc extends Bloc<OtherProfileEvent, OtherProfileState> {
       final postResponse = await apiService.getPostUser(id);
 
       emit(PostLoaded(postResponse.data));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(OtherProfileError(error));
@@ -83,7 +83,7 @@ class OtherProfileBloc extends Bloc<OtherProfileEvent, OtherProfileState> {
       await apiService.followUser("Bearer $token", {"id_User": id});
 
       emit(FollowSuccess());
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       String error =
           e.response != null ? e.response!.data.toString() : e.toString();
       emit(OtherProfileError(error));

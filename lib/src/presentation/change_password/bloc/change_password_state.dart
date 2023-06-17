@@ -4,7 +4,11 @@ class InitState extends ChangePasswordState {}
 
 class ChangePasswordLoadingState extends ChangePasswordState {}
 
-class ChangePasswordSuccessState extends ChangePasswordState {}
+class ChangePasswordSuccessState extends ChangePasswordState {
+  String newPassword;
+
+  ChangePasswordSuccessState(this.newPassword);
+}
 
 class ChangePasswordErrorState extends ChangePasswordState {
   String status;

@@ -8,6 +8,7 @@ import 'package:photo_me/src/presentation/view_follow/bloc/view_follow_event.dar
 import 'package:photo_me/src/presentation/view_follow/bloc/view_follow_state.dart';
 
 import '../../../core/function/route_function.dart';
+import '../../../data/model/service_model.dart';
 import '../../other_profile/screen/other_profile_page.dart';
 
 class ViewFollowPage extends StatelessWidget {
@@ -18,8 +19,9 @@ class ViewFollowPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ServiceModel serviceModel = context.read<ServiceBloc>().serviceModel;
     return BlocProvider(
-      create: (context) => ViewFollowBloc()..add(FetchData(id)),
+      create: (context) => ViewFollowBloc(serviceModel)..add(FetchData(id)),
       child: ViewFollowView(index: index, id: id),
     );
   }
@@ -165,7 +167,7 @@ class _ViewFollowViewState extends State<ViewFollowView>
                       InkWell(
                         onTap: () {
                           if (_followController.index == 1) {
-                            _showActionDialog(context);
+                            _showActionDialog(context, list[index].id);
                           }
                         },
                         child: Padding(
@@ -187,7 +189,7 @@ class _ViewFollowViewState extends State<ViewFollowView>
     });
   }
 
-  Future _showActionDialog(BuildContext context) async {
+  Future _showActionDialog(BuildContext context, String id) async {
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -196,6 +198,7 @@ class _ViewFollowViewState extends State<ViewFollowView>
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.of(context).pop();
+                  context.read<ViewFollowBloc>().add(DeleteFollowEvent(id));
                 },
                 child: const Text(
                   'Loại bỏ follower này',
