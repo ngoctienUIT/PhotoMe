@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_me/src/core/bloc/service_event.dart';
 import 'package:photo_me/src/core/function/loading_animation.dart';
 import 'package:photo_me/src/domain/response/post/post_response.dart';
 import 'package:photo_me/src/presentation/home/widgets/image_widget.dart';
@@ -29,6 +30,7 @@ class NewPostPage extends StatelessWidget {
             loadingAnimation(context);
           }
           if (state is NewPostSuccess) {
+            context.read<ServiceBloc>().add(AddNewPostEvent());
             Navigator.pop(context);
             Navigator.pop(context);
           }

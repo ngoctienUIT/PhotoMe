@@ -31,6 +31,22 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView>
     with AutomaticKeepAliveClientMixin {
+  ScrollController controller = ScrollController();
+  bool isVisible = false;
+
+  @override
+  void initState() {
+    controller.addListener(() {
+      if (isVisible != (controller.position.pixels > 100)) {
+        setState(() {
+          isVisible = controller.position.pixels > 100;
+        });
+      }
+      // print(controller.position.pixels);
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -68,6 +84,7 @@ class _HomeViewState extends State<HomeView>
             context.read<HomeBloc>().add(FetchData());
           },
           child: SingleChildScrollView(
+            controller: controller,
             physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics(),
             ),
@@ -75,6 +92,18 @@ class _HomeViewState extends State<HomeView>
               children: [buildHeader(context), buildBody()],
             ),
           ),
+        ),
+      ),
+      floatingActionButton: Visibility(
+        visible: isVisible,
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(createRoute(
+              screen: const NewPostPage(),
+              begin: const Offset(0, 1),
+            ));
+          },
+          child: const Icon(Icons.add),
         ),
       ),
     );

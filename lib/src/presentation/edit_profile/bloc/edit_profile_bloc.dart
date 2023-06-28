@@ -26,8 +26,11 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
       emit(UpdateLoading());
       ApiService apiService =
           ApiService(Dio(BaseOptions(contentType: "application/json")));
-      user.avatar = (await FirebaseService.uploadImage(
-          [user.avatar], serviceModel.user!.id, "avatar"))[0];
+      print(user.avatar);
+      if (user.avatar.isNotEmpty) {
+        user.avatar = (await FirebaseService.uploadImage(
+            [user.avatar], serviceModel.user!.id, "avatar"))[0];
+      }
       final response = await apiService.updateUserByID(
           serviceModel.user!.id, "Bearer ${serviceModel.token}", user.toJson());
       emit(UpdateSuccess(response.data));

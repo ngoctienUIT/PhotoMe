@@ -70,6 +70,9 @@ class _ProfileViewState extends State<ProfileView>
     return BlocListener<ServiceBloc, service.ServiceState>(
       listener: (context, state) {
         if (state is service.UpdateUserState) {
+          context.read<ProfileBloc>().add(GetProfileData());
+        }
+        if (state is service.AddNewPostState) {
           context.read<ProfileBloc>().add(GetPostData());
         }
       },
@@ -90,88 +93,89 @@ class _ProfileViewState extends State<ProfileView>
 
   Widget buildInfo() {
     return BlocBuilder<ProfileBloc, ProfileState>(
-        buildWhen: (previous, current) =>
-            current is InitState ||
-            current is ProfileLoading ||
-            current is ProfileLoaded,
-        builder: (_, state) {
-          print(state);
-          String userID = context.read<ServiceBloc>().serviceModel.user!.id;
+      buildWhen: (previous, current) =>
+          current is InitState ||
+          current is ProfileLoading ||
+          current is ProfileLoaded,
+      builder: (_, state) {
+        print(state);
+        String userID = context.read<ServiceBloc>().serviceModel.user!.id;
 
-          if (state is ProfileLoaded) {
-            return Column(
-              children: [
-                Material(
-                  elevation: 10,
-                  borderRadius: BorderRadius.circular(90),
-                  child: ClipOval(
-                    child: CachedNetworkImage(
-                      imageUrl: state.user.avatar,
-                      height: 150,
-                      width: 150,
-                      placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                      errorWidget: (context, url, error) => Image.asset(
-                        "assets/images/avatar.jpg",
-                        fit: BoxFit.cover,
-                      ),
+        if (state is ProfileLoaded) {
+          return Column(
+            children: [
+              Material(
+                elevation: 10,
+                borderRadius: BorderRadius.circular(90),
+                child: ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: state.user.avatar,
+                    height: 150,
+                    width: 150,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    errorWidget: (context, url, error) => Image.asset(
+                      "assets/images/avatar.jpg",
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                Text(
-                  state.user.name,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                state.user.name,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              if (state.user.description != null &&
+                  state.user.description!.isNotEmpty)
+                const SizedBox(height: 5),
+              if (state.user.description != null &&
+                  state.user.description!.isNotEmpty)
+                Text(state.user.description ?? ""),
+              const SizedBox(height: 10),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.black,
+                  side: const BorderSide(color: Colors.black54),
                 ),
-                if (state.user.description != null &&
-                    state.user.description!.isNotEmpty)
-                  const SizedBox(height: 5),
-                if (state.user.description != null &&
-                    state.user.description!.isNotEmpty)
-                  Text(state.user.description ?? ""),
-                const SizedBox(height: 10),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.black,
-                    side: const BorderSide(color: Colors.black54),
-                  ),
-                  onPressed: () {
+                onPressed: () {
+                  Navigator.of(context).push(createRoute(
+                    screen: const EditProfile(),
+                    begin: const Offset(0, 1),
+                  ));
+                },
+                child: const Text("Edit profile"),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  infoItem("Post", state.user.post!.length, () {
+                    customToast(context, "Số lượng bài viết của bạn");
+                  }),
+                  infoItem("Followers", state.user.follower.length, () {
                     Navigator.of(context).push(createRoute(
-                      screen: const EditProfile(),
-                      begin: const Offset(0, 1),
+                      screen: ViewFollowPage(index: 0, id: userID),
+                      begin: const Offset(1, 0),
                     ));
-                  },
-                  child: const Text("Edit profile"),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    infoItem("Post", state.user.post!.length, () {
-                      customToast(context, "Số lượng bài viết của bạn");
-                    }),
-                    infoItem("Followers", state.user.follower.length, () {
-                      Navigator.of(context).push(createRoute(
-                        screen: ViewFollowPage(index: 0, id: userID),
-                        begin: const Offset(1, 0),
-                      ));
-                    }),
-                    infoItem("Following", state.user.following.length, () {
-                      Navigator.of(context).push(createRoute(
-                        screen: ViewFollowPage(index: 1, id: userID),
-                        begin: const Offset(1, 0),
-                      ));
-                    }),
-                  ],
-                ),
-                const SizedBox(height: 20),
-              ],
-            );
-          }
-          return buildLoadingHeader();
-        });
+                  }),
+                  infoItem("Following", state.user.following.length, () {
+                    Navigator.of(context).push(createRoute(
+                      screen: ViewFollowPage(index: 1, id: userID),
+                      begin: const Offset(1, 0),
+                    ));
+                  }),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+          );
+        }
+        return buildLoadingHeader();
+      },
+    );
   }
 
   Widget buildListPost() {

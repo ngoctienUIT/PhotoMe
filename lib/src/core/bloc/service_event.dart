@@ -15,3 +15,5 @@ class UpdateUserEvent extends ServiceEvent {
 
   UpdateUserEvent(this.user);
 }
+
+class AddNewPostEvent extends ServiceEvent {}
