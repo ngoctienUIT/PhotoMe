@@ -26,7 +26,7 @@ class PostResponse extends Equatable {
   final List<String> liked;
 
   @JsonKey(name: "numComments")
-  final int numComments;
+  final int? numComments;
 
   @JsonKey(name: "registration_data")
   final String registration;

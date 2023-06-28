@@ -12,7 +12,7 @@ PostResponse _$PostResponseFromJson(Map<String, dynamic> json) => PostResponse(
       json['description'] as String,
       (json['photo'] as List<dynamic>).map((e) => e as String).toList(),
       (json['liked'] as List<dynamic>).map((e) => e as String).toList(),
-      json['numComments'] as int,
+      json['numComments'] as int?,
       UserResponse.fromJson(json['user'] as Map<String, dynamic>),
       json['registration_data'] as String,
     );

@@ -9,7 +9,7 @@ import 'package:retrofit/retrofit.dart';
 part 'api_service.g.dart';
 
 //flutter pub run build_runner build
-@RestApi(baseUrl: 'http://192.168.1.219:5000')
+@RestApi(baseUrl: 'http://192.168.0.113:5000')
 abstract class ApiService {
   factory ApiService(Dio dio) = _ApiService;
 
@@ -161,6 +161,10 @@ abstract class ApiService {
   @GET("/api/user/{id}/notification")
   Future<HttpResponse<List<NotificationHmResponse>>> getAllNotification(
       @Header('Authorization') String token, @Path("id") String id);
+
+  @PUT("/api/notification/{id}")
+  Future<bool> readNotification(
+      @Path("id") String id);
 
   // set device token
   @PUT("/api/user/{id}/deviceToken")

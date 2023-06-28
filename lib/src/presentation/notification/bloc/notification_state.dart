@@ -19,3 +19,5 @@ class ErrorState extends NotificationState {
 
   ErrorState(this.error);
 }
+
+class ReadSuccess extends NotificationState{}

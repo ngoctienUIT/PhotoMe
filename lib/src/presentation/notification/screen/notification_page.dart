@@ -26,21 +26,27 @@ class NotificationView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<NotificationBloc, NotificationState>(
-      listener: (_, state) {},
+      listener: (_, state) {
+        if (state is ReadSuccess) {
+
+        }
+      },
       child: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics(),
           ),
           child: Column(
-            children: [buildBody()],
+            children: [
+              buildBody(context),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget buildBody() {
+  Widget buildBody(BuildContext context) {
     return BlocBuilder<NotificationBloc, NotificationState>(
         builder: (_, state) {
       print(state);
@@ -49,12 +55,12 @@ class NotificationView extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: state.notifications.length,
-          itemBuilder: (context, index) {
+          itemBuilder: (_, index) {
             return Column(
               children: [
-                const SizedBox(height: 20),
                 InkWell(
                   onTap: () {
+                    context.read<NotificationBloc>().add(ReadNotify(state.notifications[index].id));
                     if (state.notifications[index].post != null) {
                       Navigator.of(context).push(createRoute(
                         screen: ViewPostPage(
@@ -64,8 +70,11 @@ class NotificationView extends StatelessWidget {
                     }
                   },
                   child: NotificationItem(
+                    isRead: state.notifications[index].isRead,
                     imageUrl: state.notifications[index].toUser.avatar,
                     name: state.notifications[index].toUser.name,
+                    postDescription:
+                        state.notifications[index].post?.description ?? "",
                     action: state.notifications[index].text,
                   ),
                 ),

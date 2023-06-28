@@ -13,7 +13,7 @@ class _ApiService implements ApiService {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.1.219:5000';
+    baseUrl ??= 'http://192.168.0.113:5000';
   }
 
   final Dio _dio;
@@ -700,6 +700,28 @@ class _ApiService implements ApiService {
         .toList();
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
+  }
+
+  @override
+  Future<bool> readNotification(String id) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<bool>(_setStreamType<bool>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/api/notification/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = _result.data!;
+    return value;
   }
 
   @override

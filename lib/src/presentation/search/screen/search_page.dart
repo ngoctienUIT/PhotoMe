@@ -77,7 +77,7 @@ class _SearchViewState extends State<SearchView> {
                   },
                   controller: searchController,
                   decoration:
-                      const InputDecoration(prefixIcon: Icon(Icons.search), hintText: "Find somebody?"),
+                      const InputDecoration(prefixIcon: Icon(Icons.search), hintText: "Bạn muốn tìm ai?"),
                 ),
               ),
               // ...userResults
@@ -93,6 +93,7 @@ class _SearchViewState extends State<SearchView> {
                       return SearchItem(
                         imgUrl: state.users[index].avatar,
                         name: state.users[index].name,
+                        numPost: state.users[index].post?.length??0,
                         navigate: ()  {
                           Navigator.of(context).push(createRoute(
                             screen: OtherProfilePage(id: state.users[index].id),
