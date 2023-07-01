@@ -43,7 +43,7 @@ class _ViewImageImageState extends State<ViewImage> {
                 if (widget.url.contains("https://") ||
                     widget.url.contains("http://"))
                   InkWell(
-                    onTap: () => saveImage(""),
+                    onTap: () => saveImage(widget.url),
                     child: const Padding(
                       padding: EdgeInsets.all(15),
                       child: Icon(Icons.download),
@@ -90,10 +90,7 @@ class _ViewImageImageState extends State<ViewImage> {
                         fit: BoxFit.cover,
                       ),
                     )
-                  : Image.file(
-                      File(widget.url),
-                      fit: BoxFit.cover,
-                    ),
+                  : Image.file(File(widget.url), fit: BoxFit.cover),
             ),
           ),
         ),

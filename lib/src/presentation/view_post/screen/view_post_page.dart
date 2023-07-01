@@ -352,7 +352,7 @@ class _ViewPostViewState extends State<ViewPostView>
                         replyComment = comment;
                         context.read<ViewPostBloc>().add(ChangeCommentEvent());
                       },
-                      child: const Text("Trả lời"),
+                      child: Text("reply".translate(context)),
                     ),
                     const Spacer(),
                     buildFavoriteWidget(comment),

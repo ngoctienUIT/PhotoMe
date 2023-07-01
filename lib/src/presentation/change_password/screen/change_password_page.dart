@@ -23,7 +23,10 @@ class ChangePasswordPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => ChangePasswordBloc(serviceModel),
       child: Scaffold(
-        appBar: AppBar(elevation: 0, title: const Text("Đổi mật khẩu")),
+        appBar: AppBar(
+          elevation: 0,
+          title: Text("change_password".translate(context)),
+        ),
         body: const Padding(
           padding: EdgeInsets.all(10),
           child: ChangePasswordView(),
@@ -113,8 +116,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             "change_password".translate(context),
             style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 10),
-          const Text("password_needs_characters"),
           const SizedBox(height: 10),
           passwordInput(),
           const Spacer(),

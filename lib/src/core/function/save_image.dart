@@ -7,18 +7,19 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:permission_handler/permission_handler.dart';
 
 Future saveImage(String url) async {
+  print(url);
   var status = await Permission.storage.status;
   if (status.isDenied) {
     await Permission.storage.request();
   }
   status = await Permission.storage.status;
   if (status.isGranted) {
-    var url =
-        "https://www.kindacode.com/wp-content/uploads/2022/02/orange.jpeg";
+    Fluttertoast.showToast(msg: "Đang tải xuống");
     final response = await http.get(Uri.parse(url));
 
     // Get the image name
-    final imageName = path.basename(url);
+    final imageName =
+        "${DateTime.now().microsecondsSinceEpoch}.png"; //  path.basename(url);
     // Get the document directory path
     Directory? appDir;
 
@@ -31,7 +32,10 @@ Future saveImage(String url) async {
           appDir = await path_provider.getExternalStorageDirectory();
         }
       }
-    } catch (_) {}
+    } catch (_) {
+      Fluttertoast.showToast(msg: "Tải xuống thất bại");
+      return;
+    }
 
     // This is the saved image path
     // You can use it to display the saved image later
@@ -39,7 +43,12 @@ Future saveImage(String url) async {
 
     // Downloading
     final imageFile = File(localPath);
-    await imageFile.writeAsBytes(response.bodyBytes);
+    try {
+      await imageFile.writeAsBytes(response.bodyBytes);
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+      return;
+    }
     Fluttertoast.showToast(msg: localPath);
   }
 }
