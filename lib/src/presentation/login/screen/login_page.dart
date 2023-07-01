@@ -4,6 +4,7 @@ import 'package:photo_me/src/core/bloc/service_bloc.dart';
 import 'package:photo_me/src/core/bloc/service_event.dart';
 import 'package:photo_me/src/core/function/route_function.dart';
 import 'package:photo_me/src/core/utils/constants/constants.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/data/model/service_model.dart';
 import 'package:photo_me/src/presentation/edit_profile/widgets/custom_text_input.dart';
 import 'package:photo_me/src/presentation/login/bloc/login_bloc.dart';
@@ -110,7 +111,7 @@ class _LoginViewState extends State<LoginView> {
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: CustomTextInput(
                         controller: passwordTextController,
-                        hint: "Password",
+                        hint: "password".translate(context),
                         prefixIcon: const Icon(Icons.lock),
                         suffixIcon: IconButton(
                           onPressed: () {},
@@ -125,9 +126,10 @@ class _LoginViewState extends State<LoginView> {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {},
-                          child: const Text(
-                            "Forgot password",
-                            style: TextStyle(color: Colors.blue, fontSize: 14),
+                          child: Text(
+                            "forgot_password".translate(context),
+                            style: const TextStyle(
+                                color: Colors.blue, fontSize: 14),
                           ),
                         ),
                       ),
@@ -135,7 +137,7 @@ class _LoginViewState extends State<LoginView> {
                     const SizedBox(height: 10),
                     //login button
                     customButton(
-                      text: "Sign in",
+                      text: "sign_in".translate(context),
                       onPress: () {
                         context.read<LoginBloc>().add(Login(
                             emailTextController.text,
@@ -151,15 +153,15 @@ class _LoginViewState extends State<LoginView> {
                               builder: (context) => const SignupPage()),
                         ),
                       },
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 32),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 32),
                         child: Text(
-                          "Don't have an account? Create here ",
-                          style: TextStyle(color: Colors.blue, fontSize: 16),
+                          "don_have_an_account".translate(context),
+                          style:
+                              const TextStyle(color: Colors.blue, fontSize: 16),
                         ),
                       ),
                     ),
-
                     // dont have password
                   ],
                 ),

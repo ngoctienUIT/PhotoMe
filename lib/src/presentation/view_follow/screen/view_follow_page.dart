@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_me/src/core/bloc/service_bloc.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/presentation/view_follow/bloc/view_follow_bloc.dart';
 import 'package:photo_me/src/presentation/view_follow/bloc/view_follow_event.dart';
 import 'package:photo_me/src/presentation/view_follow/bloc/view_follow_state.dart';
@@ -145,8 +146,9 @@ class _ViewFollowViewState extends State<ViewFollowView>
                                         .read<ViewFollowBloc>()
                                         .add(FollowEvent(list[index].id));
                                   },
-                                  child:
-                                      Text(checkId ? "Follow lại" : "Follow"),
+                                  child: Text(checkId
+                                      ? "follow_back".translate(context)
+                                      : "Follow"),
                                 )
                               : OutlinedButton(
                                   style: OutlinedButton.styleFrom(
@@ -160,7 +162,7 @@ class _ViewFollowViewState extends State<ViewFollowView>
                                         .read<ViewFollowBloc>()
                                         .add(FollowEvent(list[index].id));
                                   },
-                                  child: const Text("Đang Follow"),
+                                  child: const Text("Following"),
                                 )
                           : const SizedBox(),
                       const SizedBox(width: 5),
@@ -200,18 +202,18 @@ class _ViewFollowViewState extends State<ViewFollowView>
                   Navigator.of(context).pop();
                   context.read<ViewFollowBloc>().add(DeleteFollowEvent(id));
                 },
-                child: const Text(
-                  'Loại bỏ follower này',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                child: Text(
+                  'remove_this_follower'.translate(context),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text(
-                  'Hủy',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                child: Text(
+                  'cancel'.translate(context),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ],

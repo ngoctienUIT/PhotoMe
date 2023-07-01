@@ -27,20 +27,14 @@ class NotificationView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<NotificationBloc, NotificationState>(
       listener: (_, state) {
-        if (state is ReadSuccess) {
-
-        }
+        if (state is ReadSuccess) {}
       },
       child: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics(),
           ),
-          child: Column(
-            children: [
-              buildBody(context),
-            ],
-          ),
+          child: Column(children: [buildBody(context)]),
         ),
       ),
     );
@@ -60,7 +54,9 @@ class NotificationView extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    context.read<NotificationBloc>().add(ReadNotify(state.notifications[index].id));
+                    context
+                        .read<NotificationBloc>()
+                        .add(ReadNotify(state.notifications[index].id));
                     if (state.notifications[index].post != null) {
                       Navigator.of(context).push(createRoute(
                         screen: ViewPostPage(

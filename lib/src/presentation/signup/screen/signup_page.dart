@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/core/function/route_function.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/presentation/login/screen/login_page.dart';
 import 'package:photo_me/src/presentation/signup/bloc/signup_bloc.dart';
 import 'package:photo_me/src/presentation/signup/bloc/signup_state.dart';
@@ -89,7 +90,7 @@ class _SignupViewState extends State<SignupView> {
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                   child: CustomTextInput(
                     controller: nameController,
-                    hint: "Name",
+                    hint: "name".translate(context),
                     prefixIcon: const Icon(Icons.person),
                   ),
                 ),
@@ -116,7 +117,7 @@ class _SignupViewState extends State<SignupView> {
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: CustomTextInput(
                     controller: phoneTextController,
-                    hint: "Phone",
+                    hint: "phone_number".translate(context),
                     prefixIcon: const Icon(Icons.person),
                   ),
                 ),
@@ -126,7 +127,7 @@ class _SignupViewState extends State<SignupView> {
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: CustomTextInput(
                     controller: passwordTextController,
-                    hint: "Password",
+                    hint: "password".translate(context),
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       onPressed: () {},
@@ -140,7 +141,7 @@ class _SignupViewState extends State<SignupView> {
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: CustomTextInput(
                     controller: confirmPasswordController,
-                    hint: "Password",
+                    hint: "password".translate(context),
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       onPressed: () {},
@@ -160,7 +161,7 @@ class _SignupViewState extends State<SignupView> {
                             gender = value;
                           })
                         },
-                        title: const Text("Male"),
+                        title: Text("male".translate(context)),
                       ),
                     ),
                     Expanded(
@@ -172,13 +173,13 @@ class _SignupViewState extends State<SignupView> {
                             gender = value;
                           })
                         },
-                        title: const Text("Female"),
+                        title: Text("female".translate(context)),
                       ),
                     )
                   ],
                 ),
                 customButton(
-                  text: "Sign up",
+                  text: "sign_up".translate(context),
                   onPress: () {
                     context.read<SignupBloc>().add(Signup(
                           emailTextController.text,
@@ -200,11 +201,11 @@ class _SignupViewState extends State<SignupView> {
                           builder: (context) => const LoginPage()),
                     ),
                   },
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 32),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 32),
                     child: Text(
-                      "Have an account? Sign in",
-                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                      "have_an_account".translate(context),
+                      style: const TextStyle(color: Colors.blue, fontSize: 16),
                     ),
                   ),
                 ),

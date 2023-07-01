@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/core/widgets/item_loading.dart';
 import 'package:photo_me/src/presentation/home/bloc/home_bloc.dart';
 import 'package:photo_me/src/presentation/home/bloc/home_state.dart';
@@ -129,8 +130,8 @@ class _HomeViewState extends State<HomeView>
           Expanded(
             child: TextField(
               readOnly: true,
-              decoration: const InputDecoration(
-                hintText: "Bạn đang nghĩ gì?",
+              decoration: InputDecoration(
+                hintText: "what_are_you_thinking".translate(context),
                 border: InputBorder.none,
               ),
               onTap: () {
@@ -181,58 +182,56 @@ class _HomeViewState extends State<HomeView>
   }
 
   Widget itemPostLoading() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const SizedBox(width: 5),
-              itemLoading(50, 50, 90),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  itemLoading(20, 120, 5),
-                  const SizedBox(height: 5),
-                  itemLoading(20, 60, 5),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 5),
-          Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: itemLoading(20, 120, 5),
-          ),
-          const SizedBox(height: 5),
-          itemLoading(
-            MediaQuery.of(context).size.width,
-            MediaQuery.of(context).size.width,
-            0,
-          ),
-          const SizedBox(height: 5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Row(
-                children: [
-                  itemLoadingWidget(const Icon(Icons.favorite_border_rounded)),
-                  const SizedBox(width: 5),
-                  itemLoading(20, 30, 5),
-                ],
-              ),
-              Row(
-                children: [
-                  itemLoadingWidget(const Icon(FontAwesomeIcons.comment)),
-                  const SizedBox(width: 5),
-                  itemLoading(20, 30, 5),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const SizedBox(width: 5),
+            itemLoading(50, 50, 90),
+            const SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                itemLoading(20, 120, 5),
+                const SizedBox(height: 5),
+                itemLoading(20, 60, 5),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 5),
+        Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: itemLoading(20, 120, 5),
+        ),
+        const SizedBox(height: 5),
+        itemLoading(
+          MediaQuery.of(context).size.width,
+          MediaQuery.of(context).size.width,
+          0,
+        ),
+        const SizedBox(height: 5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Row(
+              children: [
+                itemLoadingWidget(const Icon(Icons.favorite_border_rounded)),
+                const SizedBox(width: 5),
+                itemLoading(20, 30, 5),
+              ],
+            ),
+            Row(
+              children: [
+                itemLoadingWidget(const Icon(FontAwesomeIcons.comment)),
+                const SizedBox(width: 5),
+                itemLoading(20, 30, 5),
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 

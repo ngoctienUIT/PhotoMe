@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/core/bloc/service_bloc.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/presentation/other_profile/bloc/other_profile_bloc.dart';
 import 'package:photo_me/src/presentation/other_profile/bloc/other_profile_event.dart';
 import 'package:photo_me/src/presentation/other_profile/bloc/other_profile_state.dart';
@@ -118,16 +119,17 @@ class OtherProfileView extends StatelessWidget {
                           begin: const Offset(0, 1),
                         ));
                       },
-                      child: const Text("Edit profile"),
+                      child: Text("edit_profile".translate(context)),
                     )
                   : buildButtonFollow(),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  infoItem("Post", state.user.post!.length, () {
+                  infoItem("post".translate(context), state.user.post!.length,
+                      () {
                     customToast(context,
-                        "Số lượng bài viết của ${state.user.name}");
+                        "${"number_of_posts_by".translate(context)} ${state.user.name}");
                   }),
                   infoItem("Followers", state.user.follower.length, () {
                     Navigator.of(context).push(createRoute(
@@ -190,7 +192,9 @@ class OtherProfileView extends StatelessWidget {
             onPressed: () {
               context.read<OtherProfileBloc>().add(FollowUser(id));
             },
-            child: Text(follow.contains(userID) ? "Hủy Follow" : "Follow"),
+            child: Text(follow.contains(userID)
+                ? "cancel_follow".translate(context)
+                : "Follow"),
           ),
         );
       },

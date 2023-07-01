@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/data/model/service_model.dart';
 import 'package:photo_me/src/presentation/profile/bloc/profile_bloc.dart';
 import 'package:photo_me/src/presentation/profile/bloc/profile_event.dart';
@@ -146,14 +147,16 @@ class _ProfileViewState extends State<ProfileView>
                     begin: const Offset(0, 1),
                   ));
                 },
-                child: const Text("Edit profile"),
+                child: Text("edit_profile".translate(context)),
               ),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  infoItem("Post", state.user.post!.length, () {
-                    customToast(context, "Số lượng bài viết của bạn");
+                  infoItem("post".translate(context), state.user.post!.length,
+                      () {
+                    customToast(
+                        context, "number_of_your_posts".translate(context));
                   }),
                   infoItem("Followers", state.user.follower.length, () {
                     Navigator.of(context).push(createRoute(

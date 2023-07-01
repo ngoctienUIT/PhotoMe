@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/data/model/user.dart';
 import 'package:photo_me/src/presentation/search/bloc/search_bloc.dart';
 import 'package:photo_me/src/presentation/search/bloc/search_state.dart';
@@ -76,8 +77,10 @@ class _SearchViewState extends State<SearchView> {
                     // hm();
                   },
                   controller: searchController,
-                  decoration:
-                      const InputDecoration(prefixIcon: Icon(Icons.search), hintText: "Bạn muốn tìm ai?"),
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search),
+                    hintText: "who_are_you_looking_for".translate(context),
+                  ),
                 ),
               ),
               // ...userResults
@@ -93,8 +96,8 @@ class _SearchViewState extends State<SearchView> {
                       return SearchItem(
                         imgUrl: state.users[index].avatar,
                         name: state.users[index].name,
-                        numPost: state.users[index].post?.length??0,
-                        navigate: ()  {
+                        numPost: state.users[index].post?.length ?? 0,
+                        navigate: () {
                           Navigator.of(context).push(createRoute(
                             screen: OtherProfilePage(id: state.users[index].id),
                             begin: const Offset(0, 1),

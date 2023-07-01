@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/core/function/loading_animation.dart';
 import 'package:photo_me/src/core/language/bloc/language_bloc.dart';
 import 'package:photo_me/src/core/language/bloc/language_event.dart';
+import 'package:photo_me/src/core/language/bloc/language_state.dart';
 import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/presentation/change_password/screen/change_password_page.dart';
 import 'package:photo_me/src/presentation/login/screen/login_page.dart';
@@ -48,7 +49,8 @@ class SettingView extends StatelessWidget {
           loadingAnimation(context);
         }
         if (state is SuccessState) {
-          customToast(context, "Xóa tài khoản thành công");
+          customToast(
+              context, "account_deleted_successfully".translate(context));
           Navigator.of(context).pushAndRemoveUntil(
             createRoute(
               screen: const LoginPage(),
@@ -62,15 +64,15 @@ class SettingView extends StatelessWidget {
         }
       },
       child: Scaffold(
-        appBar: AppBar(elevation: 0, title: const Text("Cài đặt")),
+        appBar: AppBar(elevation: 0, title: Text("setting".translate(context))),
         body: Column(
           children: [
             accountWidget(context),
-            settingWidget(context),
+            settingWidget(),
             infoWidget(context),
             const SizedBox(height: 10),
             customButton(
-              text: "Đăng xuất",
+              text: "log_out".translate(context),
               onPress: () async {
                 final prefs = await SharedPreferences.getInstance();
                 prefs.setString("token", "");
@@ -98,9 +100,12 @@ class SettingView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 8, top: 5),
-            child: Text("Tài khoản", style: TextStyle(fontSize: 15)),
+          Padding(
+            padding: const EdgeInsets.only(left: 8, top: 5),
+            child: Text(
+              "account".translate(context),
+              style: const TextStyle(fontSize: 15),
+            ),
           ),
           const SizedBox(height: 10),
           Card(
@@ -114,7 +119,7 @@ class SettingView extends StatelessWidget {
                     screen: const EditProfile(),
                     begin: const Offset(1, 0),
                   ));
-                }, Icons.person, "Tài khoản"),
+                }, Icons.person, "account".translate(context)),
                 const SizedBox(height: 20),
                 settingItem(
                   () {
@@ -124,7 +129,7 @@ class SettingView extends StatelessWidget {
                     ));
                   },
                   Icons.lock_outline_rounded,
-                  "Đổi mật khẩu",
+                  "change_password".translate(context),
                 ),
                 const SizedBox(height: 20),
                 settingItem(
@@ -135,8 +140,9 @@ class SettingView extends StatelessWidget {
                       builder: (BuildContext context) {
                         return customAlertDialog(
                           context: context,
-                          title: "Xóa tài khoản",
-                          content: "Bạn muốn xóa tài khoản này",
+                          title: "delete_the_account".translate(context),
+                          content: "do_you_want_to_delete_this_account"
+                              .translate(context),
                           onOK: () => context
                               .read<SettingBloc>()
                               .add(DeleteUserEvent()),
@@ -145,7 +151,7 @@ class SettingView extends StatelessWidget {
                     );
                   },
                   Icons.delete,
-                  "Xóa tài khoản",
+                  "delete_the_account".translate(context),
                 ),
                 const SizedBox(height: 10),
               ],
@@ -156,36 +162,64 @@ class SettingView extends StatelessWidget {
     );
   }
 
-  Widget settingWidget(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 8, top: 5),
-            child: Text("Cài đặt", style: TextStyle(fontSize: 15)),
-          ),
-          const SizedBox(height: 10),
-          Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                settingItem(
-                  () {
-                    showMyBottomSheet(context);
-                  },
-                  Icons.language,
-                  "Ngôn ngữ",
+  Widget settingWidget() {
+    return BlocBuilder<LanguageBloc, LanguageState>(
+      builder: (context, state) {
+        int? lang = context.read<LanguageBloc>().language;
+        return Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 8, top: 5),
+                child: Text(
+                  "setting".translate(context),
+                  style: const TextStyle(fontSize: 15),
                 ),
-                const SizedBox(height: 10),
-              ],
-            ),
-          )
-        ],
-      ),
+              ),
+              const SizedBox(height: 10),
+              Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    InkWell(
+                      onTap: () {
+                        showMyBottomSheet(context);
+                      },
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 10),
+                          const Icon(Icons.language,
+                              color: Color(0xFFadadad), size: 30),
+                          const SizedBox(width: 8),
+                          Text(
+                            "language".translate(context),
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          const Spacer(),
+                          Text(
+                            lang == 0 ? "Tiếng Việt" : "English",
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(width: 10),
+                          const Icon(Icons.arrow_forward_ios_rounded),
+                          const SizedBox(width: 10),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -195,9 +229,12 @@ class SettingView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 8, top: 5),
-            child: Text("Thông tin", style: TextStyle(fontSize: 15)),
+          Padding(
+            padding: const EdgeInsets.only(left: 8, top: 5),
+            child: Text(
+              "information".translate(context),
+              style: const TextStyle(fontSize: 15),
+            ),
           ),
           const SizedBox(height: 10),
           Card(
@@ -214,7 +251,7 @@ class SettingView extends StatelessWidget {
                     ));
                   },
                   Icons.security_rounded,
-                  "Điều khoản và chính sách",
+                  "policy".translate(context),
                 ),
                 const SizedBox(height: 20),
                 settingItem(
@@ -225,7 +262,7 @@ class SettingView extends StatelessWidget {
                     ));
                   },
                   Icons.info_outline_rounded,
-                  "Thông tin ứng dụng",
+                  "application_information".translate(context),
                 ),
                 const SizedBox(height: 10),
               ],

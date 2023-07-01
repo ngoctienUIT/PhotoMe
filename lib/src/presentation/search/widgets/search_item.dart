@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 
 class SearchItem extends StatelessWidget {
   final String imgUrl;
@@ -23,8 +24,7 @@ class SearchItem extends StatelessWidget {
         leading: ClipOval(
           child: CachedNetworkImage(
             imageUrl: imgUrl,
-            placeholder: (context, url) =>
-                const CircularProgressIndicator(),
+            placeholder: (context, url) => const CircularProgressIndicator(),
             errorWidget: (context, url, error) => const Icon(Icons.error),
             height: 48,
             width: 48,
@@ -32,7 +32,7 @@ class SearchItem extends StatelessWidget {
           ),
         ),
         title: Text(name),
-        subtitle: Text('$numPost bài viết đã đăng'),
+        subtitle: Text('$numPost ${"posts_posted".translate(context)}'),
         // trailing: Icon(Icons.more_vert),
       ),
     );

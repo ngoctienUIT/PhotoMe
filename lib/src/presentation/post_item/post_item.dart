@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_me/src/core/language/bloc/language_bloc.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/domain/response/post/post_response.dart';
 import 'package:photo_me/src/presentation/home/widgets/image_widget.dart';
 import 'package:photo_me/src/presentation/new_post/screen/new_post_page.dart';
@@ -166,6 +168,7 @@ class PostItemView extends StatelessWidget {
   }
 
   Widget infoPost(BuildContext context) {
+    int? lang = context.read<LanguageBloc>().language;
     return Row(
       children: [
         SizedBox(
@@ -217,8 +220,12 @@ class PostItemView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 5),
-            Text(timeago.format(DateTime.parse(post.registration),
-                locale: "vi")),
+            Text(
+              timeago.format(
+                DateTime.parse(post.registration),
+                locale: lang == 0 ? "vi" : "en",
+              ),
+            ),
           ],
         ),
         const Spacer(),
@@ -248,7 +255,7 @@ class PostItemView extends StatelessWidget {
             itemBuilder: (context) {
               return [
                 itemPopup(
-                  text: 'Chỉnh sửa',
+                  text: 'edit'.translate(context),
                   icon: FontAwesomeIcons.penToSquare,
                   color: const Color.fromRGBO(59, 190, 253, 1),
                   index: 0,
@@ -260,7 +267,7 @@ class PostItemView extends StatelessWidget {
                 //   index: 1,
                 // ),
                 itemPopup(
-                  text: 'Xóa',
+                  text: 'delete'.translate(context),
                   icon: FontAwesomeIcons.trash,
                   color: const Color.fromRGBO(26, 191, 185, 1),
                   index: 1,
@@ -351,8 +358,8 @@ class PostItemView extends StatelessWidget {
       builder: (BuildContext context) {
         return customAlertDialog(
           context: context,
-          title: "Xóa bài viết",
-          content: "Bạn muốn xóa bài viết này",
+          title: "delete_post".translate(context),
+          content: "do_you_want_to_delete_this_post".translate(context),
           onOK: onOK,
         );
       },

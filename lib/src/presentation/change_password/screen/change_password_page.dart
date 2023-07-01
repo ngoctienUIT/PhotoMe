@@ -2,6 +2,7 @@ import 'package:bcrypt/bcrypt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/core/bloc/service_event.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 
 import '../../../core/bloc/service_bloc.dart';
 import '../../../core/function/custom_toast.dart';
@@ -90,7 +91,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     return BlocListener<ChangePasswordBloc, ChangePasswordState>(
       listener: (context, state) {
         if (state is ChangePasswordSuccessState) {
-          customToast(context, "Đổi mật khẩu thành công");
+          customToast(
+              context, "change_password_successfully".translate(context));
           context.read<ServiceBloc>().add(UpdateUserEvent(
               serviceModel.user!.copyWith(password: state.newPassword)));
           Navigator.pop(context);
@@ -107,9 +109,9 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Đổi mật khẩu",
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          Text(
+            "change_password".translate(context),
+            style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
           const Text("password_needs_characters"),
@@ -136,19 +138,20 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                 children: [
                   CustomPasswordInput(
                     controller: oldPasswordController,
-                    hint: "Nhập vào mật khẩu cũ",
+                    hint: "enter_the_old_password".translate(context),
                     hide: state is HidePasswordState ? state.isHide : hide,
                     onPress: () => changeHide(),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Vui lòng nhập vào mật khẩu cũ";
+                        return "please_enter_your_old_password"
+                            .translate(context);
                       }
                       final bool checkPassword = BCrypt.checkpw(
                         oldPasswordController.text,
                         serviceModel.user!.password!,
                       );
                       if (!checkPassword) {
-                        return "Mật khẩu cũ không chính xác";
+                        return "old_password_is_incorrect".translate(context);
                       }
                       return null;
                     },
@@ -156,12 +159,12 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                   const SizedBox(height: 10),
                   CustomPasswordInput(
                     controller: newPasswordController,
-                    hint: "Nhập vào mật khẩu mới",
+                    hint: "enter_new_password".translate(context),
                     hide: state is HidePasswordState ? state.isHide : hide,
                     onPress: () => changeHide(),
                     validator: (value) {
                       if (value != newPasswordController.text) {
-                        return "Mật khẩu không trùng khớp";
+                        return "password_does_not_match".translate(context);
                       }
                       return null;
                     },
@@ -170,12 +173,12 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                   CustomPasswordInput(
                     controller: confirmPasswordController,
                     confirmPassword: newPasswordController.text,
-                    hint: "Xác nhận lại mật khẩu",
+                    hint: "confirm_password".translate(context),
                     hide: state is HidePasswordState ? state.isHide : hide,
                     onPress: () => changeHide(),
                     validator: (value) {
                       if (value != newPasswordController.text) {
-                        return "Mật khẩu không trùng khớp";
+                        return "password_does_not_match".translate(context);
                       }
                       return null;
                     },
@@ -199,7 +202,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
       buildWhen: (previous, current) => current is ContinueState,
       builder: (context, state) {
         return customButton(
-          text: "Đổi mật khẩu",
+          text: "change_password".translate(context),
           onPress: () {
             if (_formKey.currentState!.validate()) {
               context

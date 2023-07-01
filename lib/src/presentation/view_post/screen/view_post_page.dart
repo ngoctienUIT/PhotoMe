@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_me/src/core/language/bloc/language_bloc.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/core/widgets/item_loading.dart';
 import 'package:photo_me/src/domain/response/comment/comment_response.dart';
 import 'package:photo_me/src/presentation/edit_profile/widgets/custom_text_input.dart';
@@ -151,8 +153,8 @@ class _ViewPostViewState extends State<ViewPostView>
         return CustomTextInput(
           controller: commentController,
           hint: replyComment != null
-              ? "Trả lời ${replyComment!.user.name}"
-              : "Thêm bình luận",
+              ? "${"reply".translate(context)} ${replyComment!.user.name}"
+              : "add_a_comment".translate(context),
           radius: 30,
           focusNode: commentFocusNode,
           contentPadding: const EdgeInsets.all(10),
@@ -251,7 +253,7 @@ class _ViewPostViewState extends State<ViewPostView>
                           .add(GetReplyComment(comment.id));
                     },
                     child: Text(
-                      "Xem ${comment.reply.length} câu trả lời",
+                      "${"view".translate(context)} ${comment.reply.length} ${"comment".translate(context)}",
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -284,6 +286,7 @@ class _ViewPostViewState extends State<ViewPostView>
 
   Widget commentItem(BuildContext context, CommentResponse comment,
       [double size = 50]) {
+    int? lang = context.read<LanguageBloc>().language;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onLongPress: () {
@@ -339,7 +342,7 @@ class _ViewPostViewState extends State<ViewPostView>
                   children: [
                     Text(
                       timeago.format(DateTime.parse(comment.registration),
-                          locale: "vi"),
+                          locale: lang == 0 ? "vi" : "en"),
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(width: 10),
@@ -423,9 +426,9 @@ class _ViewPostViewState extends State<ViewPostView>
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text(
-                  'Gửi đến bạn bè',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                child: Text(
+                  'send_to_friends'.translate(context),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               SimpleDialogOption(
@@ -434,9 +437,9 @@ class _ViewPostViewState extends State<ViewPostView>
                       text: "${comment.user.name}: ${comment.comment}"));
                   if (context.mounted) Navigator.of(context).pop();
                 },
-                child: const Text(
-                  'Sao chép',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                child: Text(
+                  'copy'.translate(context),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               if (context.read<ServiceBloc>().serviceModel.user!.id ==
@@ -450,9 +453,9 @@ class _ViewPostViewState extends State<ViewPostView>
                       Navigator.of(context).pop();
                     });
                   },
-                  child: const Text(
-                    'Xóa',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  child: Text(
+                    'delete'.translate(context),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
             ],
@@ -467,8 +470,8 @@ class _ViewPostViewState extends State<ViewPostView>
       builder: (BuildContext context) {
         return customAlertDialog(
           context: context,
-          title: "Xóa bình luận",
-          content: "Bạn muốn xóa bình luận này",
+          title: "delete_comment".translate(context),
+          content: "do_you_want_to_delete_this_comment".translate(context),
           onOK: onOK,
         );
       },

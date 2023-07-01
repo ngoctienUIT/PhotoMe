@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_me/src/core/bloc/service_event.dart';
 import 'package:photo_me/src/core/function/loading_animation.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/domain/response/post/post_response.dart';
 import 'package:photo_me/src/presentation/home/widgets/image_widget.dart';
 import 'package:photo_me/src/presentation/new_post/bloc/new_post_bloc.dart';
@@ -79,7 +80,9 @@ class _NewPostViewState extends State<NewPostView> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
         title: Text(
-          widget.post != null ? "Update post" : "New Post",
+          widget.post != null
+              ? "update_post".translate(context)
+              : "new_post".translate(context),
           style: const TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -95,9 +98,9 @@ class _NewPostViewState extends State<NewPostView> {
                 controller: contentController,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: "Bạn đang nghĩ gì?",
+                  hintText: "what_are_you_thinking".translate(context),
                 ),
               ),
             ),
@@ -113,7 +116,9 @@ class _NewPostViewState extends State<NewPostView> {
         child: Column(
           children: [
             Expanded(
-              child: itemPost(FontAwesomeIcons.camera, "Camera", () async {
+              child:
+                  itemPost(FontAwesomeIcons.camera, "camera".translate(context),
+                      () async {
                 var status = await Permission.camera.status;
                 if (status.isDenied) {
                   await Permission.camera.request();
@@ -133,7 +138,9 @@ class _NewPostViewState extends State<NewPostView> {
               }),
             ),
             Expanded(
-              child: itemPost(FontAwesomeIcons.image, "Thư viện", () async {
+              child:
+                  itemPost(FontAwesomeIcons.image, "gallery".translate(context),
+                      () async {
                 var status = await Permission.storage.status;
                 if (status.isDenied) {
                   await Permission.storage.request();
@@ -184,7 +191,9 @@ class _NewPostViewState extends State<NewPostView> {
                     }
                   }
                 : null,
-            child: Text(widget.post != null ? "Update" : "Upload"),
+            child: Text(widget.post != null
+                ? "update".translate(context)
+                : "upload".translate(context)),
           ),
         );
       },

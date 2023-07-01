@@ -20,7 +20,7 @@ class GenderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProfileItem(
-      title: "Giới tính",
+      title: "gender".translate(context),
       controller: controller,
       onPress: () => showGenderBottomSheet(context),
     );

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_me/src/core/bloc/service_event.dart';
 import 'package:photo_me/src/core/function/loading_animation.dart';
+import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/data/model/user.dart';
 import 'package:photo_me/src/domain/response/user/user_response.dart';
 import 'package:photo_me/src/presentation/edit_profile/bloc/edit_profile_bloc.dart';
@@ -21,6 +22,7 @@ import '../../../data/model/service_model.dart';
 
 class EditProfile extends StatelessWidget {
   const EditProfile({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     ServiceModel serviceModel = context.read<ServiceBloc>().serviceModel;
@@ -109,21 +111,21 @@ class _EditProfileViewState extends State<EditProfileView> {
                   avatarWidget(),
                   const SizedBox(height: 30),
                   ProfileItem(
-                    title: "Tên",
+                    title: "name".translate(context),
                     controller: nameController,
                     typeInput: const [TypeInput.text],
                   ),
                   const SizedBox(height: 20),
                   birthdayWidget(),
                   const SizedBox(height: 20),
-                  const Align(
+                  Align(
                     alignment: Alignment.centerLeft,
-                    child: Text("Mô tả"),
+                    child: Text("description".translate(context)),
                   ),
                   const SizedBox(height: 10),
                   CustomTextInput(
                     controller: descriptionController,
-                    hint: "Mô tả",
+                    hint: "description".translate(context),
                     maxLines: 5,
                     contentPadding: const EdgeInsets.all(10),
                   ),
@@ -135,14 +137,14 @@ class _EditProfileViewState extends State<EditProfileView> {
                       Expanded(
                         child: Column(
                           children: [
-                            const Align(
+                            Align(
                               alignment: Alignment.centerLeft,
-                              child: Text("Công việc"),
+                              child: Text("job".translate(context)),
                             ),
                             const SizedBox(height: 10),
                             CustomTextInput(
                               controller: workController,
-                              hint: "Công việc",
+                              hint: "job".translate(context),
                             ),
                           ],
                         ),
@@ -198,7 +200,7 @@ class _EditProfileViewState extends State<EditProfileView> {
           current is ChangeBirthDayState || current is InitState,
       builder: (_, state) {
         return ProfileItem(
-          title: "Ngày sinh",
+          title: "date_of_birth".translate(context),
           controller: birthdayController,
           onPress: () => selectDate(),
         );
