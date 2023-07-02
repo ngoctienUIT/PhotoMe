@@ -19,7 +19,7 @@ class NotificationHmResponse {
   final String text;
 
   @JsonKey(name: "isRead")
-  final bool isRead;
+  bool isRead;
 
   @JsonKey(name: "time")
   final String time;
@@ -33,12 +33,8 @@ class NotificationHmResponse {
   @JsonKey(name: "post")
   final PostResponse? post;
 
-
-
-  const NotificationHmResponse(this.id, this.idFromUser, this.idToUser,
-      this.text, this.isRead, this.time, this.toUser, this.toPost,
-      this.post
-      );
+  NotificationHmResponse(this.id, this.idFromUser, this.idToUser, this.text,
+      this.isRead, this.time, this.toUser, this.toPost, this.post);
 
   factory NotificationHmResponse.fromJson(Map<String, dynamic> json) =>
       _$NotificationHmResponseFromJson(json);

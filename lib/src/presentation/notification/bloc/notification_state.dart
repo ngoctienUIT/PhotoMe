@@ -20,4 +20,7 @@ class ErrorState extends NotificationState {
   ErrorState(this.error);
 }
 
-class ReadSuccess extends NotificationState{}
+class ReadSuccess extends NotificationState{
+  List<NotificationHmResponse> notifications;
+  ReadSuccess(this.notifications);
+}

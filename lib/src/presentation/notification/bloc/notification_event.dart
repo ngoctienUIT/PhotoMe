@@ -1,3 +1,5 @@
+import '../../../domain/response/notification/notification_response.dart';
+
 abstract class NotificationEvent {}
 
 class Init extends NotificationEvent {
@@ -5,5 +7,6 @@ class Init extends NotificationEvent {
 }
 class ReadNotify extends NotificationEvent {
   final String idNotify;
-  ReadNotify(this.idNotify);
+  final  List<NotificationHmResponse> notifications;
+  ReadNotify(this.idNotify, this.notifications);
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:photo_me/src/domain/response/notification/notification_response.dart';
 import 'package:photo_me/src/presentation/notification/bloc/notification_bloc.dart';
 import 'package:photo_me/src/presentation/notification/bloc/notification_state.dart';
 import 'package:photo_me/src/presentation/notification/widgets/notification_item.dart';
@@ -27,7 +28,13 @@ class NotificationView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<NotificationBloc, NotificationState>(
       listener: (_, state) {
-        if (state is ReadSuccess) {}
+        if (state is ReadSuccess) {
+          // final notification = state.notifications.firstWhere((element) => element.id == state.id);
+          // Navigator.of(context).push(createRoute(
+          //   screen: ViewPostPage(post: notification.post!),
+          //   begin: const Offset(0, 1),
+          // ));
+        }
       },
       child: SafeArea(
         child: SingleChildScrollView(
@@ -44,34 +51,36 @@ class NotificationView extends StatelessWidget {
     return BlocBuilder<NotificationBloc, NotificationState>(
         builder: (_, state) {
       print(state);
-      if (state is LoadingSuccess) {
+      if (state is LoadingSuccess || state is ReadSuccess) {
+        List<NotificationHmResponse> notifications = state is LoadingSuccess
+            ? (state).notifications
+            : (state as ReadSuccess).notifications;
         return ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: state.notifications.length,
+          itemCount: notifications.length,
           itemBuilder: (_, index) {
             return Column(
               children: [
                 InkWell(
                   onTap: () {
-                    context
-                        .read<NotificationBloc>()
-                        .add(ReadNotify(state.notifications[index].id));
-                    if (state.notifications[index].post != null) {
+                    context.read<NotificationBloc>().add(ReadNotify(
+                        notifications[index].id, notifications));
+                    if (notifications[index].post != null) {
                       Navigator.of(context).push(createRoute(
                         screen: ViewPostPage(
-                            post: state.notifications[index].post!),
+                            post: notifications[index].post!),
                         begin: const Offset(0, 1),
                       ));
                     }
                   },
                   child: NotificationItem(
-                    isRead: state.notifications[index].isRead,
-                    imageUrl: state.notifications[index].toUser.avatar,
-                    name: state.notifications[index].toUser.name,
+                    isRead: notifications[index].isRead,
+                    imageUrl: notifications[index].toUser.avatar,
+                    name: notifications[index].toUser.name,
                     postDescription:
-                        state.notifications[index].post?.description ?? "",
-                    action: state.notifications[index].text,
+                        notifications[index].post?.description ?? "",
+                    action: notifications[index].text,
                   ),
                 ),
               ],

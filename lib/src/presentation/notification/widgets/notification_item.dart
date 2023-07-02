@@ -2,6 +2,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_me/src/core/utils/constants/app_images.dart';
 
 class NotificationItem extends StatelessWidget {
   final bool isRead;
@@ -16,7 +17,7 @@ class NotificationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: !isRead?Colors.grey.shade400: Colors.transparent,
+      color: !isRead?Colors.grey.shade300: Colors.transparent,
       child:
       Padding(
         padding: const EdgeInsets.all(8.0),
@@ -26,7 +27,7 @@ class NotificationItem extends StatelessWidget {
               imageUrl: imageUrl,
               placeholder: (context, url) =>
               const CircularProgressIndicator(),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
+              errorWidget: (context, url, error) => Image.asset(AppImages.imgNonAvatar),
               height: 48,
               width: 48,
               fit: BoxFit.fill,
