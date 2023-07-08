@@ -193,7 +193,7 @@ class OtherProfileView extends StatelessWidget {
               context.read<OtherProfileBloc>().add(FollowUser(id));
             },
             child: Text(follow.contains(userID)
-                ? "cancel_follow".translate(context)
+                ? "unfollow".translate(context)
                 : "Follow"),
           ),
         );

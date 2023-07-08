@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_me/src/core/bloc/service_bloc.dart';
 import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/presentation/view_follow/bloc/view_follow_bloc.dart';
@@ -52,8 +51,9 @@ class _ViewFollowViewState extends State<ViewFollowView>
 
   @override
   Widget build(BuildContext context) {
+    ServiceModel serviceModel = context.read<ServiceBloc>().serviceModel;
     return Scaffold(
-      appBar: AppBar(title: const Text("Trần Ngọc Tiến"), elevation: 0),
+      appBar: AppBar(title: Text(serviceModel.user!.name), elevation: 0),
       body: Column(
         children: [
           SizedBox(
@@ -133,6 +133,7 @@ class _ViewFollowViewState extends State<ViewFollowView>
                         ),
                       ),
                       const Spacer(),
+                      /*
                       !check
                           ? _followController.index == 0
                               ? ElevatedButton(
@@ -178,7 +179,7 @@ class _ViewFollowViewState extends State<ViewFollowView>
                               ? const Icon(Icons.notifications)
                               : const Icon(FontAwesomeIcons.ellipsisVertical),
                         ),
-                      )
+                      )*/
                     ],
                   ),
                 ),
