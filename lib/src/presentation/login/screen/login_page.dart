@@ -15,6 +15,7 @@ import 'package:photo_me/src/presentation/main/screen/main_page.dart';
 
 import '../../../core/function/on_will_pop.dart';
 import '../../signup/screen/signup_page.dart';
+import '../widget/custom_password_input.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -39,6 +40,7 @@ class _LoginViewState extends State<LoginView> {
   DateTime? currentBackPressTime;
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
+  bool hide = true;
 
   @override
   Widget build(BuildContext context) {
@@ -109,14 +111,12 @@ class _LoginViewState extends State<LoginView> {
                     //password
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: CustomTextInput(
+                      child: CustomPasswordInput(
                         controller: passwordTextController,
                         hint: "password".translate(context),
                         prefixIcon: const Icon(Icons.lock),
-                        suffixIcon: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.remove_red_eye_rounded),
-                        ),
+                        hide: hide,
+                        onPress: () => setState(() => hide = !hide),
                       ),
                     ),
                     const SizedBox(height: 5),

@@ -11,6 +11,7 @@ class CustomPasswordInput extends StatelessWidget {
     this.confirmPassword,
     this.borderColor = Colors.black54,
     this.validator,
+    this.prefixIcon,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -21,6 +22,7 @@ class CustomPasswordInput extends StatelessWidget {
   final String? confirmPassword;
   final Color borderColor;
   final String? Function(String? value)? validator;
+  final Widget? prefixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,7 @@ class CustomPasswordInput extends StatelessWidget {
           onPressed: onPress,
           icon: Icon(hide ? Icons.visibility : Icons.visibility_off),
         ),
+        prefixIcon: prefixIcon,
         focusedBorder: OutlineInputBorder(
           borderRadius: const BorderRadius.all(Radius.circular(0)),
           borderSide: BorderSide(color: borderColor, width: 1),

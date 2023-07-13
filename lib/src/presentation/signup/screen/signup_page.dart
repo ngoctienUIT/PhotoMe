@@ -9,6 +9,7 @@ import 'package:photo_me/src/presentation/signup/bloc/signup_state.dart';
 import '../../../core/utils/constants/app_images.dart';
 import '../../edit_profile/widgets/custom_text_input.dart';
 import '../../login/widget/custom_button.dart';
+import '../../login/widget/custom_password_input.dart';
 import '../bloc/signup_event.dart';
 
 // enum SingingCharacter { Ma }
@@ -40,6 +41,7 @@ class _SignupViewState extends State<SignupView> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
   String? gender = 'male';
+  bool hide = true;
 
   @override
   Widget build(BuildContext context) {
@@ -125,28 +127,23 @@ class _SignupViewState extends State<SignupView> {
                 //password
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: CustomTextInput(
+                  child: CustomPasswordInput(
                     controller: passwordTextController,
                     hint: "password".translate(context),
                     prefixIcon: const Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.remove_red_eye_rounded),
-                    ),
+                    hide: hide,
+                    onPress: () => setState(() => hide = !hide),
                   ),
                 ),
                 const SizedBox(height: 15),
-
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: CustomTextInput(
+                  child: CustomPasswordInput(
                     controller: confirmPasswordController,
                     hint: "password".translate(context),
                     prefixIcon: const Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.remove_red_eye_rounded),
-                    ),
+                    hide: hide,
+                    onPress: () => setState(() => hide = !hide),
                   ),
                 ),
                 const SizedBox(height: 20),
