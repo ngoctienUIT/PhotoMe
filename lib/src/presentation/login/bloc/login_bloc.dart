@@ -41,6 +41,11 @@ class LoginBloc extends Bloc<LoginScreenEvent, LoginState> {
       print("ok?");
       // print(deviceTokenResponse.data.deviceToken);
       emit(LoginSuccess(response.data.user, response.data.token));
+    } on DioException catch (e) {
+      String error =
+          e.response != null ? e.response!.data.toString() : e.toString();
+      emit(LoginError(error));
+      print(error);
     } catch (e) {
       print(e);
       emit(LoginError(e.toString()));

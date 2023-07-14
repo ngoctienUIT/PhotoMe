@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:photo_me/src/core/widgets/item_loading.dart';
 import 'package:photo_me/src/domain/response/notification/notification_response.dart';
 import 'package:photo_me/src/presentation/notification/bloc/notification_bloc.dart';
 import 'package:photo_me/src/presentation/notification/bloc/notification_state.dart';
@@ -37,11 +40,13 @@ class NotificationView extends StatelessWidget {
         }
       },
       child: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text("Thông báo"),
+            centerTitle: true,
+            elevation: 0,
           ),
-          child: Column(children: [buildBody(context)]),
+          body: buildBody(context),
         ),
       ),
     );
@@ -55,40 +60,72 @@ class NotificationView extends StatelessWidget {
         List<NotificationHmResponse> notifications = state is LoadingSuccess
             ? (state).notifications
             : (state as ReadSuccess).notifications;
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: notifications.length,
-          itemBuilder: (_, index) {
-            return Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    context.read<NotificationBloc>().add(ReadNotify(
-                        notifications[index].id, notifications));
-                    if (notifications[index].post != null) {
-                      Navigator.of(context).push(createRoute(
-                        screen: ViewPostPage(
-                            post: notifications[index].post!),
-                        begin: const Offset(0, 1),
-                      ));
-                    }
-                  },
-                  child: NotificationItem(
-                    isRead: notifications[index].isRead,
-                    imageUrl: notifications[index].toUser.avatar,
-                    name: notifications[index].toUser.name,
-                    postDescription:
-                        notifications[index].post?.description ?? "",
-                    action: notifications[index].text,
+        return RefreshIndicator(
+          onRefresh: () async => context.read<NotificationBloc>().add(Init()),
+          child: ListView.builder(
+            // shrinkWrap: true,
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            itemCount: notifications.length,
+            itemBuilder: (_, index) {
+              return Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      context.read<NotificationBloc>().add(
+                          ReadNotify(notifications[index].id, notifications));
+                      if (notifications[index].post != null) {
+                        Navigator.of(context).push(createRoute(
+                          screen:
+                              ViewPostPage(post: notifications[index].post!),
+                          begin: const Offset(0, 1),
+                        ));
+                      }
+                    },
+                    child: NotificationItem(
+                      isRead: notifications[index].isRead,
+                      imageUrl: notifications[index].toUser.avatar,
+                      name: notifications[index].toUser.name,
+                      postDescription:
+                          notifications[index].post?.description ?? "",
+                      action: notifications[index].text,
+                    ),
                   ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         );
       }
+      return _buildLoading();
       return const Center(child: CircularProgressIndicator());
     });
+  }
+
+  Widget _buildLoading() {
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      itemCount: 10,
+      itemBuilder: (context, index) {
+        return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              children: [
+                const SizedBox(width: 20),
+                itemLoading(48, 48, 90),
+                const SizedBox(width: 15),
+                itemLoading(20, Random().nextInt(50) + 200, 5)
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

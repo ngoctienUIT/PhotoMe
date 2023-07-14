@@ -7,9 +7,10 @@ Widget buildLoadingHeader() {
   return Column(
     children: [
       Material(
-          elevation: 10,
-          borderRadius: BorderRadius.circular(90),
-          child: itemLoading(150, 150, 90)),
+        elevation: 10,
+        borderRadius: BorderRadius.circular(90),
+        child: itemLoading(150, 150, 90),
+      ),
       const SizedBox(height: 20),
       itemLoading(25, 150, 5),
       const SizedBox(height: 5),

@@ -19,22 +19,35 @@ class SearchItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: navigate,
-      child: ListTile(
-        leading: ClipOval(
-          child: CachedNetworkImage(
-            imageUrl: imgUrl,
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) =>  Image.asset(AppImages.imgNonAvatar),
-            height: 48,
-            width: 48,
-            fit: BoxFit.fill,
-          ),
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: const Color(0xfff7f7f7),
         ),
-        title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold),),
-        subtitle: Text('$numPost ${"posts_posted".translate(context)}'),
-        // trailing: Icon(Icons.more_vert),
+        child: ListTile(
+          onTap: navigate,
+          leading: ClipOval(
+            child: CachedNetworkImage(
+              imageUrl: imgUrl,
+              placeholder: (context, url) => const CircularProgressIndicator(),
+              errorWidget: (context, url, error) =>
+                  Image.asset(AppImages.imgNonAvatar),
+              height: 48,
+              width: 48,
+              fit: BoxFit.fill,
+            ),
+          ),
+          title: Text(
+            name,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text('$numPost ${"posts_posted".translate(context)}'),
+          // trailing: Icon(Icons.more_vert),
+        ),
       ),
     );
   }

@@ -40,6 +40,11 @@ class SignupBloc extends Bloc<SignupScreenEvent, SignupState> {
       final prefs = await SharedPreferences.getInstance();
       prefs.setString("token", response.data.token);
       emit(SignupSuccess());
+    } on DioException catch (e) {
+      String error =
+          e.response != null ? e.response!.data.toString() : e.toString();
+      emit(SignupError(error));
+      print(error);
     } catch (e) {
       emit(SignupError(e.toString()));
     }

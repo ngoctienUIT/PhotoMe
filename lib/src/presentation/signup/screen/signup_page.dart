@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:photo_me/src/core/function/custom_toast.dart';
 import 'package:photo_me/src/core/function/route_function.dart';
 import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/presentation/login/screen/login_page.dart';
@@ -54,14 +55,7 @@ class _SignupViewState extends State<SignupView> {
           ));
         }
         if (state is SignupError) {
-          final snackBar = SnackBar(
-            content: const Text('Error'),
-            action: SnackBarAction(
-              label: state.error,
-              onPressed: () {},
-            ),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          customToast(context, state.error);
         }
       },
       child: Scaffold(

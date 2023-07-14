@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/core/bloc/service_bloc.dart';
 import 'package:photo_me/src/core/bloc/service_event.dart';
+import 'package:photo_me/src/core/function/custom_toast.dart';
 import 'package:photo_me/src/core/function/route_function.dart';
 import 'package:photo_me/src/core/utils/constants/constants.dart';
 import 'package:photo_me/src/core/utils/extension/string_extension.dart';
@@ -59,14 +60,7 @@ class _LoginViewState extends State<LoginView> {
           );
         }
         if (state is LoginError) {
-          final snackBar = SnackBar(
-            content: Text(state.error),
-            action: SnackBarAction(
-              label: "ok",
-              onPressed: () {},
-            ),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          customToast(context, state.error);
         }
       },
       child: Scaffold(

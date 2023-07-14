@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_me/src/core/utils/extension/string_extension.dart';
 import 'package:photo_me/src/data/model/user.dart';
+import 'package:photo_me/src/presentation/edit_profile/widgets/custom_text_input.dart';
 import 'package:photo_me/src/presentation/search/bloc/search_bloc.dart';
 import 'package:photo_me/src/presentation/search/bloc/search_state.dart';
 
@@ -60,36 +61,37 @@ class _SearchViewState extends State<SearchView> {
       //   ],
       // ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  // onChanged: (value) {
-                  //   hm();
-                  // },
-                  onSubmitted: (text) {
-                    // print(hm);
-                    context
-                        .read<SearchBloc>()
-                        .add(Search(searchController.text));
-                    // hm();
-                  },
-                  controller: searchController,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    hintText: "who_are_you_looking_for".translate(context),
-                  ),
-                ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: CustomTextInput(
+                onChange: (text) {
+                  context
+                      .read<SearchBloc>()
+                      .add(Search(searchController.text));
+                },
+                onFieldSubmitted: (text) {
+                  // context
+                  //     .read<SearchBloc>()
+                  //     .add(Search(searchController.text));
+                },
+                textInputAction: TextInputAction.search,
+                controller: searchController,
+                colorBorder: Colors.transparent,
+                backgroundColor: const Color(0x88dfe3ee),
+                prefixIcon: const Icon(Icons.search),
+                hint: "who_are_you_looking_for".translate(context),
               ),
-              // ...userResults
-              //     .map((e) => SearchItem(imgUrl: e.avatar, name: e.name)),
-              BlocBuilder<SearchBloc, SearchState>(builder: (_, state) {
+            ),
+            // ...userResults
+            //     .map((e) => SearchItem(imgUrl: e.avatar, name: e.name)),
+            Expanded(
+              child: BlocBuilder<SearchBloc, SearchState>(builder: (_, state) {
                 if (state is SearchSuccess) {
-                  return ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
+                  return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    // shrinkWrap: true,
                     padding: const EdgeInsets.all(8),
                     itemCount: state.users.length,
                     itemBuilder: (context, index) {
@@ -105,14 +107,14 @@ class _SearchViewState extends State<SearchView> {
                         },
                       );
                     },
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const Divider(),
+                    // separatorBuilder: (BuildContext context, int index) =>
+                    //     const Divider(),
                   );
                 }
                 return const SizedBox();
               }),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
